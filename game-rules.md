@@ -1,124 +1,132 @@
 # Game Rules for 2018 - Tower Defence
-## Game description:
-* The aim of the game is to find the best strategy to place your buildings to defend your base and defeat the opposing player.
-* The game is in the style of a 1v1 match where each player gives a command per turn.
-* Your objective is to get projectiles through the opposing player's defences and damage their main base directly. Once a player base's health drops to 0, then that player has lost.
+## The Game:
+* The aim of the game is to find the best strategy to place your buildings on a map to defend your base and defeat the opposing player.
+* The game is in the style of a 1v1 match where each player provides a command per turn.
+* Your objective is to get missiles through the opposing player's defences and damage their main base directly. The first player whose base's health drops to 0 or below loses the match.
 
 ## The Map:
-* A map will be **{X}** by **{X}** in size.
+* The map will be **{X}** by **{Y}** in size.
 * The map is mirrored, and each player will look at the map from the left-hand side.
+* As a player, you will always be player A.
 * The player can only build buildings in their half of the map.
 * The coordinates for a cell on the map takes the form of **'X,Y'** starting from 0, e.g. the coordinates **'0,0'** will be the top left cell.
-* The entire map will be visible to both players, including the opposing player's side of the map.
+* The entire map, player information, and building information will be visible to both players, including the opposing player's units.
+
+**{X} and {Y} will be variable.**
+
+## Economy:
+* Each player will receive **{START_ENERGY}** energy at the start of their turn.
+* Energy generators can be built to increase the amount of energy received per turn, more information can be found in the building types section.
+* Energy is needed to be able to build any building.
+* A player will receive energy every turn of the game - The amount of energy received is **{ENERGY_PER_TURN}** per turn, without any energy generators.
+
+**{START_ENERGY} and {ENERGY_PER_TURN} will be variable.**
 
 ## Commands:
-**Note: A player can only send one command at a time. Any extra commands will be ignored.**
+**Note: A player can only make one command per turn. Any additional commands will be ignored.**
 
-### The commands are:
-* **Build** a building of any type, if there is enough energy for that building.
+### Available Commands:
+* **Build** a building of any type, if you have enough energy for that building.
 * **Do nothing** to conserve energy.
 * Any invalid command will result in a **'Do nothing'** command.
 * Invalid commands include:
-	* Trying to place a building when you don’t have enough energy.
-	* Trying to place a building on coordinates that is currently occupied by another building.
-	* Trying to place a building on your opponent’s side of the board or out of bounds.
+	* Trying to place a building when you don't have enough energy.
+	* Trying to place a building on coordinates that are currently occupied by another building.
+	* Trying to place a building on your opponent's side of the map or coordinates that are out of bounds.
 
-### Command Format
+### Command Format:
 * The command format is '**x,y,building_type**'.
-* The input must be comma-separated numbers that represent the coordinates followed by the numeric id of the building type.
+* The input must be comma-separated numbers that represent the coordinates followed by the numeric ID of the building type.
 * The valid building types are:
 	* 0: **Defence Building**
 	* 1: **Attack Building**
 	* 2: **Energy Building**
-* An example of a valid command will be '**0,0,1**', which will place a turret at the top left of the map.
-
-## Economy:
-* Each player will receive {X} energy at the start of their turn.
-* Generators can be built to increase the amount received per turn, more information can be found in the building types section.
-* Energy is needed to be able to build any building.
-* A player will receive energy every turn of the game - The amount of energy received is **{X}** per turn, without any generators. Generators will be discussed in the building types section.
-* Energy is needed to be able to build a building of any type.
-
-
+* An example of a valid command will be '**0,0,1**', which will place a attack building at the top left corner of the map.
 
 ## Buildings:
 * Each building will have an energy cost to build.
-* Each building will take turns until it is fully built and ready, based on the types.
+* Each building will take a number of turns until it is fully built and ready, based on it's type.
+
 * A building that is not fully built will be destroyed in one hit.
-* The energy cost of a building is removed once the command to build a building has been successful.
+
+* The energy cost of a building is deducted from a player's energy total once the command to build a building has been successful.
 * Trying to place a building without enough energy for that building will result in a **'Do nothing'** command.
 * Once a building is destroyed, another building can be placed at that location without penalty.
 * Only one building of any type can occupy a location on the map.
-* No buildings of the opposing player may be added to the players own side.
 
-### Building types:
+### Building Types:
 **The player can build one of 3 different types of buildings**
 
 #### Defence Building:
 A defensive building, that is tougher than any other building type with no offensive capabilities.
-Able to take more hits than any other building, these cheap buildings are great for soaking up damage while your offensive buildings fire from safety behind them.
+Able to take more hits than any other building, these buildings are great for soaking up damage while your offensive buildings fire from safety behind them.
 
-**Building details:**
-* Cost: {x}
-* Health: {x}
-* Build time {x}
-* Completed Icon: {x}
-* Not Completed Icon: {x}
+**Defence building details:**
+* Cost: **30**
+* Health: **20**
+* Construction time: **3**
+* Constructed character: **D**
+* Under construction character: **d**
 
 #### Attack Building:
-The main offensive building you can build that fires straight line projectiles toward the opposing side. This will be the main way to damage the opposing player’s buildings and base.
-The Turret has a firing rate, meaning it will fire a projectile every {x} turns after it has been successfully built.
+The main offensive building you can build that fires straight line missiles toward the opposing side. This will be the main way to damage the opposing player's buildings and base.
+The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built.
 
-**Building details:**
-* Cost:	{x}
-* Health: {x}
-* Firing rate: {x}
-* Damage: {x}
-* Build time {x}
-* Completed Icon: {x}
-* Not Completed Icon: {x}
+**Defence building details:**
+* Cost:	**30**
+* Health: **5**
+* Firing rate: **3**
+* Damage: **5**
+* Construction time: **1**
+* Constructed character: **A**
+* Under construction character: **a**
 
 #### Energy Building:
-A utility building that provides **{x}** extra energy per turn. These buildings have lower health and can take hits before it is destroyed.
+A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and can don't offer much in terms of defence.
 
-**Building details:**
-* Cost:	{x}
-* Health: {x}
-* Energy per turn: {x}
-* Build time {x}
-* Completed Icon: {x}
-* Not Completed Icon: {x}
+**Defence building details:**
+* Cost:	**20**
+* Health: **5**
+* Energy generated per turn: **3**
+* Construction time: **0**
+* Constructed character: **E**
+* Under construction character: **e**
 
-## Projectiles
-* Currently only turrets will create projectiles.
-* A projectile will always deal all its damage on the building it hits and stop, even if the building hit has less health than the damage dealt.
-* There is no limit to how many projectiles can be in a single cell at one time.
-* Projectiles do not interact with each other, meaning opposing projectiles will not stop or impact one another.
-* Projectiles will hit the first opposing building or continue on to hit the opposing player’s base.
-* Projectiles currently move at minimum one cell per turn, depending on the projectile speed, until it impacts either an opposing player or the opposing player's base.
-* Projectiles currently only move in a straight line toward the opposing player.
-* Projectiles move at least one cell the moment it is created.
+## Missiles
+* Currently only attack units will create missiles.
+* A missile will always deal all its damage on the building it hits firsts and stops, even if the building hit has less health than the damage dealt.
+* There is no limit to how many missiles can be in a single cell at one time.
+* Missiles do not interact with each other, meaning opposing missiles will not stop or impact one another.
+* Missiles will hit any opposing building or continue on to hit the opposing player's base if there are no opponent buildings in the way.
+* Missiles do not interact with your own buildings and simply pass over them.
+* Missiles currently move at minimum of one cell per turn, depending on the missile speed, until it impacts either an opposing player or the opposing player's base.
+* Missiles currently only move in a straight line toward the opposing player.
+* Missiles move at least one cell the moment it is created.
 
 ## Score
 Each player will have a score based on the value of the buildings that the player destroyed of his opponent.
 **Note that a building that is not fully built will reward the full amount of points.**
 
-The scores for each building types are:
-* Turret (Attack): {x}
-* Wall (Defence): {x}
-* Generator (Utility): {x}
+Scores are calculated by adding:
+* Total damage dealt
+* Fixed score for each building constructed
+* Total energy generated
+* End game HP x 100
 
-**Scores will be used to determine a victor in the event of a stalemate or draw.**
+**Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnent bots should result in this situation**
 
 ## Game Engine Rules
-* Each player gets a turn, and the turns run at the same time for both players.
-* Each bot will get a maximum time of 5 seconds to execute each command.
-* There will be a maximum of 1000 turns for each side, at which point the game the victor will be determined by the highest score.
+* Each player gets a turn, and the turns run at the same time for both players. This means that each player's commands are captured, and only then is the round run.
+* Players may store state between turns via files in their bot folder.
+* Each bot will get a maximum time of 2 seconds to execute each command.
+* There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the game the victor will be determined by the highest score.
 * The game engine will process commands in the following order:
 	* Building will be created, based on the commands from the player.
-	* Projectiles will be generated from any attack buildings, if they can fire that turn.
-	* The projectiles will be immediately moved, based on their speed.
-	* Each projectile will hit a building, if it hit it during the movement phase.
-	* Dead buildings will be removed.
-	* Scores will be given to each player, depending on destroyed buildings.
-	* Resources will be added, based on the baseline amount received and the number of energy buildings a player has.
+	* Missiles will be generated from any attack buildings, if they can fire that turn.
+	* The missiles will be immediately moved, based on their speed.
+	* Each missile will hit a building, if it hit it during the movement phase.
+	* Destroyed buildings will be removed.
+	* Scores will be awarded to each player, depending on the round.
+	* Energy will be awarded, based on the baseline amount received and the number of energy buildings a player has.
+
+**{MAXIMUM_TURNS} will be variable.**
