@@ -34,7 +34,7 @@
 
 ## Economy:
 * Each player will receive {X} energy at the start of their turn.
-* Generators can be built to increase the amount received per turn, more information can be found in the [building-types](#buildings) section.
+* Generators can be built to increase the amount received per turn, more information can be found in the [building types](#building-types) section.
 * Energy is needed to be able to build any building.
 * A player will receive energy every turn of the game - The amount of energy received is **{X}** per turn, without any generators. Generators will be discussed in the [building types](#building-types) section.
 * Energy is needed to be able to build a building of any type.
@@ -95,7 +95,7 @@ A utility building that provides **{x}** extra energy per turn. These buildings 
 * There is no limit to how many projectiles can be in a single cell at one time.
 * Projectiles do not interact with each other, meaning opposing projectiles will not stop or impact one another.
 * Projectiles will hit the first opposing building or continue on to hit the opposing player’s base.
-* Projectiles currently move at one cell per turn until it impacts either an opposing player or the opposing player's base.
+* Projectiles currently move at minimum one cell per turn, depending on the projectile speed, until it impacts either an opposing player or the opposing player's base.
 * Projectiles currently only move in a straight line toward the opposing player.
 * Projectiles move at least one cell the moment it is created.
 
@@ -111,9 +111,9 @@ The scores for each building types are:
 **Scores will be used to determine a victor in the event of a stalemate or draw.**
 
 ## Game Engine Rules
-* Each player gets a turn, and the turns is at the same time for both players.
-* Each bot will get a time of 5 seconds to execute its commands.
-* There will be a maximum of 1000 turns for each side, at which point the game will be given to the player with the highest score.
+* Each player gets a turn, and the turns run at the same time for both players.
+* Each bot will get a maximum time of 5 seconds to execute each command.
+* There will be a maximum of 1000 turns for each side, at which point the game the victor will be determined by the highest score.
 * The game engine will process commands in the following order:
 	* Building will be created, based on the commands from the player.
 	* Projectiles will be generated from any attack buildings, if they can fire that turn.
