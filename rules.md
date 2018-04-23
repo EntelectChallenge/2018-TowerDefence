@@ -34,9 +34,9 @@
 
 ## Economy:
 * Each player will receive {X} energy at the start of their turn.
-* Generators can be built to increase the amount received per turn, more information can be found in the [building types](#building-types) section.
+* Generators can be built to increase the amount received per turn, more information can be found in the building types section.
 * Energy is needed to be able to build any building.
-* A player will receive energy every turn of the game - The amount of energy received is **{X}** per turn, without any generators. Generators will be discussed in the [building types](#building-types) section.
+* A player will receive energy every turn of the game - The amount of energy received is **{X}** per turn, without any generators. Generators will be discussed in the building types section.
 * Energy is needed to be able to build a building of any type.
 
 
