@@ -1,38 +1,40 @@
 # Game Rules for 2018 - Tower Defence
 ## Game description:
-•	The game is a face off - And every player can give a command per turn.
-•	To win, a player must get projectiles trough the defending players board
-to damage the other player directly. Once a player has no more health, they have lost.
+* The game is in the style of a 1v1 match where each player gives a command per turn.
+* Your objective is to get projectiles through the opposing player's defences and damage their main base directly. Once a player base's health drops to 0, then that player has lost.
 
-The Map:
-•	A map will be {X} by {X} in size. The map is mirrored, and each player will look at the map from the left-hand side.
-•	The player can only place buildings in their halve of the map.
-•	The address for a cell in the map takes the form of X,Y - starting at a 0.
-•	This means that 0,0 is the address of the top left cell.
-•	The complete map will always be visible for both players, and there is no fog of war.
+## The Map:
+* A map will be **{X}** by **{X}** in size. 
+* The map is mirrored, and each player will look at the map from the left-hand side.
+* The player can only build buildings in their half of the map.
+* The coordinates for a cell on the map takes the form of **'X,Y'** starting from 0, e.g. the coordinates **'0,0'** will be the top left cell.
+* The entire map will be visible to both players, including the opposing player's side of the map.
 
-Commands:
-A player can only send one command at a time. Note that extra commands will be ignored.
-	The commands are: 
-	Place a building of any type, if there is enough energy for that building.
-	Do nothing to conserve energy.
-	Any invalid command will result in a 'Do nothing' command.
-	Invalid commands include:
-•	Trying to place a building when you don’t have enough energy.
-•	Trying to place a building on coordinates that is currently occupied by another building.
-•	Trying to place a building on your opponent’s side of the board or out of bounds.
-	Command Format
-	The command format is 'x,y,building_type'.
-	The input must be comma-separated numbers that represent the coordinates followed by the numeric id of the building type. 
-	The valid building types are:
-•	0: Wall (Defensive)
-•	1: Turret (Offensive)
-•	2: Energy Generator (Utility)
-	An example of a valid command will be '0,0,1', which will place a turret at the top left of the map.
-Economy:
-	Each player will receive {X} energy at the start of their turn.
-	Generators can be built to increase the amount received per turn, more information can be found in the Buildings section.
-	Energy is needed to be able to build any building.
+## Commands:
+**Note: A player can only send one command at a time. Any extra commands will be ignored.**
+
+### The commands are: 
+* Place a building of any type, if there is enough energy for that building.
+* Do nothing to conserve energy.
+* Any invalid command will result in a 'Do nothing' command.
+* Invalid commands include:
+	* Trying to place a building when you don’t have enough energy.
+	* Trying to place a building on coordinates that is currently occupied by another building.
+	* Trying to place a building on your opponent’s side of the board or out of bounds.
+  
+### Command Format
+* The command format is '**x,y,building_type**'.
+* The input must be comma-separated numbers that represent the coordinates followed by the numeric id of the building type. 
+* The valid building types are:
+	* 0: **Wall (Defensive)**
+	* 1: **Turret (Offensive)**
+	* 2: **Energy Generator (Utility)**
+* An example of a valid command will be '**0,0,1**', which will place a turret at the top left of the map.
+
+## Economy:
+* Each player will receive {X} energy at the start of their turn.
+* Generators can be built to increase the amount received per turn, more information can be found in the Buildings section.
+* Energy is needed to be able to build any building.
 		
 	A player will receive energy every turn of the game - The amount of energy received is X per turn, without any generators. Generators will be discussed in the building types section.
 	Energy is needed to be able to build a building of any type.
