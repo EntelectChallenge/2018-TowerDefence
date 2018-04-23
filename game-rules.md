@@ -27,9 +27,9 @@
 * The command format is '**x,y,building_type**'.
 * The input must be comma-separated numbers that represent the coordinates followed by the numeric id of the building type.
 * The valid building types are:
-	* 0: **Wall (Defence)**
-	* 1: **Turret (Attack)**
-	* 2: **Energy Generator (Utility)**
+	* 0: **Defence Building**
+	* 1: **Attack Building**
+	* 2: **Energy Building**
 * An example of a valid command will be '**0,0,1**', which will place a turret at the top left of the map.
 
 ## Economy:
@@ -54,7 +54,7 @@
 ### Building types:
 **The player can build one of 3 different types of buildings**
 
-#### Wall (Defence):
+#### Defence Building:
 A defensive building, that is tougher than any other building type with no offensive capabilities.
 Able to take more hits than any other building, these cheap buildings are great for soaking up damage while your offensive buildings fire from safety behind them.
 
@@ -65,7 +65,7 @@ Able to take more hits than any other building, these cheap buildings are great 
 * Completed Icon: {x}
 * Not Completed Icon: {x}
 
-#### Turret (Attack):
+#### Attack Building:
 The main offensive building you can build that fires straight line projectiles toward the opposing side. This will be the main way to damage the opposing player’s buildings and base.
 The Turret has a firing rate, meaning it will fire a projectile every {x} turns after it has been successfully built.
 
@@ -78,7 +78,7 @@ The Turret has a firing rate, meaning it will fire a projectile every {x} turns 
 * Completed Icon: {x}
 * Not Completed Icon: {x}
 
-#### Generator (Utility):
+#### Energy Building:
 A utility building that provides **{x}** extra energy per turn. These buildings have lower health and can take hits before it is destroyed.
 
 **Building details:**
