@@ -10,8 +10,6 @@ public class Main {
     private static final String STATE_FILE_NAME = "state.json";
 
     public static void main(String[] args) {
-        long startTime = System.currentTimeMillis();
-
         String state = "";
         try {
             BufferedReader br = new BufferedReader(new FileReader(STATE_FILE_NAME));
@@ -26,13 +24,8 @@ public class Main {
 
         Bot bot = new Bot(gameState);
         String command = bot.Run();
-        System.out.println(command);
 
         writeBotResponseToFile(command);
-
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        System.out.println("Elapsed Time in milis: " + elapsedTime);
     }
 
     private static void writeBotResponseToFile(String command) {

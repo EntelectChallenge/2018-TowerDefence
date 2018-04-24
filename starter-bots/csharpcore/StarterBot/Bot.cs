@@ -46,7 +46,7 @@ namespace StarterBot
             //Get all my attack buildings
             var myAttackBuildings = GetBuildings(PlayerType.A, BuildingType.Attack);
             //Get all my defense buildings
-            var myDefenseBuildings = GetBuildings(PlayerType.B, BuildingType.Defense);
+            var myDefenseBuildings = GetBuildings(PlayerType.A, BuildingType.Defense);
 
             var myBuildings = new List<CellStateContainer>();
 

@@ -62,8 +62,8 @@ public class GameEngineRunner {
 
         gameComplete = false;
 
-        startNewRound();
         gameStartedHandler.accept(gameMap);
+        startNewRound();
 
         runInitialPhase();
         while (!gameComplete) {
@@ -75,8 +75,6 @@ public class GameEngineRunner {
 
         boolean successfulRound = false;
         while (!successfulRound) {
-
-            gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
 
             for (Player player : players) {
                 Thread thread = new Thread(() -> player.startGame(gameMap));
@@ -98,6 +96,8 @@ public class GameEngineRunner {
     }
 
     private void processRound() throws Exception {
+        TowerDefenseConsoleMapRenderer renderer = new TowerDefenseConsoleMapRenderer();
+        System.out.println(renderer.render(gameMap, players.get(0).getGamePlayer()));
 
         gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
 
@@ -119,9 +119,6 @@ public class GameEngineRunner {
         for (Player player : players) {
             player.roundComplete(gameMap, gameMap.getCurrentRound());
         }
-//        useful for debugging
-        TowerDefenseConsoleMapRenderer renderer = new TowerDefenseConsoleMapRenderer();
-        System.out.println(renderer.render(gameMap, players.get(0).getGamePlayer()));
     }
 
     private void startNewRound() {

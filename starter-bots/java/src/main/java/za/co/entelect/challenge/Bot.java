@@ -57,7 +57,7 @@ public class Bot {
 
     private String buildRandom() {
         List<CellStateContainer> emptyCells = gameState.getGameMap().stream()
-                .filter(c -> c.getBuildings().size() == 0 && c.x < (gameWidth / 2) - 1)
+                .filter(c -> c.getBuildings().size() == 0 && c.x < (gameWidth / 2))
                 .collect(Collectors.toList());
         if (emptyCells.size() == 0) {
             return doNothingCommand();
@@ -74,7 +74,7 @@ public class Bot {
     private boolean hasEnoughEnergyForMostExpensiveBuilding() {
         boolean hasEnoughEnergy = gameDetails.buildingPrices.values().stream()
                 .filter(bp -> bp < myself.energy)
-                .toArray().length == 0;
+                .toArray().length == 3;
         return hasEnoughEnergy;
     }
 
@@ -93,7 +93,8 @@ public class Bot {
         //if enemy has an attack building and i dont have a blocking wall
         for (int i = 0; i < gameHeight; i++) {
             int opponentAttacksCount = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i).size();
-            if (opponentAttacksCount > 0) {
+            int myDefenseCount = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == DEFENSE, i).size();
+            if (opponentAttacksCount > 0 && myDefenseCount == 0) {
                 return true;
             }
         }
@@ -101,7 +102,7 @@ public class Bot {
     }
 
     private String doNothingCommand() {
-        return "do nothing";
+        return "";
     }
 
     private String placeBuildingInRow(BuildingType buildingType, int y) {

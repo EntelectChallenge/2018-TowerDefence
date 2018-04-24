@@ -67,12 +67,22 @@ function runStrategy() {
 
 function isUnderAttack() {
     // is there a row under attack? and have enough energy to build defence?
-    let opponentAttackers = buildings.filter(b => b.playerType == 'B' && b.buildingType == 'ATTACK');
+	let myDefenders = buildings.filter(b => b.playerType == 'A' && b.buildingType == 'DEFENSE');
+    let opponentAttackers = buildings.filter(b => b.playerType == 'B' && b.buildingType == 'ATTACK')
+									 .filter(b => !myDefenders.some(d => d.y == b.y));
+    
     return (opponentAttackers.length > 0) && (myself.energy >= buildingPrices[0]);
 }
 
 function defendRow() {
-    let opponentAttackers = buildings.filter(b => b.playerType == 'B' && b.buildingType == 'ATTACK');
+    // is there a row under attack? and have enough energy to build defence?
+	let myDefenders = buildings.filter(b => b.playerType == 'A' && b.buildingType == 'DEFENSE');
+    let opponentAttackers = buildings.filter(b => b.playerType == 'B' && b.buildingType == 'ATTACK')
+									 .filter(b => !myDefenders.some(d => d.y == b.y));
+	if (opponentAttackers.length == 0) {
+		buildRandom();
+        return
+	}
     // choose the first row with an opponent attacker
     let rowNumber = opponentAttackers[0].y;
     // get all the x-coordinates for this row, that are empty
@@ -86,7 +96,7 @@ function defendRow() {
     let command = {x: '', y: '', bt: ''};
     command.x = getRandomFromArray(emptyCells).x;
     command.y = rowNumber;
-    command.bt = 1; // defence building
+    command.bt = 0; // defence building
     buildCommand(command.x, command.y, command.bt);
 }
 
@@ -115,7 +125,7 @@ function buildCommand(x, y, bt) {
 }
 
 function doNothingCommand() {
-    writeToFile(commandFileName, `do nothing`);
+    writeToFile(commandFileName, ``);
 }
 
 function writeToFile(fileName, payload) {

@@ -29,7 +29,7 @@ class StarterBot:
         self.full_map = self.game_state['gameMap']
         self.rows = self.game_state['gameDetails']['mapHeight']
         self.columns = self.game_state['gameDetails']['mapWidth']
-        self.command = 'Do Nothing'
+        self.command = ''
         
         self.player_buildings = self.getPlayerBuildings()
         self.opponent_buildings = self.getOpponentBuildings()
@@ -155,6 +155,19 @@ class StarterBot:
             return True
         else:
             return False
+
+    def checkMyDefense(self, lane_number):
+
+        '''
+        Checks a lane.
+        Returns True if lane contains defense unit.
+        '''
+        
+        lane = list(self.player_buildings[lane_number])
+        if (lane.count(2) > 0):
+            return True
+        else:
+            return False
     
     def checkAttack(self, lane_number):
 
@@ -185,8 +198,8 @@ class StarterBot:
         '''
         Place your bot logic here !
         
-        - If there is an opponent attack unit on a row, and you have enough energy for a wall
-             Build a wall at a random unoccupied location on that row.
+        - If there is an opponent attack unit on a row, and you have enough energy for a defense
+             Build a defense at a random unoccupied location on that row if it is undefended.
         - Else If you have enough energy for the most expensive building 
              Build a random building type at a random unoccupied location
         - Else: 
@@ -204,7 +217,7 @@ class StarterBot:
             if len(self.getUnOccupied(self.player_buildings[i])) == 0:
                 #cannot place anything in a lane with no available cells.
                 continue
-            elif ( self.checkAttack(i) and (self.player_info['energy'] >= self.prices['DEFENSE']) ):
+            elif ( self.checkAttack(i) and (self.player_info['energy'] >= self.prices['DEFENSE']) and (self.checkMyDefense(i)) == False):
                 #place defense unit if there is an attack building and you can afford a defense building
                 lanes.append(i)
         #lanes variable will now contain information about all lanes which have attacking units
@@ -242,12 +255,11 @@ class StarterBot:
         command in form : x,y,building_type
         '''
         outfl = open('command.txt','w')
-        outfl.write("Do Nothing")
+        outfl.write("")
         outfl.close()
         return None
 
 if __name__ == '__main__':
     s = StarterBot('state.json')
     s.generateAction()
-    print("Completed in : ", str(time.time() - startTime), "s")
     
