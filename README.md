@@ -20,6 +20,6 @@ For more information, visit one of the following:
 
 [Our forum](https://forum.entelect.co.za)
 
-Or read the rules in the [rules.md](./rules.md) file.
+Or read the rules in the [game-rules.md](./game-rules.md) file.
 
 
