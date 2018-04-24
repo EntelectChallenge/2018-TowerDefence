@@ -16,6 +16,12 @@ Change some of the provided logic or code your own into one of the given starter
 ## WIN!!!
 For more information, visit one of the following:
 
+[Our website](https://challenge.entelect.co.za)
+
+[Our forum](https://forum.entelect.co.za)
+
+Or read the rules in the [game-rules.md](./game-rules.md) file.
+
 ## Project Structure
 
 In this project you will find everything you need to build and run a bot on your local machine.  This project contains the following:
@@ -31,9 +37,3 @@ This project can be used to get a better understanding of the rules and to help 
 Improvements and enhancements will be made to the game engine code over time.  The game engine will also evolve during the competition after every battle, so be prepared. Any changes made to the game engine or rules will be updated here, so check in here now and then to see the latest changes and updates.
 
 The game engine has been made available to the community for peer review and bug fixes, so if you find any bugs or have any concerns, please [e-mail us](challenge@entelect.co.za) or discuss it with us on the [Challenge forum](http://forum.entelect.co.za/), alternatively submit a pull request on Github and we will review it.
-
-[Our website](https://challenge.entelect.co.za)
-
-[Our forum](https://forum.entelect.co.za)
-
-Or read the rules in the [game-rules.md](./game-rules.md) file.
