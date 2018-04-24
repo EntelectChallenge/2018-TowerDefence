@@ -10,7 +10,7 @@ public class BotRunnerFactory {
                 return new JavaBotRunner(botMetaData, timoutInMilis);
             case PYTHON:
                 return new PythonBotRunner(botMetaData, timoutInMilis);
-            case CSHARP:
+            case CSHARPDOTNETCORE:
                 return new CSharpCoreBotRunner(botMetaData, timoutInMilis);
             case JAVASCRIPT:
                 return new JavaScriptBotRunner(botMetaData, timoutInMilis);
