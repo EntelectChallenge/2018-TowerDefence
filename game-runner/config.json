@@ -1,0 +1,17 @@
+{
+  "round-state-output-location": "..\\Bots\\GameRuns",
+  "console-players": 0,
+  "max-runtime-ms": 2000,
+  "bot-meta": [
+    {
+      "botLocation": "..\\Bots\\Java",
+      "botFileName": "bot.jar",
+      "botLanguage": "java"
+    },
+    {
+      "botLocation": "..\\Bots\\JavaScript",
+      "botFileName": "bot.js",
+      "botLanguage": "javascript"
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+package za.co.entelect.challenge.engine.runner;
+
+import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
+import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
+import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.game.GameEngine;
+import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
+import za.co.entelect.challenge.game.contracts.game.GamePlayer;
+import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
+import za.co.entelect.challenge.game.contracts.map.GameMap;
+import za.co.entelect.challenge.game.contracts.player.Player;
+
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+
+public class GameEngineRunner {
+
+    public Consumer<GameMap> firstPhaseHandler;
+    public Consumer<GameMap> gameStartedHandler;
+    public BiConsumer<GameMap, Integer> roundCompleteHandler;
+    public BiConsumer<GameMap, Integer> roundStartingHandler;
+    public BiConsumer<GameMap, List<Player>> gameCompleteHandler;
+
+    private GameMap gameMap;
+    private List<Player> players;
+    private RunnerRoundProcessor roundProcessor;
+
+    private boolean gameComplete;
+
+    private GameEngine gameEngine;
+    private GameMapGenerator gameMapGenerator;
+    private GameRoundProcessor gameRoundProcessor;
+
+    public void preparePlayers(List<Player> players) throws InvalidRunnerState {
+
+        if (players == null || players.size() == 0)
+            throw new InvalidRunnerState("No players provided");
+
+        this.players = players;
+        for (Player player : players) {
+            player.publishCommandHandler = getPlayerCommandListener();
+        }
+    }
+
+    public void prepareGameMap() throws InvalidRunnerState {
+
+        if (gameMapGenerator == null)
+            throw new InvalidRunnerState("No GameMapGenerator instance found");
+
+        if (players == null || players.size() == 0)
+            throw new InvalidRunnerState("No players found");
+
+        this.gameMap = gameMapGenerator.generateGameMap(players);
+    }
+
+    public void startNewGame() throws Exception {
+
+        if (gameMap == null)
+            throw new InvalidRunnerState("Game has not yet been prepared");
+
+        gameComplete = false;
+
+        startNewRound();
+        gameStartedHandler.accept(gameMap);
+
+        runInitialPhase();
+        while (!gameComplete) {
+            processRound();
+        }
+    }
+
+    private void runInitialPhase() throws Exception {
+
+        boolean successfulRound = false;
+        while (!successfulRound) {
+
+            gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
+
+            for (Player player : players) {
+                Thread thread = new Thread(() -> player.startGame(gameMap));
+                thread.start();
+                thread.join();
+            }
+
+            successfulRound = roundProcessor.processRound();
+
+            for (Player player : players) {
+                player.roundComplete(gameMap, gameMap.getCurrentRound());
+            }
+
+            if (!successfulRound) {
+                roundProcessor.resetBackToStart();
+                publishFirstPhaseFailed();
+            }
+        }
+    }
+
+    private void processRound() throws Exception {
+
+        gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
+
+        if (gameEngine.isGameComplete(gameMap)) {
+            publishGameComplete();
+            return;
+        }
+
+        startNewRound();
+
+        for (Player player : players) {
+            Thread thread = new Thread(() -> player.newRoundStarted(gameMap));
+            thread.start();
+            thread.join();
+        }
+
+        roundProcessor.processRound();
+
+        for (Player player : players) {
+            player.roundComplete(gameMap, gameMap.getCurrentRound());
+        }
+//        useful for debugging
+        TowerDefenseConsoleMapRenderer renderer = new TowerDefenseConsoleMapRenderer();
+        System.out.println(renderer.render(gameMap, players.get(0).getGamePlayer()));
+    }
+
+    private void startNewRound() {
+        roundProcessor = new RunnerRoundProcessor(gameMap, gameRoundProcessor);
+        roundStartingHandler.accept(gameMap, gameMap.getCurrentRound());
+    }
+
+    public void setGameMapGenerator(GameMapGenerator gameMapGenerator) {
+        this.gameMapGenerator = gameMapGenerator;
+    }
+
+    public void setGameEngine(GameEngine gameEngine) {
+        this.gameEngine = gameEngine;
+    }
+
+    public void setGameRoundProcessor(GameRoundProcessor gameRoundProcessor) {
+        this.gameRoundProcessor = gameRoundProcessor;
+    }
+
+    private BiConsumer<Player, RawCommand> getPlayerCommandListener() {
+        return (player, command) -> roundProcessor.addPlayerCommand(player, command);
+    }
+
+    private void publishGameComplete() {
+        for (Player player : players) {
+            player.gameEnded(gameMap);
+        }
+
+        gameComplete = true;
+
+        gameCompleteHandler.accept(gameMap, players);
+    }
+
+    private void publishFirstPhaseFailed() {
+        firstPhaseHandler.accept(gameMap);
+    }
+
+    public GamePlayer getWinningPlayer(){
+        return gameMap.getWinningPlayer();
+    }
+}
+
