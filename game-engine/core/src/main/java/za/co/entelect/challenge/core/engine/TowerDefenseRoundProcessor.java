@@ -29,21 +29,15 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
 
-        try {
-            processCommands(commands);
+        processCommands(commands);
 
-            constructBuildings();
+        constructBuildings();
 
-            createMissilesFromGuns();
-            calculateMissileMovement();
-            removeDeadEntities();
+        createMissilesFromGuns();
+        calculateMissileMovement();
+        removeDeadEntities();
 
-            addResources();
-
-        } catch (Exception e) {
-            towerDefenseGameMap.addErrorToErrorList(e.getLocalizedMessage());
-            return false;
-        }
+        addResources();
 
         return true;
     }
@@ -65,7 +59,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void processCommands(Hashtable<GamePlayer, RawCommand> commands) throws InvalidCommandException {
+    private void processCommands(Hashtable<GamePlayer, RawCommand> commands) {
         for (Map.Entry<GamePlayer, RawCommand> gamePlayerCommandEntry : commands.entrySet()) {
             GamePlayer player = gamePlayerCommandEntry.getKey();
             RawCommand command = gamePlayerCommandEntry.getValue();
@@ -89,7 +83,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                         p.addEnergy(energy);
                         p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                     } catch (Exception e) {
-                        towerDefenseGameMap.addErrorToErrorList(e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
                 });
     }
@@ -124,14 +118,14 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                                                     .forEach(player -> player.addScore(b.getDestroyMultiplier() * missile.getDamage()));
                                         });
                             } catch (Exception e) {
-                                towerDefenseGameMap.addErrorToErrorList(e.getLocalizedMessage());
+                                e.printStackTrace();
                             }
                         })
                 );
     }
 
     // Converts Raw Commands into Commands the game engine can understand
-    private void parseAndExecuteCommand(RawCommand command, GamePlayer player) throws InvalidCommandException {
+    private void parseAndExecuteCommand(RawCommand command, GamePlayer player) {
         String commandSting = command.getCommand();
 
         String[] commandLine = commandSting.split(",");
@@ -146,7 +140,8 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         }
         if (commandLine.length != 3) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
-            towerDefenseGameMap.addErrorToErrorList(String.format("Unable to parse command expected 3 parameters, got %d", commandLine.length));
+            towerDefenseGameMap.addErrorToErrorList(String.format(
+                    "Unable to parse command expected 3 parameters, got %d", commandLine.length), towerDefensePlayer);
         }
         try {
             int positionX = Integer.parseInt(commandLine[0]);
@@ -156,16 +151,22 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
         } catch (NumberFormatException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
-            towerDefenseGameMap.addErrorToErrorList(String.format("Unable to parse command entries, all parameters should be integers. RawCommand: %s, for Player: %s", commandSting, towerDefensePlayer.getPlayerType()));
+            towerDefenseGameMap.addErrorToErrorList(String.format(
+                    "Unable to parse command entries, all parameters should be integers. Received:%s",
+                    commandSting), towerDefensePlayer);
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
-            towerDefenseGameMap.addErrorToErrorList(String.format("Unable to parse building type: Expected 0[Wall] or 1[Turret]. Received:%s, for Player: %s", commandLine[2], towerDefensePlayer.getPlayerType()));
+            towerDefenseGameMap.addErrorToErrorList(String.format(
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
+                    commandLine[2]), towerDefensePlayer);
         } catch (InvalidCommandException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
-            towerDefenseGameMap.addErrorToErrorList("Invalid command received: " + e.getMessage());
+            towerDefenseGameMap.addErrorToErrorList(
+                    "Invalid command received: " + e.getMessage(), towerDefensePlayer);
         } catch (IndexOutOfBoundsException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
-            towerDefenseGameMap.addErrorToErrorList(String.format("Out of bounds of the map X:%s Y: %s", commandLine[0], commandLine[1]));
+            towerDefenseGameMap.addErrorToErrorList(String.format(
+                    "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
         }
     }
 

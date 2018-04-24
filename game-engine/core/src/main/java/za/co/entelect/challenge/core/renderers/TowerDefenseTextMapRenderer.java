@@ -46,7 +46,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
                 playerB = tdMap.getPlayer(PlayerType.A);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         stringBuilder.append("---------- PLAYER A ----------\n");

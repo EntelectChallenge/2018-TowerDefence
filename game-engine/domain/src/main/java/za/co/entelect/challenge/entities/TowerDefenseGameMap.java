@@ -36,8 +36,12 @@ public class  TowerDefenseGameMap implements GameMap {
         this.errorList = new ArrayList<>();
     }
 
-    public void addErrorToErrorList(String error){
-        this.errorList.add(error);
+    public void addErrorToErrorList(String error, TowerDefensePlayer player){
+        this.errorList.add(String.format("Player %s: %s", player.getPlayerType(), error));
+    }
+
+    public void addErrorToErrorList(String error, PlayerType playerType){
+        this.errorList.add(String.format("Player %s: %s", playerType, error));
     }
 
     public List<Missile> getMissiles() {
@@ -78,7 +82,7 @@ public class  TowerDefenseGameMap implements GameMap {
         try {
             getPlayer(building.getPlayerType()).addScore(building.getConstructionScore());
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -153,7 +157,7 @@ public class  TowerDefenseGameMap implements GameMap {
             try {
                 winner = getPlayerOpponent(((TowerDefensePlayer)deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
-                addErrorToErrorList(e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }else{
             for (GamePlayer gamePlayer :
