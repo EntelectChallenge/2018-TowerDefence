@@ -11,7 +11,7 @@ public class PythonBotRunner extends BotRunner {
     @Override
     protected int runBot() throws IOException
     {
-        String line = "python \"" + this.getBotDirectory() +"\\"+ this.getBotFileName() + "\"";
+        String line = "python \"" + this.getBotDirectory() +"/"+ this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
 }
