@@ -16,15 +16,15 @@ Change some of the provided logic or code your own into one of the given starter
 ## WIN!!!
 For more information, visit one of the following:
 
-# Project Structure
+## Project Structure
 
 In this project you will find everything you need to build and run a bot on your local machine.  This project contains the following:
 
-1. game-engine-interface - The generic interface that the game runner uses to be able to plug in different game engines.
-2. game-engine - The game engine is responsible for enforcing the rules of the game, by applying the bot commands to the game state if they are valid.
-3. game-runner - The game runner is responsible for running matches between players, calling the appropriate commands as given by the bots and handing them to the game-engine to execute.
-4. reference-bot - The reference bot contains some AI logic that will play the game based on predefined rules.  You can use this to play against your bot for testing purposes.
-5. starter-bots - Starter bots with limited logic that can be used a starting point for your bot.
+1. **game-engine-interface** - The generic interface that the game runner uses to be able to plug in different game engines.
+2. **game-engine** - The game engine is responsible for enforcing the rules of the game, by applying the bot commands to the game state if they are valid.
+3. **game-runner** - The game runner is responsible for running matches between players, calling the appropriate commands as given by the bots and handing them to the game-engine to execute.
+4. **reference-bot** - The reference bot contains some AI logic that will play the game based on predefined rules.  You can use this to play against your bot for testing purposes.
+5. **starter-bots** - Starter bots with limited logic that can be used a starting point for your bot.
 
 This project can be used to get a better understanding of the rules and to help debug your bot.
 
