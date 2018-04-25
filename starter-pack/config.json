@@ -5,7 +5,7 @@
   "bot-meta": [
     {
       "botLocation": "./starter-bots/java/target",
-      "botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.js",
+      "botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
       "botLanguage": "java"
     },
     {
