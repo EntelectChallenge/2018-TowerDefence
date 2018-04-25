@@ -1,0 +1,17 @@
+{
+  "round-state-output-location": "./matches",
+  "console-players": 0,
+  "max-runtime-ms": 2000,
+  "bot-meta": [
+    {
+      "botLocation": "./starter-bots/java/target",
+      "botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.js",
+      "botLanguage": "java"
+    },
+    {
+      "botLocation": "./reference-bot/java/target",
+      "botFileName": "reference-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
+      "botLanguage": "java"
+    }
+  ]
+}
