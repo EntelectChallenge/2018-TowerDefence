@@ -47,13 +47,13 @@ public class BotPlayer extends Player {
         String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
         try {
             runBot(playerSpecificJsonState);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         //receive response from bot
         String botInput = "";
-        File botCommandFile = new File(String.format("%s\\%s", botRunner.getBotDirectory(), BOT_COMMAND));
+        File botCommandFile = new File(String.format("%s/%s", botRunner.getBotDirectory(), BOT_COMMAND));
         Scanner scanner = null;
         try {
             scanner = new Scanner(botCommandFile);
@@ -64,7 +64,7 @@ public class BotPlayer extends Player {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println(String.format("File %s not found", botRunner.getBotDirectory() + "\\" + BOT_COMMAND));
+            System.out.println(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
         }
         try{
             writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,playerSpecificConsoleState, botInput, gameMap.getCurrentRound());
@@ -77,34 +77,34 @@ public class BotPlayer extends Player {
     }
 
     private void writeRoundStateData(String playerSpecificJsonState, String playerSpecificTextState, String playerSpecificConsoleState ,String command, int round) throws IOException {
-        String mainDirectory = String.format("%s\\%s", saveStateLocation, FileUtils.getRoundDirectory(round));
+        String mainDirectory = String.format("%s/%s", saveStateLocation, FileUtils.getRoundDirectory(round));
         File fMain = new File(mainDirectory);
         if (!fMain.exists()){
             fMain.mkdirs();
         }
 
-        File f = new File(String.format("%s\\%s", mainDirectory, getName()));
+        File f = new File(String.format("%s/%s", mainDirectory, getName()));
         if (!f.exists()){
             f.mkdirs();
         }
 
-        File fConsole = new File(String.format("%s\\%s\\%s", mainDirectory, getName(),"Console") );
+        File fConsole = new File(String.format("%s/%s/%s", mainDirectory, getName(),"Console") );
         if (!fConsole.exists()){
             fConsole.mkdirs();
         }
 
-        FileUtils.writeToFile(String.format("%s\\%s\\%s",mainDirectory, getName(), "JsonMap.json"), playerSpecificJsonState);
-        FileUtils.writeToFile(String.format("%s\\%s\\%s",mainDirectory, getName(), "TextMap.txt" ), playerSpecificTextState);
-        FileUtils.writeToFile(String.format("%s\\%s\\%s",mainDirectory, getName(), "PlayerCommand.txt"), command);
-        FileUtils.writeToFile(String.format("%s\\%s\\%s\\%s",mainDirectory, getName(), "Console", "Console.txt"), playerSpecificConsoleState);
+        FileUtils.writeToFile(String.format("%s/%s/%s",mainDirectory, getName(), "JsonMap.json"), playerSpecificJsonState);
+        FileUtils.writeToFile(String.format("%s/%s/%s",mainDirectory, getName(), "TextMap.txt" ), playerSpecificTextState);
+        FileUtils.writeToFile(String.format("%s/%s/%s",mainDirectory, getName(), "PlayerCommand.txt"), command);
+        FileUtils.writeToFile(String.format("%s/%s/%s/%s",mainDirectory, getName(), "Console", "Console.txt"), playerSpecificConsoleState);
     }
 
-    private void runBot(String state) throws IOException, InterruptedException {
-        File existingCommandFile = new File(String.format("%s\\%s",  botRunner.getBotDirectory(), BOT_COMMAND));
+    private void runBot(String state) throws IOException {
+        File existingCommandFile = new File(String.format("%s/%s",  botRunner.getBotDirectory(), BOT_COMMAND));
         if (existingCommandFile.exists()){
             existingCommandFile.delete();
         }
-        FileUtils.writeToFile(String.format("%s\\%s", botRunner.getBotDirectory(),  BOT_STATE), state);
+        FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(),  BOT_STATE), state);
 
         try {
             botRunner.run();
