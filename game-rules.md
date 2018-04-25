@@ -14,6 +14,44 @@
 
 **{X} and {Y} will be variable.**
 
+You will encounter 3 maps while running the game. The most common and self explanatory map type is the Json map. Then you will also find a text file map and see a map in the console while the match is running.
+Below we will explain some of the details for the text and console maps.
+
+### Text File Map
+The text file contains the following sections: game-info, player details, game map details, building details and missile details.
+
+Each cell in the map is represented by [].
+
+The format of the cell is [x,y,B,M1,M2] where the symbols mean the following:
+x: x co-ordinate
+y: y co-ordinate
+B: Building where A = attack, D = defense, E = energy and N = no building. 
+M1: Player 1's missiles, where the number shown is the number of missiles in that cell belonging to player 1.
+M2: Player 2's missiles, where the number shown is the number of missiles in that cell belonging to player 2.
+
+For buildings, a lower-case letter means the building is under construction. An upper-case letter means the building is constructed.
+
+The next section shows more information about the buildings on the map.
+The format of the building details is as follows:
+[x,y] Owner|ConstructionTimeLeft|Health|WeaponCooldownTimeLeft|WeaponDamage|EnergyGeneratedPerTurn 
+
+The next section shows more information about the missiles on the map.
+The format of the missile details is as follows:
+[x,y] Owner|Damage 
+
+### Console Map
+Each cell in the console is represented by [].
+In the console Player 1 is on the left and player 2 is on the right.
+
+The format of the cell is [M2, x, B, y, M1] where the symbols mean the following:
+x: x co-ordinate
+y: y co-ordinate
+B: Building where A = attack, D = defense, E = energy and a blank space represents no building. 
+M1: Player1's missiles, each missile is depicted by a > symbol which represents the direction it is travelling in.
+M2: Player 2's missiles, each missile is depicted by a < symbol which represents the direction it is travelling in.
+
+The building will be a lower-case letter if it is still under construction and it will be an upper-case letter if it is already constructed.
+
 ## Economy:
 * Each player will receive **{START_ENERGY}** energy at the start of their turn.
 * Energy generators can be built to increase the amount of energy received per turn, more information can be found in the building types section.
@@ -130,3 +168,4 @@ Scores are calculated by adding:
 	* Energy will be awarded, based on the baseline amount received and the number of energy buildings a player has.
 
 **{MAXIMUM_TURNS} will be variable.**
+
