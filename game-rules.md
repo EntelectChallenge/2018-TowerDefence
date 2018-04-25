@@ -14,7 +14,7 @@
 
 **{X} and {Y} will be variable.**
 
-You will encounter 3 maps while running the game. The most common and self explanatory map type is the Json map. Then you will also find a text file map and see a map in the console while the match is running.
+You will encounter 3 maps while running the game. The most common and self-explanatory map type is the Json map. Then you will also find a text file map and see a map in the console while the match is running.
 Below we will explain some of the details for the text and console maps.
 
 ### Text File Map
@@ -23,11 +23,11 @@ The text file contains the following sections: game-info, player details, game m
 Each cell in the map is represented by [].
 
 The format of the cell is [x,y,B,M1,M2] where the symbols mean the following:
-x: x co-ordinate
-y: y co-ordinate
-B: Building where A = attack, D = defense, E = energy and N = no building. 
-M1: Player 1's missiles, where the number shown is the number of missiles in that cell belonging to player 1.
-M2: Player 2's missiles, where the number shown is the number of missiles in that cell belonging to player 2.
+* x: x coordinate
+* y: y coordinate
+* B: Building where A = attack, D = defense, E = energy and N = no building. 
+* M1: Player 1's missiles, where the number shown is the number of missiles in that cell belonging to player 1.
+* M2: Player 2's missiles, where the number shown is the number of missiles in that cell belonging to player 2.
 
 For buildings, a lower-case letter means the building is under construction. An upper-case letter means the building is constructed.
 
@@ -44,11 +44,11 @@ Each cell in the console is represented by [].
 In the console Player 1 is on the left and player 2 is on the right.
 
 The format of the cell is [M2, x, B, y, M1] where the symbols mean the following:
-x: x co-ordinate
-y: y co-ordinate
-B: Building where A = attack, D = defense, E = energy and a blank space represents no building. 
-M1: Player1's missiles, each missile is depicted by a > symbol which represents the direction it is travelling in.
-M2: Player 2's missiles, each missile is depicted by a < symbol which represents the direction it is travelling in.
+* x: x coordinate
+* y: y coordinate
+* B: Building where A = attack, D = defense, E = energy and a blank space represents no building. 
+* M1: Player 1's missiles, each missile is depicted by a > symbol which represents the direction it is travelling in.
+* M2: Player 2's missiles, each missile is depicted by a < symbol which represents the direction it is travelling in.
 
 The building will be a lower-case letter if it is still under construction and it will be an upper-case letter if it is already constructed.
 
@@ -68,22 +68,22 @@ The building will be a lower-case letter if it is still under construction and i
 * **Do nothing** to conserve energy.
 * Any invalid command will result in a **'Do nothing'** command.
 * Invalid commands include:
-	* Trying to place a building when you don't have enough energy.
-	* Trying to place a building on coordinates that are currently occupied by another building.
-	* Trying to place a building on your opponent's side of the map or coordinates that are out of bounds.
+    * Trying to place a building when you don't have enough energy.
+    * Trying to place a building on coordinates that are currently occupied by another building.
+    * Trying to place a building on your opponent's side of the map or coordinates that are out of bounds.
 
 ### Command Format:
 * The command format is '**x,y,building_type**'.
 * The input must be comma-separated numbers that represent the coordinates followed by the numeric ID of the building type.
 * The valid building types are:
-	* 0: **Defence Building**
-	* 1: **Attack Building**
-	* 2: **Energy Building**
-* An example of a valid command will be '**0,0,1**', which will place a attack building at the top left corner of the map.
+    * 0: **Defence Building**
+    * 1: **Attack Building**
+    * 2: **Energy Building**
+* An example of a valid command will be '**0,0,1**', which will place an attack building at the top left corner of the map.
 
 ## Buildings:
 * Each building will have an energy cost to build.
-* Each building will take a number of turns until it is fully built and ready, based on it's type.
+* Each building will take a number of turns until it is fully built and ready, based on its type.
 
 * A building that is not fully built will be destroyed in one hit.
 
@@ -111,7 +111,7 @@ The main offensive building you can build that fires straight line missiles towa
 The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built.
 
 **Defence building details:**
-* Cost:	**30**
+* Cost:    **30**
 * Health: **5**
 * Firing rate: **3**
 * Damage: **5**
@@ -123,7 +123,7 @@ The attack building has a firing rate, meaning it will fire a missile every **{F
 A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and can don't offer much in terms of defence.
 
 **Defence building details:**
-* Cost:	**20**
+* Cost:    **20**
 * Health: **5**
 * Energy generated per turn: **3**
 * Construction time: **0**
@@ -137,7 +137,7 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 * Missiles do not interact with each other, meaning opposing missiles will not stop or impact one another.
 * Missiles will hit any opposing building or continue on to hit the opposing player's base if there are no opponent buildings in the way.
 * Missiles do not interact with your own buildings and simply pass over them.
-* Missiles currently move at minimum of one cell per turn, depending on the missile speed, until it impacts either an opposing player or the opposing player's base.
+* Missiles currently move at a minimum of one cell per turn, depending on the missile speed, until it impacts either an opposing player or the opposing player's base.
 * Missiles currently only move in a straight line toward the opposing player.
 * Missiles move at least one cell the moment it is created.
 
@@ -151,7 +151,7 @@ Scores are calculated by adding:
 * Total energy generated
 * End game HP x 100
 
-**Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnent bots should result in this situation**
+**Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnant bots should result in this situation**
 
 ## Game Engine Rules
 * Each player gets a turn, and the turns run at the same time for both players. This means that each player's commands are captured, and only then is the round run.
@@ -159,13 +159,13 @@ Scores are calculated by adding:
 * Each bot will get a maximum time of 2 seconds to execute each command.
 * There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the game the victor will be determined by the highest score.
 * The game engine will process commands in the following order:
-	* Building will be created, based on the commands from the player.
-	* Missiles will be generated from any attack buildings, if they can fire that turn.
-	* The missiles will be immediately moved, based on their speed.
-	* Each missile will hit a building, if it hit it during the movement phase.
-	* Destroyed buildings will be removed.
-	* Scores will be awarded to each player, depending on the round.
-	* Energy will be awarded, based on the baseline amount received and the number of energy buildings a player has.
+    * Building will be created, based on the commands from the player.
+    * Missiles will be generated from any attack buildings if they can fire that turn.
+    * The missiles will be immediately moved, based on their speed.
+    * Each missile will hit a building if it hit it during the movement phase.
+    * Destroyed buildings will be removed.
+    * Scores will be awarded to each player, depending on the round.
+    * Energy will be awarded, based on the baseline amount received and the number of energy buildings a player has.
 
 **{MAXIMUM_TURNS} will be variable.**
 
