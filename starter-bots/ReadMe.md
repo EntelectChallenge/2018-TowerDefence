@@ -25,3 +25,8 @@ Please ensure your starter bot follow these rules:
 1. Can compile on any system and is in running order (Should not produce any errors when executing).
 1. Reads in the arguments from the game engine.
 1. Reads in the `state.json` file and parses that to a structure supported in your language.
+   * The configurations for buildings including cost, health, construction time, damage given, energy generated, map width, map height etc. must be read from the state file. It SHOULD NOT be hardcoded in your starter bot. 
+1. If there is a row that is under attack, and you have enough energy for a wall, build a wall at a random unoccupied location on that row.
+   * A row is under attack if: there is an enemy Attack unit on the row, and NO ally Defence buildings on that row.
+1. Else if you have enough energy for the most expensive building, build a random building type at a random unoccupied location.
+1. If you can't do one of the above two, save energy until you have enough for the most expensive building.
