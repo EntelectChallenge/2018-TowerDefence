@@ -45,14 +45,16 @@ public class PlaceBuildingCommand extends RawCommand {
         );
 
         if (isOccupiedCell) {
-            throw new InvalidCommandException("Cannot build a building on a cell occupied by a building");
+            throw new InvalidCommandException(String.format("Cannot build a building on a cell occupied by another building, X:%s, Y:%s",
+                    buildingToAdd.getX(), buildingToAdd.getY()));
         }
 
         if (currentPlayer.getEnergy() >= buildingToAdd.getPrice()) {
             currentGameMap.addBuilding(buildingToAdd);
             currentPlayer.removeEnergy(buildingToAdd.getPrice());
         } else {
-            throw new InvalidCommandException(String.format("You don't have enough energy to build this building required:[%d], current:[%d]", buildingToAdd.getPrice(), currentPlayer.getEnergy()));
+            throw new InvalidCommandException(String.format("You don't have enough energy to build this building. Required:[%d], Current:[%d]",
+                    buildingToAdd.getPrice(), currentPlayer.getEnergy()));
         }
     }
 

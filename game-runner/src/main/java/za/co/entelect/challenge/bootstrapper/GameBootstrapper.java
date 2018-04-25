@@ -2,6 +2,7 @@ package za.co.entelect.challenge.bootstrapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.SystemUtils;
 import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.botrunners.BotRunnerFactory;
 import za.co.entelect.challenge.core.engine.TowerDefenseGameEngine;
@@ -61,9 +62,7 @@ public class GameBootstrapper {
                 throw new Exception("Failed to load config");
 
             return config;
-        }
-
-        finally {
+        } finally {
             if (fileReader != null)
                 fileReader.close();
         }
@@ -87,14 +86,14 @@ public class GameBootstrapper {
 
     private void prepareGame(Config config) throws InvalidRunnerState {
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-        gameName = FileUtils.getAbsolutePath(config.roundStateOutputLocation) + "\\"+ timeStamp;
+        gameName = FileUtils.getAbsolutePath(config.roundStateOutputLocation) + "/" + timeStamp;
         //add console players
         List<Player> players = IntStream.range(0, config.consolePlayers)
                 .mapToObj(i -> new ConsolePlayer(String.format("Player %d", i + 1)))
                 .collect(Collectors.toList());
 
         //add bot players
-        for (int i = 0; i < config.botMetaData.length; i++){
+        for (int i = 0; i < config.botMetaData.length; i++) {
             BotRunner botRunner = BotRunnerFactory.createBotRunner(config.botMetaData[i], config.maximumBotRuntimeMiliSeconds);
             BotPlayer player = new BotPlayer(String.format("Player %d", config.consolePlayers + i + 1), botRunner, gameName);
             players.add(player);
@@ -127,18 +126,18 @@ public class GameBootstrapper {
             StringBuilder winnerStringBuilder = new StringBuilder();
             for (Player player :
                     players) {
-                if (player.getGamePlayer() == gameEngineRunner.getWinningPlayer()){
+                if (player.getGamePlayer() == gameEngineRunner.getWinningPlayer()) {
                     winner = player;
                 }
                 winnerStringBuilder.append(player.getName() + "- score:" + player.getGamePlayer().getScore()
-                                                + " health:" + player.getGamePlayer().getHealth() + "\n");
+                        + " health:" + player.getGamePlayer().getHealth() + "\n");
             }
 
             if (winner == null) {
                 System.out.println("=======================================");
                 System.out.println("The game ended in a tie");
                 System.out.println("=======================================");
-            }else{
+            } else {
                 System.out.println("=======================================");
                 System.out.println("The winner is: " + winner.getName());
                 System.out.println("=======================================");
@@ -146,10 +145,10 @@ public class GameBootstrapper {
 
             BufferedWriter bufferedWriter = null;
             try {
-                String roundLocation = String.format("%s\\%s\\endGameState.txt", gameName, FileUtils.getRoundDirectory(gameMap.getCurrentRound() - 1));
+                String roundLocation = String.format("%s/%s/endGameState.txt", gameName, FileUtils.getRoundDirectory(gameMap.getCurrentRound() - 1));
                 bufferedWriter = new BufferedWriter(new FileWriter(new File(roundLocation)));
 
-                winnerStringBuilder.insert(0,"The winner is: " + winner.getName() + "\n\n");
+                winnerStringBuilder.insert(0, "The winner is: " + winner.getName() + "\n\n");
 
                 bufferedWriter.write(winnerStringBuilder.toString());
                 bufferedWriter.flush();
