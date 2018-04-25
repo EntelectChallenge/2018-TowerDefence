@@ -120,7 +120,7 @@ The attack building has a firing rate, meaning it will fire a missile every **{F
 * Under construction character: **a**
 
 #### Energy Building:
-A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and can don't offer much in terms of defence.
+A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and does not offer much in terms of defence.
 
 **Defence building details:**
 * Cost:    **20**
