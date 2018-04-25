@@ -115,7 +115,7 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
             towerDefensePlayerA = towerDefenseGameMap.getPlayer(PlayerType.A);
             towerDefensePlayerB = towerDefenseGameMap.getPlayer(PlayerType.B);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         outputString.append(ANSI_BLUE_BRIGHT +
