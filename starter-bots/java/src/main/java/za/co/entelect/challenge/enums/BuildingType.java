@@ -1,7 +1,17 @@
 package za.co.entelect.challenge.enums;
 
 public enum BuildingType {
-    DEFENSE,
-    ATTACK,
-    ENERGY
+    DEFENSE(0),
+    ATTACK(1),
+    ENERGY(2);
+
+    private int type;
+    BuildingType(int type) {
+
+        this.type = type;
+    }
+
+    public int getType() {
+        return type;
+    }
 }
