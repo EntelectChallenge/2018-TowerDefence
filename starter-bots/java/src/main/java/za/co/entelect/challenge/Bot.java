@@ -4,15 +4,17 @@ import za.co.entelect.challenge.entities.*;
 import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.enums.PlayerType;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static za.co.entelect.challenge.enums.BuildingType.*;
+import static za.co.entelect.challenge.enums.BuildingType.ATTACK;
+import static za.co.entelect.challenge.enums.BuildingType.DEFENSE;
 
 public class Bot {
+    private static final String NOTHING_COMMAND = "";
     private GameState gameState;
     private GameDetails gameDetails;
     private int gameWidth;
@@ -29,7 +31,6 @@ public class Bot {
      **/
     public Bot(GameState gameState) {
         this.gameState = gameState;
-        gameState.getGameMap();
         gameDetails = gameState.getGameDetails();
         gameWidth = gameDetails.mapWidth;
         gameHeight = gameDetails.mapHeight;
@@ -43,7 +44,6 @@ public class Bot {
         missiles = gameState.getGameMap().stream()
                 .flatMap(c -> c.getMissiles().stream())
                 .collect(Collectors.toList());
-
     }
 
     /**
@@ -76,14 +76,13 @@ public class Bot {
         }
 
         CellStateContainer randomEmptyCell = getRandomElementOfList(emptyCells);
-        List<BuildingType> buildingTypes = new ArrayList<>(gameDetails.buildingPrices.keySet());
-        BuildingType randomBuildingType = getRandomElementOfList(buildingTypes);
+        BuildingType randomBuildingType = getRandomElementOfList(Arrays.asList(BuildingType.values()));
 
         if (!canAffordBuilding(randomBuildingType)) {
             return doNothingCommand();
         }
 
-        return buildCommand(randomEmptyCell.x, randomEmptyCell.y, randomBuildingType);
+        return randomBuildingType.buildCommand(randomEmptyCell.x, randomEmptyCell.y);
     }
 
     /**
@@ -104,8 +103,8 @@ public class Bot {
      **/
     private String defendRow() {
         for (int i = 0; i < gameHeight; i++) {
-            int opponentAttacksCount = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i).size();
-            if (opponentAttacksCount > 0 && canAffordBuilding(DEFENSE)) {
+            boolean opponentAttacking = getAnyBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i);
+            if (opponentAttacking && canAffordBuilding(DEFENSE)) {
                 return placeBuildingInRow(DEFENSE, i);
             }
         }
@@ -121,9 +120,10 @@ public class Bot {
     private boolean isUnderAttack() {
         //if enemy has an attack building and i dont have a blocking wall
         for (int i = 0; i < gameHeight; i++) {
-            int opponentAttacksCount = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i).size();
-            int myDefenseCount = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == DEFENSE, i).size();
-            if (opponentAttacksCount > 0 && myDefenseCount == 0) {
+            boolean opponentAttacks = getAnyBuildingsForPlayer(PlayerType.B, building -> building.buildingType == ATTACK, i);
+            boolean myDefense = getAnyBuildingsForPlayer(PlayerType.A, building -> building.buildingType == DEFENSE, i);
+
+            if (opponentAttacks && !myDefense) {
                 return true;
             }
         }
@@ -136,7 +136,7 @@ public class Bot {
      * @return the result
      **/
     private String doNothingCommand() {
-        return "";
+        return NOTHING_COMMAND;
     }
 
     /**
@@ -148,7 +148,7 @@ public class Bot {
      **/
     private String placeBuildingInRow(BuildingType buildingType, int y) {
         List<CellStateContainer> emptyCells = gameState.getGameMap().stream()
-                .filter(c -> c.getBuildings().size() == 0
+                .filter(c -> c.getBuildings().isEmpty()
                         && c.y == y
                         && c.x < (gameWidth / 2) - 1)
                 .collect(Collectors.toList());
@@ -158,7 +158,7 @@ public class Bot {
         }
 
         CellStateContainer randomEmptyCell = getRandomElementOfList(emptyCells);
-        return buildCommand(randomEmptyCell.x, randomEmptyCell.y, buildingType);
+        return buildingType.buildCommand(randomEmptyCell.x, randomEmptyCell.y);
     }
 
     /**
@@ -171,32 +171,11 @@ public class Bot {
         return list.get((new Random()).nextInt(list.size()));
     }
 
-    /**
-     * Build command
-     *
-     * @param x            the x
-     * @param y            the y
-     * @param buildingType the building type
-     * @return the result
-     **/
-    private String buildCommand(int x, int y, BuildingType buildingType) {
-        return String.format("%d,%d,%d", x, y, buildingType.getType());
-    }
-
-    /**
-     * Get all buildings for player
-     *
-     * @param playerType the player type
-     * @param filter     the filter
-     * @param y          the y
-     * @return the result
-     **/
-    private List<Building> getAllBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y) {
+    private boolean getAnyBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y) {
         return buildings.stream()
                 .filter(b -> b.getPlayerType() == playerType
                         && b.getY() == y)
-                .filter(filter)
-                .collect(Collectors.toList());
+                .anyMatch(filter);
     }
 
     /**
