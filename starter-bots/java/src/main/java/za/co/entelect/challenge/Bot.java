@@ -24,6 +24,7 @@ public class Bot {
 
     /**
      * Constructor
+     *
      * @param gameState the game state
      **/
     public Bot(GameState gameState) {
@@ -47,6 +48,7 @@ public class Bot {
 
     /**
      * Run
+     *
      * @return the result
      **/
     public String run() {
@@ -61,6 +63,7 @@ public class Bot {
 
     /**
      * Build random building
+     *
      * @return the result
      **/
     private String buildRandom() {
@@ -85,6 +88,7 @@ public class Bot {
 
     /**
      * Has enough energy for most expensive building
+     *
      * @return the result
      **/
     private boolean hasEnoughEnergyForMostExpensiveBuilding() {
@@ -95,6 +99,7 @@ public class Bot {
 
     /**
      * Defend row
+     *
      * @return the result
      **/
     private String defendRow() {
@@ -110,6 +115,7 @@ public class Bot {
 
     /**
      * Checks if this is under attack
+     *
      * @return true if this is under attack
      **/
     private boolean isUnderAttack() {
@@ -126,6 +132,7 @@ public class Bot {
 
     /**
      * Do nothing command
+     *
      * @return the result
      **/
     private String doNothingCommand() {
@@ -134,8 +141,9 @@ public class Bot {
 
     /**
      * Place building in row
+     *
      * @param buildingType the building type
-     * @param y the y
+     * @param y            the y
      * @return the result
      **/
     private String placeBuildingInRow(BuildingType buildingType, int y) {
@@ -155,6 +163,7 @@ public class Bot {
 
     /**
      * Get random element of list
+     *
      * @param list the list < t >
      * @return the result
      **/
@@ -164,37 +173,22 @@ public class Bot {
 
     /**
      * Build command
-     * @param x the x
-     * @param y the y
+     *
+     * @param x            the x
+     * @param y            the y
      * @param buildingType the building type
      * @return the result
      **/
     private String buildCommand(int x, int y, BuildingType buildingType) {
-        StringBuilder buildCommand = new StringBuilder();
-
-        buildCommand.append(x);
-        buildCommand.append(",");
-        buildCommand.append(y);
-        buildCommand.append(",");
-        switch (buildingType) {
-            case DEFENSE:
-                buildCommand.append("0");
-                break;
-            case ATTACK:
-                buildCommand.append("1");
-                break;
-            case ENERGY:
-                buildCommand.append("2");
-                break;
-        }
-        return buildCommand.toString();
+        return String.format("%d,%d,%d", x, y, buildingType.getType());
     }
 
     /**
      * Get all buildings for player
+     *
      * @param playerType the player type
-     * @param filter the filter
-     * @param y the y
+     * @param filter     the filter
+     * @param y          the y
      * @return the result
      **/
     private List<Building> getAllBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y) {
@@ -207,23 +201,11 @@ public class Bot {
 
     /**
      * Can afford building
+     *
      * @param buildingType the building type
      * @return the result
      **/
     private boolean canAffordBuilding(BuildingType buildingType) {
-        int cost = 0;
-        switch (buildingType) {
-            case DEFENSE:
-                cost = gameDetails.buildingPrices.get(DEFENSE);
-                break;
-            case ATTACK:
-                cost = gameDetails.buildingPrices.get(ATTACK);
-                break;
-            case ENERGY:
-                cost = gameDetails.buildingPrices.get(ENERGY);
-                break;
-        }
-
-        return myself.energy >= cost;
+        return myself.energy >= gameDetails.buildingPrices.get(buildingType);
     }
 }
