@@ -126,7 +126,7 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 * Cost:    **20**
 * Health: **5**
 * Energy generated per turn: **3**
-* Construction time: **0**
+* Construction time: **1**
 * Constructed character: **E**
 * Under construction character: **e**
 
