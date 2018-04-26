@@ -16,8 +16,8 @@ public class CellStateContainer {
         this.x = x;
         this.y = y;
         this.cellOwner = cellOwner;
-        this.buildings = new ArrayList<Building>();
-        this.missiles = new ArrayList<Missile>();
+        this.buildings = new ArrayList<>();
+        this.missiles = new ArrayList<>();
     }
 
     public List<Building> getBuildings() {
