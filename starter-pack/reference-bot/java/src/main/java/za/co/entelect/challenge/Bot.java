@@ -31,7 +31,7 @@ public class Bot {
     public String run(){
         String command = "";
 
-        //if enemy has an attack building and i dont have a blocking wall, then block from front
+        //If the enemy has an attack building and I don't have a blocking wall, then block from the front.
         for (int i = 0; i < gameState.gameDetails.mapHeight; i++){
             int enemyAttackOnRow = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == BuildingType.ATTACK, i).size();
             int myDefenseOnRow = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size();
@@ -45,7 +45,7 @@ public class Bot {
             }
         }
 
-        //if there is a row where i don't have energy and there is no enemy attack build energy in the back row
+        //If there is a row where I don't have energy and there is no enemy attack building, then build energy in the back row.
         if (command.equals("")) {
             for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
                 int enemyAttackOnRow = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == BuildingType.ATTACK, i).size();
@@ -59,7 +59,7 @@ public class Bot {
             }
         }
 
-        //if i have a defense building on a row, then build an attack building behind it.
+        //If i have a defense building on a row, then build an attack building behind it.
         if (command.equals("")){
             for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
                 if ( getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size() > 0
@@ -69,7 +69,7 @@ public class Bot {
             }
         }
 
-        //if i don't need to do anything then do either attack or defend randomly based on chance (65% attack, 35% defense)
+        //If I don't need to do anything then either attack or defend randomly based on chance (65% attack, 35% defense).
         if (command.equals("")){
             if (getEnergy(PlayerType.A) >= getMostExpensiveBuildingPrice()){
                 if ((new Random()).nextInt(100) <= 35){
