@@ -6,6 +6,7 @@ public enum BuildingType {
     ENERGY(2);
 
     private int type;
+
     BuildingType(int type) {
 
         this.type = type;
@@ -13,5 +14,9 @@ public enum BuildingType {
 
     public int getType() {
         return type;
+    }
+
+    public String buildCommand(int x, int y) {
+        return String.format("%d,%d,%d", x, y, getType());
     }
 }
