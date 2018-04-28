@@ -11,7 +11,7 @@ fun isAttackBuilding(building: Building) : Boolean {
 }
 
 fun isDefenceBuilding(building: Building) : Boolean {
-    return building.buildingType == BuildingType.ATTACK
+    return building.buildingType == BuildingType.DEFENSE
 }
 
 enum class Direction private constructor(val multiplier: Int) {

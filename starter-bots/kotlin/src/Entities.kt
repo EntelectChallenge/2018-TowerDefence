@@ -11,7 +11,8 @@ data class Building(
     val weaponSpeed: Int,
     val weaponCooldownTimeLeft: Int,
     val weaponCooldownPeriod: Int,
-    val destroyScore: Int,
+    val destroyMultiplier: Int,
+    val constructionScore: Int,
     val energyGeneratedPerTurn: Int,
     val buildingType: BuildingType)
 
@@ -27,7 +28,8 @@ data class Player(
     val hitsTaken: Int,
     val score: Int)
 
-data class CellStateContainer(val x: Int, val y: Int, val playerType: PlayerType,
+data class CellStateContainer(
+    val x: Int, val y: Int, val playerType: PlayerType,
     val buildings: List<Building>,
     val missiles: List<Missile>)
 
@@ -37,6 +39,7 @@ data class GameDetails(
     val mapHeight: Int,
     val buildingPrices: HashMap<BuildingType, Int>)
 
-data class GameState(val players: Array<Player>,
-                     val gameMap: Array<Array<CellStateContainer>>,
-                     var gameDetails: GameDetails)
+data class GameState(
+    val players: Array<Player>,
+    val gameMap: Array<Array<CellStateContainer>>,
+    var gameDetails: GameDetails)
