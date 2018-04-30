@@ -10,7 +10,7 @@ public class JavaScriptBotRunner extends BotRunner {
     }
 
     @Override
-    protected int runBot() throws IOException {
+    protected String runBot() throws IOException {
         String line = "node \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
