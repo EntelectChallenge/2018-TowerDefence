@@ -1,7 +1,7 @@
 Requires MinGW
 https://nuwen.net/files/mingw/mingw-15.4.exe is a nicely maintained distro with a few other tools but there are others.
 
-Extracted the files to C:\
+Extracted the above files to C:\
 
 C++ Source code: samplebot.cpp 
 Compile with : compile.bat
