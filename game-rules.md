@@ -110,7 +110,7 @@ Able to take more hits than any other building, these buildings are great for so
 The main offensive building you can build that fires straight line missiles toward the opposing side. This will be the main way to damage the opposing player's buildings and base.
 The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built.
 
-**Defence building details:**
+**Attack building details:**
 * Cost:    **30**
 * Health: **5**
 * Firing rate: **3**
@@ -122,11 +122,11 @@ The attack building has a firing rate, meaning it will fire a missile every **{F
 #### Energy Building:
 A utility building that provides **{Energy generated per turn}** extra energy per turn. These buildings have lower health and does not offer much in terms of defence.
 
-**Defence building details:**
+**Energy building details:**
 * Cost:    **20**
 * Health: **5**
 * Energy generated per turn: **3**
-* Construction time: **0**
+* Construction time: **1**
 * Constructed character: **E**
 * Under construction character: **e**
 
