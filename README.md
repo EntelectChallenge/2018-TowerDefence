@@ -37,3 +37,9 @@ This project can be used to get a better understanding of the rules and to help 
 Improvements and enhancements will be made to the game engine code over time.  The game engine will also evolve during the competition after every battle, so be prepared. Any changes made to the game engine or rules will be updated here, so check in here now and then to see the latest changes and updates.
 
 The game engine has been made available to the community for peer review and bug fixes, so if you find any bugs or have any concerns, please [e-mail us](challenge@entelect.co.za) or discuss it with us on the [Challenge forum](http://forum.entelect.co.za/), alternatively submit a pull request on Github and we will review it.
+
+## Interim replay viewer
+
+If you guys are looking to view your bot's shenanigans in a more visual way, we have a nice little viewer built by someone from the forum that will let you do just that.
+
+Check out his [replay viewer](https://github.com/avanderw/alysm/tree/master/replay-viewer), and if you have any issues running it, let us know on [our forum](https://forum.entelect.co.za) so we can help you out!

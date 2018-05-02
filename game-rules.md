@@ -85,7 +85,7 @@ The building will be a lower-case letter if it is still under construction and i
 * Each building will have an energy cost to build.
 * Each building will take a number of turns until it is fully built and ready, based on its type.
 
-* A building that is not fully built will be destroyed in one hit.
+* Buildings that are busy being built will not be hit by missles travelling over it.
 
 * The energy cost of a building is deducted from a player's energy total once the command to build a building has been successful.
 * Trying to place a building without enough energy for that building will result in a **'Do nothing'** command.
@@ -157,7 +157,7 @@ Scores are calculated by adding:
 * Each player gets a turn, and the turns run at the same time for both players. This means that each player's commands are captured, and only then is the round run.
 * Players may store state between turns via files in their bot folder.
 * Each bot will get a maximum time of 2 seconds to execute each command.
-* There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the game the victor will be determined by the highest score.
+* There will be a maximum of **{MAXIMUM_TURNS}** turns for each side, at which point the victor of the game will be determined by the highest score.
 * The game engine will process commands in the following order:
     * Building will be created, based on the commands from the player.
     * Missiles will be generated from any attack buildings if they can fire that turn.
