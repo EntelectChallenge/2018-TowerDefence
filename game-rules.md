@@ -85,8 +85,6 @@ The building will be a lower-case letter if it is still under construction and i
 * Each building will have an energy cost to build.
 * Each building will take a number of turns until it is fully built and ready, based on its type.
 
-* A building that is not fully built will be destroyed in one hit.
-
 * The energy cost of a building is deducted from a player's energy total once the command to build a building has been successful.
 * Trying to place a building without enough energy for that building will result in a **'Do nothing'** command.
 * Once a building is destroyed, another building can be placed at that location without penalty.
