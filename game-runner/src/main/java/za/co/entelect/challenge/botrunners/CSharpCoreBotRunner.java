@@ -11,7 +11,7 @@ public class CSharpCoreBotRunner extends BotRunner {
     }
 
     @Override
-    protected int runBot() throws IOException {
+    protected String runBot() throws IOException {
         String line = "dotnet " + this.getBotFileName();
         return RunSimpleCommandLineCommand(line, 0);
     }
