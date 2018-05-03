@@ -4,15 +4,16 @@ import za.co.entelect.challenge.entities.BotMetaData;
 
 import java.io.IOException;
 
-public class CSharpCoreBotRunner extends BotRunner {
+public class KotlinBotRunner extends BotRunner {
 
-    public CSharpCoreBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
+    public KotlinBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
         super(botMetaData, timeoutInMilliseconds);
     }
 
     @Override
     protected String runBot() throws IOException {
-        String line = "dotnet " + this.getBotFileName();
+        String line = "kotlinc \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
+
 }

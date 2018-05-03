@@ -5,8 +5,9 @@ import za.co.entelect.challenge.entities.BotMetaData;
 import java.io.IOException;
 
 public class RustBotRunner extends BotRunner {
-    public RustBotRunner(BotMetaData botMetaData, int timoutInMilis) {
-        super(botMetaData, timoutInMilis);
+
+    public RustBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
+        super(botMetaData, timeoutInMilliseconds);
     }
 
     @Override
@@ -14,4 +15,5 @@ public class RustBotRunner extends BotRunner {
         String line = "cargo run --release";
         return RunSimpleCommandLineCommand(line, 0);
     }
+
 }
