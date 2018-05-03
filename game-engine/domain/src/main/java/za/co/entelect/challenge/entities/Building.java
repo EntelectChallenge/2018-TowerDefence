@@ -56,7 +56,7 @@ public class Building extends Cell {
         } else {
             type = PlayerType.A;
         }
-        return new Building(GameConfig.getMapWidth() - this.x - 1,
+        Building newBuilding = new Building(GameConfig.getMapWidth() - this.x - 1,
                 this.y,
                 type,
                 this.health,
@@ -70,6 +70,10 @@ public class Building extends Cell {
                 this.constructionScore,
                 this.energyGeneratedPerTurn,
                 this.buildingType);
+
+        newBuilding.weaponCooldownTimeLeft = this.weaponCooldownTimeLeft;
+
+        return newBuilding;
     }
 
     public void damageSelf(Missile incomingMissile) {
@@ -77,13 +81,15 @@ public class Building extends Cell {
             return;
         }
 
-        this.health -= incomingMissile.getDamage();
+        if (this.health > 0){
+            this.health -= incomingMissile.getDamage();
 
-        if (health <= 0) {
-            health = 0;
+            if (health <= 0) {
+                health = 0;
+            }
+
+            incomingMissile.setSpeed(0);
         }
-
-        incomingMissile.setSpeed(0);
     }
 
     public void decreaseCooldown() {

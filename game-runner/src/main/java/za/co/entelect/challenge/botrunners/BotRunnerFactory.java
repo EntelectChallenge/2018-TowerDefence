@@ -14,6 +14,8 @@ public class BotRunnerFactory {
                 return new CSharpCoreBotRunner(botMetaData, timoutInMilis);
             case JAVASCRIPT:
                 return new JavaScriptBotRunner(botMetaData, timoutInMilis);
+            case RUST:
+                return new RustBotRunner(botMetaData, timoutInMilis);
             default:
                 break;
         }
