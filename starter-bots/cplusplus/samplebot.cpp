@@ -306,7 +306,7 @@ int main()
     vector<string> possible_moves = gamestate.possible_moves();
     
     //write random move to command file
-    ofstream movefile ("PlayerCommand.txt");
+    ofstream movefile ("command.txt");
     movefile << possible_moves[rand()%possible_moves.size()];
     movefile.close();
     
