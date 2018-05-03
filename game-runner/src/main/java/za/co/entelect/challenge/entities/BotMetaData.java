@@ -40,6 +40,10 @@ public class BotMetaData {
         return this.botLocation;
     }
 
+    public void setRelativeBotLocation(String relativeLocation) {
+        this.botLocation = relativeLocation + this.botLocation;
+    }
+
     public String getBotFileName() {
         return this.botFileName;
     }
