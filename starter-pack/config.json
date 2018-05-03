@@ -1,17 +1,6 @@
 {
-  "round-state-output-location": "./matches",
-  "console-players": 0,
+  "round-state-output-location": "./tower-defence-matches",
   "max-runtime-ms": 2000,
-  "bot-meta": [
-    {
-      "botLocation": "./starter-bots/java/target",
-      "botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-      "botLanguage": "java"
-    },
-    {
-      "botLocation": "./reference-bot/java/target",
-      "botFileName": "reference-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-      "botLanguage": "java"
-    }
-  ]
+  "player-a": "./starter-bots/python2",
+  "player-b": "./starter-bots/javascript"
 }
