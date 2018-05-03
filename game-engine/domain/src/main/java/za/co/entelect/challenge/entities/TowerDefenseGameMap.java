@@ -123,11 +123,11 @@ public class TowerDefenseGameMap implements GameMap {
 
         boolean homeBaseIsHit = (newPosition < 0 || newPosition >= GameConfig.getMapWidth());
         if (homeBaseIsHit) {
-            p.setSpeed(0);
-
             TowerDefensePlayer opponent = getPlayerOpponent(p.playerType);
             TowerDefensePlayer missileOwner = getPlayer(p.playerType);
             opponent.takesHitByPlayer(p, missileOwner);
+
+            p.setSpeed(0);
         }
 
         int offsetToMove = p.getDirection().getMultiplier();
