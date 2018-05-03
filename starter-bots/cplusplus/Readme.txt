@@ -19,3 +19,6 @@ Assumptions
 Still to do
  - Remove random moves and add simple logic
  - Read in from json file
+
+bot.json file
+ - might need to have values for compile and running
