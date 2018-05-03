@@ -47,10 +47,13 @@ com_crashlytics_export_strings.xml
 crashlytics.properties
 crashlytics-build.properties
 fabric.properties
-
 \.idea/
+
 *.iml
 
 target/*
+*/target/*
 
-tower-defence-matches/*
+javascript/
+!javascript/bot.json
+!javascript/StarterBot.js
