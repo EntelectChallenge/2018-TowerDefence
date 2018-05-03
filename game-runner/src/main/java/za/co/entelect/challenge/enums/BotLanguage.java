@@ -11,4 +11,6 @@ public enum BotLanguage {
     PYTHON,
     @SerializedName("javascript")
     JAVASCRIPT,
+    @SerializedName("rust")
+    RUST
 }
