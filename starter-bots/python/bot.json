@@ -1,8 +1,8 @@
 {
-	"author":"John Doe",
-	"email":"john.doe@example.com",
-	"nickName" :"John",
-	"botLocation": "./",
+	"author": "John Doe",
+	"email": "john.doe@example.com",
+	"nickName": "Guido",
+	"botLocation": "/",
 	"botFileName": "StarterBot.py",
-	"botLanguage": "python2"
+	"botLanguage": "python"
 }
