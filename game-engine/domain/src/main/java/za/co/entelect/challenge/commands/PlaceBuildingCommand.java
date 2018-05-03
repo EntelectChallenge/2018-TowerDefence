@@ -51,7 +51,11 @@ public class PlaceBuildingCommand extends RawCommand {
 
         if (currentPlayer.getEnergy() >= buildingToAdd.getPrice()) {
             currentGameMap.addBuilding(buildingToAdd);
-            currentPlayer.removeEnergy(buildingToAdd.getPrice());
+            try {
+                currentPlayer.removeEnergy(buildingToAdd.getPrice());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             throw new InvalidCommandException(String.format("You don't have enough energy to build this building. Required:[%d], Current:[%d]",
                     buildingToAdd.getPrice(), currentPlayer.getEnergy()));
