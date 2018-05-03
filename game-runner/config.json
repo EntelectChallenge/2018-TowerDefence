@@ -4,14 +4,14 @@
   "max-runtime-ms": 2000,
   "bot-meta": [
     {
-      "botLocation": "../Bots/Java",
-      "botFileName": "bot.jar",
-      "botLanguage": "java"
+      "botLocation": "../starter-bots/javascript",
+      "botFileName": "starterBot.js",
+      "botLanguage": "javascript"
     },
     {
-      "botLocation": "../Bots/JavaScript",
-      "botFileName": "bot.js",
-      "botLanguage": "javascript"
+      "botLocation": "../starter-bots/rust",
+      "botFileName": "bot.rs",
+      "botLanguage": "rust"
     }
   ]
 }
