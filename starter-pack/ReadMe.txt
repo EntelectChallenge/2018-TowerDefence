@@ -12,6 +12,13 @@
 | |____| |  | |/ ____ \| |____| |____| |____| |\  | |__| | |____ 
  \_____|_|  |_/_/    \_\______|______|______|_| \_|\_____|______|
 
+ __       __        ___  
+/_ |     /_ |      / _ \ 
+ | |      | |     | | | |
+ | |      | |     | | | |
+ | |  _   | |  _  | |_| |
+ |_| (_)  |_| (_)  \___/ 
+                         
 
 Welcome to the starter pack for the 2018 Entelect Challenge!
 Here you will find all that you'll need to run your first bot and compete in this year's challenge.
@@ -39,57 +46,37 @@ You should now see some text whizz by in the console/terminal. If this is not th
 
 Now let's change things up a little bit. The previous match we ran, was between the Java reference bot and the Java starter bot. Let's change the match to be between the Java reference bot and a starter bot of your choice. To change this we need to edit the "config.json" file.
 
-The format of the of the "config.json" is as follows:
+The format of the 'config.json' is as follows:
 
 	"round-state-output-location" => This is the path to where you want the match folder in which each round's folder with its respective logs will be saved.
 
-	"console-players" => This is the amount of console players that will be featured in the match. There are two options here, 0 when two bots should play against each other or 1 if you want to manually play against a bot.
-
 	"max-runtime-ms" => This is the amount of milliseconds that the game runner will allow a bot to run before making its command each round.
 
-	"bot-meta" => This is an array containing configurations for the bots that need to play in the match. The format for these are as follows:
+	"player-a" &
+	"player-b" => This is the path to the folder containing the 'bot.json' file. If you would like to replace one of the bot players with a console player, just use the word "console" as the path.
 
-		"botLocation" => This is a relative path to the folder containing the compiled bot file for the specific language.
+The format of the 'bot.json' is as follows (also see the example in "/examples/example-bot.json"):
 
-		"botFileName" => This is the compiled bot file's name.
+	"author" => This is the name of the person who wrote the bot.
 
-		"botLanguage" => This is the language name in which the bot is coded. The currently supported language names are 'java', 'javascript', 'python' and 'c#dotnetcore'.
+	"email" => This is an email address where the author of the bot can be contacted if there is any questions.
 
-To change the bots that play in the match, replace the first bot configuration with one of the example configurations below.
+	"nickName" => This is a nickname for the bot that will be used in visualisations.
 
+	"botLocation" => This is a relative path to the folder containing the compiled bot file for the specific language.
 
-==== EXAMPLES ====
+	"botFileName" => This is the compiled bot file's name.
 
-Here are the configuration examples for the various starter bots included in this starter pack:
-(Note that for each of these, you need to make sure you have the specified language installed. See the prerequisites at the end of this file for more details.)
+	"botLanguage" => This is the language name in which the bot is coded. A list of the currently supported languages and the names used in the runner can be found below.
 
-	Java
-	{
-		"botLocation": "./starter-bots/java/target",
-		"botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-		"botLanguage": "java"
-	}
+To change the bots that play in the match, replace the "player-a" value in the "config.json" file with the path to another starter bots' folder containing "bot.json".
 
-	Javascript
-	{
-		"botLocation": "./starter-bots/javascript",
-		"botFileName": "StarterBot.js",
-		"botLanguage": "javascript"
-	}
+---- LANGUAGES ----
 
-	Python
-	{
-		"botLocation": "./starter-bots/python",
-		"botFileName": "StarterBot.py",
-		"botLanguage": "python"
-	}
-
-	C#
-	{
-		"botLocation": "./starter-bots/csharpcore/StarterBot/bin/Debug/netcoreapp2.0",
-		"botFileName": "StarterBot.dll",
-		"botLanguage": "c#dotnetcore"
-	}
+Java => "java"
+C# (.net core) => "c#core"
+Python2 => "python2"
+Javascript => "javascript"
 
 
 
@@ -134,3 +121,6 @@ Python bots
 Javascript bots
 	The Javascript starter bot requires Node.Js 8.x.x or above.
 	[https://nodejs.org/en/download/]
+
+Any other lagnuage
+	Check the relavant starter bots' read me file.

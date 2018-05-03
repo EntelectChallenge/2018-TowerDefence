@@ -1,0 +1,8 @@
+{
+	"author":"John Doe",
+	"email":"john.doe@example.com",
+	"nickName" :"John",
+	"botLocation": "/path/to/compiled/file/folder",
+	"botFileName": "compiled-file-name.exe",
+	"botLanguage": "language"
+}

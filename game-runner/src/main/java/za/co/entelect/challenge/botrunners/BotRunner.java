@@ -13,11 +13,11 @@ import java.io.IOException;
 
 public abstract class BotRunner {
     protected BotMetaData botMetaData;
-    protected int timoutInMilis;
+    protected int timeoutInMilliseconds;
 
-    protected BotRunner(BotMetaData botMetaData, int timoutInMilis){
+    protected BotRunner(BotMetaData botMetaData, int timeoutInMilliseconds){
         this.botMetaData = botMetaData;
-        this.timoutInMilis = timoutInMilis;
+        this.timeoutInMilliseconds = timeoutInMilliseconds;
     }
 
     public String run() throws IOException{
@@ -38,7 +38,7 @@ public abstract class BotRunner {
         executor.setWorkingDirectory(new File(this.getBotDirectory()));
         executor.setExitValue(expectedExitValue);
 
-        ExecuteWatchdog watchdog = new ExecuteWatchdog(this.timoutInMilis);
+        ExecuteWatchdog watchdog = new ExecuteWatchdog(this.timeoutInMilliseconds);
         executor.setWatchdog(watchdog);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

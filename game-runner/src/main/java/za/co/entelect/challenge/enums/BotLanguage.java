@@ -3,14 +3,32 @@ package za.co.entelect.challenge.enums;
 import com.google.gson.annotations.SerializedName;
 
 public enum BotLanguage {
+
     @SerializedName("java")
     JAVA,
-    @SerializedName("c#dotnetcore")
-    CSHARPDOTNETCORE,
+
+    @SerializedName("c#")
+    CSHARP,
+
     @SerializedName("python")
     PYTHON,
+
     @SerializedName("javascript")
     JAVASCRIPT,
+
     @SerializedName("rust")
-    RUST
+    RUST,
+
+    @SerializedName("c++")
+    CPLUSPLUS,
+
+    @SerializedName("python2")
+    PYTHON2,
+
+    @SerializedName("python3")
+    PYTHON3,
+
+    @SerializedName("kotlin")
+    KOTLIN,
+
 }

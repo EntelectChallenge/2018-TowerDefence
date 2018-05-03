@@ -62,12 +62,12 @@ public class TowerDefensePlayer implements GamePlayer {
     }
 
     public void takesHitByPlayer(Missile m, TowerDefensePlayer missileOwner) {
-        int healthToDamageDiff = Math.max(0, health - m.getDamage());
+        int damageTaken = Math.min(health, m.getDamage());
 
         this.hitsTaken++;
-        health -= m.getDamage();
+        health -= damageTaken;
         health = Math.max(0, health);
 
-        missileOwner.addScore(healthToDamageDiff * GameConfig.getHealthScoreMultiplier());
+        missileOwner.addScore(damageTaken * GameConfig.getHealthScoreMultiplier());
     }
 }
