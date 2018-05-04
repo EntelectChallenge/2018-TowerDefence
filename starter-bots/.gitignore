@@ -63,3 +63,8 @@ cplusplus/
 !cplusplus/compile.bat
 !cplusplus/Readme.txt
 !cplusplus/samplebot.cpp
+
+python3/
+!python3/README.md
+!python3/bot.json
+!python3/StarterBot.py
