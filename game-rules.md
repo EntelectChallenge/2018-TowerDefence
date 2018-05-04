@@ -143,16 +143,15 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 
 ## Score
 Each player will have a score based on the damage dealt by the player on both the opponent's health and buildings, as
-well as the players own energy generated and buildings built. 
-**Note that a building that is not fully built will reward the full amount of points to the player destroying it.**
+well as the players own energy generated and buildings built.
 
 Scores are calculated by adding the following together:
-* Total damage dealt
+* Total damage dealt to opponent buildings
 * Fixed score for each building constructed
 * Total energy generated
-* Damage to the opponents health per hit x 100
+* Damage bonus for any damage done to your opponent's health
 
-Note that each time the opponents health pool is damaged, the player receives 100 points per hit.
+Note that damage bonus is awarded each time your opponent's health pool is damaged, the player receives points equal to damage dealt times 100.
 
 **Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnant bots should result in this situation**
 
