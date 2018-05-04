@@ -73,14 +73,14 @@ To change the bots that play in the match, replace the "player-a" value in the "
 
 ---- LANGUAGES ----
 
-Java => "java"
-C# (.net core) => "c#core"
-Python2 => "python2"
-Python3 => "python3"
-Javascript => "javascript"
-Rust => "rust"
-C++ => "c++"
-Kotlin => "kotlin"
+Java            => "java"
+C# (.net core)  => "c#core"
+Python2         => "python2"
+Python3         => "python3"
+Javascript      => "javascript"
+Rust            => "rust"
+C++             => "c++"
+Kotlin          => "kotlin"
 
 
 
