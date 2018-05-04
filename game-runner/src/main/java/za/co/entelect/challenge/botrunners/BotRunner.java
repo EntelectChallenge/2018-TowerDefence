@@ -10,6 +10,8 @@ import za.co.entelect.challenge.utils.FileUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public abstract class BotRunner {
     protected BotMetaData botMetaData;
@@ -27,7 +29,7 @@ public abstract class BotRunner {
     protected abstract String runBot() throws IOException;
 
     public String getBotDirectory(){
-        return FileUtils.getAbsolutePath(botMetaData.getBotLocation());
+        return Paths.get(botMetaData.getBotLocation()).toAbsolutePath().normalize().toString();
     }
 
     public String getBotFileName(){ return botMetaData.getBotFileName(); }
@@ -35,7 +37,8 @@ public abstract class BotRunner {
     protected String RunSimpleCommandLineCommand(String line, int expectedExitValue) throws IOException {
         CommandLine cmdLine = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();
-        executor.setWorkingDirectory(new File(this.getBotDirectory()));
+        File bot = new File(this.getBotDirectory());
+        executor.setWorkingDirectory(bot);
         executor.setExitValue(expectedExitValue);
 
         ExecuteWatchdog watchdog = new ExecuteWatchdog(this.timeoutInMilliseconds);

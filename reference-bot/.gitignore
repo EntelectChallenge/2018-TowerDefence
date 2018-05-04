@@ -52,3 +52,7 @@ fabric.properties
 *.iml
 
 target/*
+
+*/command.txt
+*/state.json
+*/textMap.txt

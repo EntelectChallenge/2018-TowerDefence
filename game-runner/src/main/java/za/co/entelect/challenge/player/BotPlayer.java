@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class BotPlayer extends Player {
     private static final String BOT_COMMAND = "command.txt";
     private static final String BOT_STATE = "state.json";
+    private static final String TEXT_MAP = "textMap.txt";
     private GameMapRenderer jsonRenderer;
     private GameMapRenderer textRenderer;
     private GameMapRenderer consoleRenderer;
@@ -47,7 +48,7 @@ public class BotPlayer extends Player {
         String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
         String consoleOutput = "";
         try {
-            consoleOutput = runBot(playerSpecificJsonState);
+            consoleOutput = runBot(playerSpecificJsonState, playerSpecificTextState);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -105,12 +106,16 @@ public class BotPlayer extends Player {
         FileUtils.writeToFile(String.format("%s/%s/%s/%s",mainDirectory, getName(), "Console", "BotOutput.txt"), botConsoleOutput);
     }
 
-    private String runBot(String state) throws IOException {
+    private String runBot(String state, String textState) throws IOException {
         File existingCommandFile = new File(String.format("%s/%s",  botRunner.getBotDirectory(), BOT_COMMAND));
+
         if (existingCommandFile.exists()){
             existingCommandFile.delete();
         }
+
         FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(),  BOT_STATE), state);
+        FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(), TEXT_MAP), textState);
+
         String botConsoleOutput = "";
 
         try {

@@ -54,6 +54,6 @@ fabric.properties
 target/*
 */target/*
 
-javascript/
-!javascript/bot.json
-!javascript/StarterBot.js
+*/command.txt
+*/state.json
+*/textMap.txt

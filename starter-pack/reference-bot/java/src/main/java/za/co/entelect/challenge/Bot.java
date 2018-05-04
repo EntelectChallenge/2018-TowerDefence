@@ -59,7 +59,7 @@ public class Bot {
             }
         }
 
-        //If i have a defense building on a row, then build an attack building behind it.
+        //If I have a defense building on a row, then build an attack building behind it.
         if (command.equals("")){
             for (int i = 0; i < gameState.gameDetails.mapHeight; i++) {
                 if ( getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == BuildingType.DEFENSE, i).size() > 0

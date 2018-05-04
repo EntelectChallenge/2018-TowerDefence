@@ -95,7 +95,7 @@ public class GameBootstrapper {
         } else {
             BotMetaData botConfig = getBotMetaData(playerConfig);
             BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, maximumBotRuntimeMilliSeconds);
-            BotPlayer player = new BotPlayer(botConfig.getNickName(), botRunner, gameName);
+            BotPlayer player = new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
             players.add(player);
         }
     }

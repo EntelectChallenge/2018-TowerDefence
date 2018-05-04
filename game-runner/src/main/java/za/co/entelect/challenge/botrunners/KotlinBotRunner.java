@@ -12,7 +12,7 @@ public class KotlinBotRunner extends BotRunner {
 
     @Override
     protected String runBot() throws IOException {
-        String line = "kotlinc \"" + this.getBotFileName() + "\"";
+        String line = "java -jar \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
 

@@ -1,8 +1,8 @@
 {
-	"author":"John Doe",
-	"email":"john.doe@example.com",
-	"nickName" :"John",
-	"botLocation": "./",
-	"botFileName": "samplebot.exe",
-	"botLanguage": "Cplusplus"
+	"author": "John Doe",
+	"email": "john.doe@example.com",
+	"nickName": "Bjarne",
+	"botLocation": "/",
+	"botFileName": "samplebot",
+	"botLanguage": "c++"
 }
