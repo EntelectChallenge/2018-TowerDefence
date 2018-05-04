@@ -2,7 +2,7 @@
 	"author": "John Doe",
 	"email": "john.doe@example.com",
 	"nickName": "Dmitry",
-	"botLocation": "/src",
-	"botFileName": "Main.kt",
+	"botLocation": "/target",
+	"botFileName": "kotlin-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
 	"botLanguage": "kotlin"
 }
