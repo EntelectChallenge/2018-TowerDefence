@@ -116,7 +116,7 @@ class Gamestate
     void readinText()
     {
         string inputline;
-        ifstream statefile ("TextMap.txt");
+        ifstream statefile ("textMap.txt");
         
         while ( getline(statefile,inputline) )
         {

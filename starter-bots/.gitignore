@@ -57,3 +57,9 @@ target/*
 javascript/
 !javascript/bot.json
 !javascript/StarterBot.js
+
+cplusplus/
+!cplusplus/bot.json
+!cplusplus/compile.bat
+!cplusplus/Readme.txt
+!cplusplus/samplebot.cpp

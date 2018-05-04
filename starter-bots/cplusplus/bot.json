@@ -3,6 +3,6 @@
 	"email": "john.doe@example.com",
 	"nickName": "Bjarne",
 	"botLocation": "/",
-	"botFileName": "samplebot.exe",
+	"botFileName": "samplebot",
 	"botLanguage": "c++"
 }
