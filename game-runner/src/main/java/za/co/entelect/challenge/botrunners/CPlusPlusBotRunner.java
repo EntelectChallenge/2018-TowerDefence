@@ -15,7 +15,7 @@ public class CPlusPlusBotRunner extends BotRunner {
         String line;
 
         if(System.getProperty("os.name").contains("Windows")) {
-            line = "CMD.exe  \"" + this.getBotFileName() + "\"";
+            line = "cmd /c \"" + this.getBotFileName() + "\"";
         } else {
             line = "\"./" + this.getBotFileName() + "\"";
         }
