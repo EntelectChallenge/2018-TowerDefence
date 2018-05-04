@@ -12,7 +12,7 @@ public class RustBotRunner extends BotRunner {
 
     @Override
     protected String runBot() throws IOException {
-        String line = "cargo run --release";
+        String line = "\"./" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
 
