@@ -12,7 +12,12 @@ public class RustBotRunner extends BotRunner {
 
     @Override
     protected String runBot() throws IOException {
-        String line = "\"./" + this.getBotFileName() + "\"";
+        String line;
+        if(System.getProperty("os.name").contains("Windows")) {
+            line = "\".\\" + this.getBotFileName() + "\"";
+        } else {
+            line = "\"./" + this.getBotFileName() + "\"";
+        }
         return RunSimpleCommandLineCommand(line, 0);
     }
 
