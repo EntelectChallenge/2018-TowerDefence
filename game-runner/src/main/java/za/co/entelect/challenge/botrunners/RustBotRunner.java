@@ -14,7 +14,7 @@ public class RustBotRunner extends BotRunner {
     protected String runBot() throws IOException {
         String line;
         if(System.getProperty("os.name").contains("Windows")) {
-            line = "\".\\" + this.getBotFileName() + "\"";
+            line = "cmd /c \"" + this.getBotFileName() + "\"";
         } else {
             line = "\"./" + this.getBotFileName() + "\"";
         }
