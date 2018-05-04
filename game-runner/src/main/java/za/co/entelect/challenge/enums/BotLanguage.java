@@ -10,9 +10,6 @@ public enum BotLanguage {
     @SerializedName("c#")
     CSHARP,
 
-    @SerializedName("python")
-    PYTHON,
-
     @SerializedName("javascript")
     JAVASCRIPT,
 

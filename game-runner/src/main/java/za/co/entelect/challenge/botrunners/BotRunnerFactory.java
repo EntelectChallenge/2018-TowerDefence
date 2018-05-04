@@ -8,8 +8,6 @@ public class BotRunnerFactory {
         switch (botMetaData.getBotLanguage()){
             case JAVA:
                 return new JavaBotRunner(botMetaData, timeoutInMilliseconds);
-            case PYTHON:
-                return new PythonBotRunner(botMetaData, timeoutInMilliseconds);
             case CSHARP:
                 return new CSharpCoreBotRunner(botMetaData, timeoutInMilliseconds);
             case JAVASCRIPT:
