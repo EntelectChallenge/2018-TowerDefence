@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class  TowerDefenseGameMap implements GameMap {
+public class TowerDefenseGameMap implements GameMap {
 
     private List<TowerDefensePlayer> towerDefensePlayers = new ArrayList<>();
     private ArrayList<Building> buildings = new ArrayList<>();
@@ -28,19 +28,19 @@ public class  TowerDefenseGameMap implements GameMap {
         return buildings;
     }
 
-    public ArrayList<String> getErrorList(){
+    public ArrayList<String> getErrorList() {
         return this.errorList;
     }
 
-    public void clearErrorList(){
+    public void clearErrorList() {
         this.errorList = new ArrayList<>();
     }
 
-    public void addErrorToErrorList(String error, TowerDefensePlayer player){
+    public void addErrorToErrorList(String error, TowerDefensePlayer player) {
         this.errorList.add(String.format("Player %s: %s", player.getPlayerType(), error));
     }
 
-    public void addErrorToErrorList(String error, PlayerType playerType){
+    public void addErrorToErrorList(String error, PlayerType playerType) {
         this.errorList.add(String.format("Player %s: %s", playerType, error));
     }
 
@@ -120,13 +120,14 @@ public class  TowerDefenseGameMap implements GameMap {
 
     public void moveMissileSingleSpace(Missile p) throws Exception {
         int newPosition = p.getX() + (p.getDirection().getMultiplier());
-        if (newPosition < 0 || newPosition >= GameConfig.getMapWidth()) {
+
+        boolean homeBaseIsHit = (newPosition < 0 || newPosition >= GameConfig.getMapWidth());
+        if (homeBaseIsHit) {
+            TowerDefensePlayer opponent = getPlayerOpponent(p.playerType);
+            TowerDefensePlayer missileOwner = getPlayer(p.playerType);
+            opponent.takesHitByPlayer(p, missileOwner);
+
             p.setSpeed(0);
-            PlayerType opponent = PlayerType.A;
-            if (p.playerType == PlayerType.A) {
-                opponent = PlayerType.B;
-            }
-            getPlayer(opponent).takesHit(p);
         }
 
         int offsetToMove = p.getDirection().getMultiplier();
@@ -143,7 +144,7 @@ public class  TowerDefenseGameMap implements GameMap {
         this.currentRound = currentRound;
     }
 
-    public List<GamePlayer> getDeadPlayers(){
+    public List<GamePlayer> getDeadPlayers() {
         return getTowerDefensePlayers().stream()
                 .filter(p -> p.getHealth() <= 0)
                 .collect(Collectors.toList());
@@ -153,23 +154,23 @@ public class  TowerDefenseGameMap implements GameMap {
     public GamePlayer getWinningPlayer() {
         List<GamePlayer> deadPlayers = getDeadPlayers();
         TowerDefensePlayer winner = null;
-        if (deadPlayers.size() == 1){
+        if (deadPlayers.size() == 1) {
             try {
-                winner = getPlayerOpponent(((TowerDefensePlayer)deadPlayers.get(0)).getPlayerType());
+                winner = getPlayerOpponent(((TowerDefensePlayer) deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             for (GamePlayer gamePlayer :
                     getTowerDefensePlayers()) {
                 TowerDefensePlayer tdPlayer = (TowerDefensePlayer) gamePlayer;
-                if (winner == null){
+                if (winner == null) {
                     winner = tdPlayer;
-                }else{
-                    if (winner.getScore() == tdPlayer.getScore()){
+                } else {
+                    if (winner.getScore() == tdPlayer.getScore()) {
                         return null;
                     }
-                    if (winner.getScore() < tdPlayer.getScore()){
+                    if (winner.getScore() < tdPlayer.getScore()) {
                         winner = tdPlayer;
                     }
                 }

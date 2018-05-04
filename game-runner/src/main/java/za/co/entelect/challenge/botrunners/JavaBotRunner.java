@@ -5,12 +5,12 @@ import za.co.entelect.challenge.entities.BotMetaData;
 import java.io.IOException;
 
 public class JavaBotRunner extends BotRunner {
-    public JavaBotRunner(BotMetaData botMetaData, int timoutInMilis) {
-        super(botMetaData, timoutInMilis);
+    public JavaBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
+        super(botMetaData, timeoutInMilliseconds);
     }
 
     @Override
-    protected int runBot() throws IOException {
+    protected String runBot() throws IOException {
         String line = "java -jar \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }

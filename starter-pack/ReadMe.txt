@@ -12,6 +12,13 @@
 | |____| |  | |/ ____ \| |____| |____| |____| |\  | |__| | |____ 
  \_____|_|  |_/_/    \_\______|______|______|_| \_|\_____|______|
 
+ __       __        ___  
+/_ |     /_ |      / _ \ 
+ | |      | |     | | | |
+ | |      | |     | | | |
+ | |  _   | |  _  | |_| |
+ |_| (_)  |_| (_)  \___/ 
+                         
 
 Welcome to the starter pack for the 2018 Entelect Challenge!
 Here you will find all that you'll need to run your first bot and compete in this year's challenge.
@@ -25,11 +32,11 @@ Let's start off by running your very first match:
 
 We included some 'run' files for various operating systems to run a match.
 
-	On Windows:
-		Simply run (double click) the "run.bat" file.
+    On Windows:
+        Simply run (double-click) the "run.bat" file.
 
-	On Linux:
-		Open the terminal in the starter pack's root directory and run the "make" or "make run" command.
+    On Linux:
+        Open the terminal in the starter pack's root directory and run the "make" or "make run" command.
 
 You should now see some text whizz by in the console/terminal. If this is not the case, your match didn't run as it should. If the error message isn't clear, you can ask for help on our forum [forum.entelect.co.za].
 
@@ -39,98 +46,98 @@ You should now see some text whizz by in the console/terminal. If this is not th
 
 Now let's change things up a little bit. The previous match we ran, was between the Java reference bot and the Java starter bot. Let's change the match to be between the Java reference bot and a starter bot of your choice. To change this we need to edit the "config.json" file.
 
-The format of the of the "config.json" is as follows:
+The format of the 'config.json' is as follows:
 
-	"round-state-output-location" => This is the path to where you want the match folder in which each round's folder with its respective logs will be saved.
+    "round-state-output-location" => This is the path to where you want the match folder in which each round's folder with its respective logs will be saved.
 
-	"console-players" => This is the amount of console players that will be featured in the match. There are two options here, 0 when two bots should play against each other or 1 if you want to manually play against a bot.
+    "max-runtime-ms" => This is the amount of milliseconds that the game runner will allow a bot to run before making its command each round.
 
-	"max-runtime-ms" => This is the amount of milliseconds that the game runner will allow a bot to run before making its command each round.
+    "player-a" &
+    "player-b" => This is the path to the folder containing the 'bot.json' file. If you would like to replace one of the bot players with a console player, just use the word "console" as the path.
 
-	"bot-meta" => This is an array containing configurations for the bots that need to play in the match. The format for these are as follows:
+The format of the 'bot.json' is as follows (also see the example in "/examples/example-bot.json"):
 
-		"botLocation" => This is a relative path to the folder containing the compiled bot file for the specific language.
+    "author" => This is the name of the person who wrote the bot.
 
-		"botFileName" => This is the compiled bot file's name.
+    "email" => This is an email address where the author of the bot can be contacted if there are any questions.
 
-		"botLanguage" => This is the language name in which the bot is coded. The currently supported language names are 'java', 'javascript', 'python' and 'c#dotnetcore'.
+    "nickName" => This is a nickname for the bot that will be used in visualisations.
 
-To change the bots that play in the match, replace the first bot configuration with one of the example configurations below.
+    "botLocation" => This is a relative path to the folder containing the compiled bot file for the specific language.
 
+    "botFileName" => This is the compiled bot file's name.
 
-==== EXAMPLES ====
+    "botLanguage" => This is the language name in which the bot is coded. A list of the currently supported languages and the names used in the runner can be found below.
 
-Here are the configuration examples for the various starter bots included in this starter pack:
-(Note that for each of these, you need to make sure you have the specified language installed. See the prerequisites at the end of this file for more details.)
+To change the bots that play in the match, replace the "player-a" value in the "config.json" file with the path to another starter bots' folder containing "bot.json".
 
-	Java
-	{
-		"botLocation": "./starter-bots/java/target",
-		"botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
-		"botLanguage": "java"
-	}
+---- LANGUAGES ----
 
-	Javascript
-	{
-		"botLocation": "./starter-bots/javascript",
-		"botFileName": "StarterBot.js",
-		"botLanguage": "javascript"
-	}
-
-	Python
-	{
-		"botLocation": "./starter-bots/python",
-		"botFileName": "StarterBot.py",
-		"botLanguage": "python"
-	}
-
-	C#
-	{
-		"botLocation": "./starter-bots/csharpcore/StarterBot/bin/Debug/netcoreapp2.0",
-		"botFileName": "StarterBot.dll",
-		"botLanguage": "c#dotnetcore"
-	}
+Java            => "java"
+C# (.net core)  => "c#core"
+Python2         => "python2"
+Python3         => "python3"
+Javascript      => "javascript"
+Rust            => "rust"
+C++             => "c++"
+Kotlin          => "kotlin"
 
 
 
 ==== STEP 3 ====
 
-All that is left to do is to modify the existing logic, or to code your own, into one of the starter bots. This will require you to do some coding in the language of your choice.
+All that is left to do is to modify the existing logic or to code your own, into one of the starter bots. This will require you to do some coding in the language of your choice.
 
 Here is a brief explanation of how a bot should work:
 
-	The bot wil be be called to run once per round in the game. After every round the bot will be terminated and restarted for the next round.
+    The bot will be called to run once per round in the game. After every round, the bot will be terminated and restarted for the next round.
 
-	For each round the bot should go through the following process:
+    For each round the bot should go through the following process:
 
-		Firstly read in the "state.json" file that contains the game map and all the round properties.
+        Firstly read in the "state.json" file that contains the game map and all the round properties.
 
-		Apply your logic to these properties and decide on what your next move is and where you want to apply it.
+        Apply your logic to these properties and decide on what your next move is and where you want to apply it.
 
-		Finally write your move into the "command.txt" file.
+        Finally, write your move into the "command.txt" file.
 
-Here is short explanations of the files mentioned above:
+Here are short explanations of the files mentioned above:
 
-	"state.json" => This file keeps track of everything that is on the map, the players health, energy and scores. For an example of a state file, see "/examples/example-state.json".
+    "state.json" => This file keeps track of everything that is on the map, the player's health, energy and scores. For an example of a state file, see "/examples/example-state.json".
 
-	"command.txt" => This file will be read by the game engine to know what your bot decided to do for that specific round. For an example of a command file, see "/examples/example-command.txt".
+    "command.txt" => This file will be read by the game engine to know what your bot decided to do for that specific round. For an example of a command file, see "/examples/example-command.txt".
 
 
 
 ==== Prerequisites ====
 
 Java bots
-	The Java starter bot requires Java 8 or above.
-	[http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html]
+    The Java starter bot requires Java 8 or above.
+    [http://www.oracle.com/technetwork/pt/java/javase/downloads/jdk8-downloads-2133151.html]
 
 C# bots
-	The C# core starter bot requires .NET Core runtime package 2.x.
-	[https://www.microsoft.com/net/download/all]
+    The C# core starter bot requires .NET Core runtime package 2.x.
+    [https://www.microsoft.com/net/download/all]
 
-Python bots
-	The Python starter bot requires Python 2.7.
-	[https://www.python.org/downloads/]
+Python2 bots
+    The Python starter bot requires Python 2.7.
+    [https://www.python.org/downloads/]
+
+Python3 bots
+    The Python starter bot requires Python 3.6.
+    [https://www.python.org/downloads/]
 
 Javascript bots
-	The Javascript starter bot requires Node.Js 8.x.x or above.
-	[https://nodejs.org/en/download/]
+    The Javascript starter bot requires Node.Js 8.x.x or above.
+    [https://nodejs.org/en/download/]
+
+Rust bots
+    For more info on the Rust bot, see the readme file or contact the person who submitted the bot, JWorthe (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/rust]
+
+C++ bots
+    For more info on the C++ bot, see the readme file or contact the person who submitted the bot, linjoehan (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/cplusplus]
+
+Kotlin bots
+    For more info on the Kotlin bot, see the source files or contact the person who submitted the bot, gkmauer (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/kotlin]

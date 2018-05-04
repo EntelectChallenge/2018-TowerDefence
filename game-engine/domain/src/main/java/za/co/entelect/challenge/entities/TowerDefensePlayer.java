@@ -1,5 +1,6 @@
 package za.co.entelect.challenge.entities;
 
+import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.PlayerType;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 
@@ -52,18 +53,21 @@ public class TowerDefensePlayer implements GamePlayer {
         this.energy += energy;
     }
 
-    public void removeEnergy(int energy) {
-
-        // If you try to remove more energy than actual energy, set energy to same amount
-        if (energy > this.energy) {
-            energy = this.energy;
+    public void removeEnergy(int energyToRemove) throws Exception {
+        if (energyToRemove > this.energy) {
+            throw new Exception("Unable to remove more energy than the player has");
         }
 
-        this.energy -= energy;
+        this.energy -= energyToRemove;
     }
 
-    public void takesHit(Missile p) {
-        this.hitsTaken += 1;
-        health -= p.getDamage();
+    public void takesHitByPlayer(Missile m, TowerDefensePlayer missileOwner) {
+        int damageTaken = Math.min(health, m.getDamage());
+
+        this.hitsTaken++;
+        health -= damageTaken;
+        health = Math.max(0, health);
+
+        missileOwner.addScore(damageTaken * GameConfig.getHealthScoreMultiplier());
     }
 }

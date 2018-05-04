@@ -1,0 +1,1 @@
+C:\MinGW\bin\g++.exe -Wall samplebot.cpp -o samplebot.exe

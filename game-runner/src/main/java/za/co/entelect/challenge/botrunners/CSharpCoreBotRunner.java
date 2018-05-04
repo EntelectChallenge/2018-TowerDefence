@@ -6,12 +6,12 @@ import java.io.IOException;
 
 public class CSharpCoreBotRunner extends BotRunner {
 
-    public CSharpCoreBotRunner(BotMetaData botMetaData, int timoutInMilis) {
-        super(botMetaData, timoutInMilis);
+    public CSharpCoreBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
+        super(botMetaData, timeoutInMilliseconds);
     }
 
     @Override
-    protected int runBot() throws IOException {
+    protected String runBot() throws IOException {
         String line = "dotnet " + this.getBotFileName();
         return RunSimpleCommandLineCommand(line, 0);
     }

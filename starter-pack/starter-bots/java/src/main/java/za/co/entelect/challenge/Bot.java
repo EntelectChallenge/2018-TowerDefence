@@ -4,17 +4,17 @@ import za.co.entelect.challenge.entities.*;
 import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.enums.PlayerType;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static za.co.entelect.challenge.enums.BuildingType.*;
+import static za.co.entelect.challenge.enums.BuildingType.ATTACK;
+import static za.co.entelect.challenge.enums.BuildingType.DEFENSE;
 
 public class Bot {
-
+    private static final String NOTHING_COMMAND = "";
     private GameState gameState;
     private GameDetails gameDetails;
     private int gameWidth;
@@ -24,11 +24,14 @@ public class Bot {
     private List<Building> buildings;
     private List<Missile> missiles;
 
+    /**
+     * Constructor
+     *
+     * @param gameState the game state
+     **/
     public Bot(GameState gameState) {
         this.gameState = gameState;
-        gameState.getGameMap();
         gameDetails = gameState.getGameDetails();
-//        energyPerTurn = gameDetails.;
         gameWidth = gameDetails.mapWidth;
         gameHeight = gameDetails.mapHeight;
         myself = gameState.getPlayers().stream().filter(p -> p.playerType == PlayerType.A).findFirst().get();
@@ -41,10 +44,14 @@ public class Bot {
         missiles = gameState.getGameMap().stream()
                 .flatMap(c -> c.getMissiles().stream())
                 .collect(Collectors.toList());
-
     }
 
-    public String Run() {
+    /**
+     * Run
+     *
+     * @return the result
+     **/
+    public String run() {
         if (isUnderAttack()) {
             return defendRow();
         } else if (hasEnoughEnergyForMostExpensiveBuilding()) {
@@ -54,34 +61,50 @@ public class Bot {
         }
     }
 
-
+    /**
+     * Build random building
+     *
+     * @return the result
+     **/
     private String buildRandom() {
         List<CellStateContainer> emptyCells = gameState.getGameMap().stream()
                 .filter(c -> c.getBuildings().size() == 0 && c.x < (gameWidth / 2))
                 .collect(Collectors.toList());
-        if (emptyCells.size() == 0) {
+
+        if (emptyCells.isEmpty()) {
             return doNothingCommand();
         }
+
         CellStateContainer randomEmptyCell = getRandomElementOfList(emptyCells);
-        List<BuildingType> buildingTypes = new ArrayList<>(gameDetails.buildingPrices.keySet());
-        BuildingType randomBuildingType = getRandomElementOfList(buildingTypes);
+        BuildingType randomBuildingType = getRandomElementOfList(Arrays.asList(BuildingType.values()));
+
         if (!canAffordBuilding(randomBuildingType)) {
             return doNothingCommand();
         }
-        return buildCommand(randomEmptyCell.x, randomEmptyCell.y, randomBuildingType);
+
+        return randomBuildingType.buildCommand(randomEmptyCell.x, randomEmptyCell.y);
     }
 
+    /**
+     * Has enough energy for most expensive building
+     *
+     * @return the result
+     **/
     private boolean hasEnoughEnergyForMostExpensiveBuilding() {
-        boolean hasEnoughEnergy = gameDetails.buildingPrices.values().stream()
+        return gameDetails.buildingPrices.values().stream()
                 .filter(bp -> bp < myself.energy)
                 .toArray().length == 3;
-        return hasEnoughEnergy;
     }
 
+    /**
+     * Defend row
+     *
+     * @return the result
+     **/
     private String defendRow() {
         for (int i = 0; i < gameHeight; i++) {
-            int opponentAttacksCount = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i).size();
-            if (opponentAttacksCount > 0 && canAffordBuilding(DEFENSE)) {
+            boolean opponentAttacking = getAnyBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i);
+            if (opponentAttacking && canAffordBuilding(DEFENSE)) {
                 return placeBuildingInRow(DEFENSE, i);
             }
         }
@@ -89,84 +112,79 @@ public class Bot {
         return buildRandom();
     }
 
+    /**
+     * Checks if this is under attack
+     *
+     * @return true if this is under attack
+     **/
     private boolean isUnderAttack() {
         //if enemy has an attack building and i dont have a blocking wall
         for (int i = 0; i < gameHeight; i++) {
-            int opponentAttacksCount = getAllBuildingsForPlayer(PlayerType.B, b -> b.buildingType == ATTACK, i).size();
-            int myDefenseCount = getAllBuildingsForPlayer(PlayerType.A, b -> b.buildingType == DEFENSE, i).size();
-            if (opponentAttacksCount > 0 && myDefenseCount == 0) {
+            boolean opponentAttacks = getAnyBuildingsForPlayer(PlayerType.B, building -> building.buildingType == ATTACK, i);
+            boolean myDefense = getAnyBuildingsForPlayer(PlayerType.A, building -> building.buildingType == DEFENSE, i);
+
+            if (opponentAttacks && !myDefense) {
                 return true;
             }
         }
         return false;
     }
 
+    /**
+     * Do nothing command
+     *
+     * @return the result
+     **/
     private String doNothingCommand() {
-        return "";
+        return NOTHING_COMMAND;
     }
 
+    /**
+     * Place building in row
+     *
+     * @param buildingType the building type
+     * @param y            the y
+     * @return the result
+     **/
     private String placeBuildingInRow(BuildingType buildingType, int y) {
         List<CellStateContainer> emptyCells = gameState.getGameMap().stream()
-                .filter(c -> c.getBuildings().size() == 0
+                .filter(c -> c.getBuildings().isEmpty()
                         && c.y == y
                         && c.x < (gameWidth / 2) - 1)
                 .collect(Collectors.toList());
-        if (emptyCells.size() == 0) {
+
+        if (emptyCells.isEmpty()) {
             return buildRandom();
         }
+
         CellStateContainer randomEmptyCell = getRandomElementOfList(emptyCells);
-        return buildCommand(randomEmptyCell.x, randomEmptyCell.y, buildingType);
+        return buildingType.buildCommand(randomEmptyCell.x, randomEmptyCell.y);
     }
 
+    /**
+     * Get random element of list
+     *
+     * @param list the list < t >
+     * @return the result
+     **/
     private <T> T getRandomElementOfList(List<T> list) {
         return list.get((new Random()).nextInt(list.size()));
     }
 
-    private String buildCommand(int x, int y, BuildingType buildingType) {
-        StringBuilder buildCommand = new StringBuilder();
-
-        buildCommand.append(x);
-        buildCommand.append(",");
-        buildCommand.append(y);
-        buildCommand.append(",");
-        switch (buildingType) {
-
-            case DEFENSE:
-                buildCommand.append("0");
-                break;
-            case ATTACK:
-                buildCommand.append("1");
-                break;
-            case ENERGY:
-                buildCommand.append("2");
-                break;
-        }
-        return buildCommand.toString();
-    }
-
-    private List<Building> getAllBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y) {
+    private boolean getAnyBuildingsForPlayer(PlayerType playerType, Predicate<Building> filter, int y) {
         return buildings.stream()
                 .filter(b -> b.getPlayerType() == playerType
                         && b.getY() == y)
-                .filter(filter)
-                .collect(Collectors.toList());
+                .anyMatch(filter);
     }
 
+    /**
+     * Can afford building
+     *
+     * @param buildingType the building type
+     * @return the result
+     **/
     private boolean canAffordBuilding(BuildingType buildingType) {
-        int cost = 0;
-        switch (buildingType) {
-            case DEFENSE:
-                cost = gameDetails.buildingPrices.get(DEFENSE);
-                break;
-            case ATTACK:
-                cost = gameDetails.buildingPrices.get(ATTACK);
-                break;
-            case ENERGY:
-                cost = gameDetails.buildingPrices.get(ENERGY);
-                break;
-        }
-
-        return myself.energy >= cost;
+        return myself.energy >= gameDetails.buildingPrices.get(buildingType);
     }
-
 }

@@ -1,17 +1,6 @@
 {
-  "round-state-output-location": "../Bots/GameRuns",
-  "console-players": 0,
+  "round-state-output-location": "./tower-defence-matches",
   "max-runtime-ms": 2000,
-  "bot-meta": [
-    {
-      "botLocation": "../Bots/Java",
-      "botFileName": "bot.jar",
-      "botLanguage": "java"
-    },
-    {
-      "botLocation": "../Bots/JavaScript",
-      "botFileName": "bot.js",
-      "botLanguage": "javascript"
-    }
-  ]
+  "player-a": "../starter-bots/kotlin",
+  "player-b": "../starter-bots/python3"
 }

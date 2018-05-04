@@ -4,16 +4,24 @@ import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.entities.BotMetaData;
 
 public class BotRunnerFactory {
-    public static BotRunner createBotRunner(BotMetaData botMetaData, int timoutInMilis) throws InvalidRunnerState {
+    public static BotRunner createBotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) throws InvalidRunnerState {
         switch (botMetaData.getBotLanguage()){
             case JAVA:
-                return new JavaBotRunner(botMetaData, timoutInMilis);
-            case PYTHON:
-                return new PythonBotRunner(botMetaData, timoutInMilis);
-            case CSHARPDOTNETCORE:
-                return new CSharpCoreBotRunner(botMetaData, timoutInMilis);
+                return new JavaBotRunner(botMetaData, timeoutInMilliseconds);
+            case CSHARPCORE:
+                return new CSharpCoreBotRunner(botMetaData, timeoutInMilliseconds);
             case JAVASCRIPT:
-                return new JavaScriptBotRunner(botMetaData, timoutInMilis);
+                return new JavaScriptBotRunner(botMetaData, timeoutInMilliseconds);
+            case RUST:
+                return new RustBotRunner(botMetaData, timeoutInMilliseconds);
+            case CPLUSPLUS:
+                return new CPlusPlusBotRunner(botMetaData, timeoutInMilliseconds);
+            case PYTHON2:
+                return new Python2BotRunner(botMetaData, timeoutInMilliseconds);
+            case PYTHON3:
+                return new Python3BotRunner(botMetaData, timeoutInMilliseconds);
+            case KOTLIN:
+                return new KotlinBotRunner(botMetaData, timeoutInMilliseconds);
             default:
                 break;
         }

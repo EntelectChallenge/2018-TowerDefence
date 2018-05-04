@@ -108,7 +108,7 @@ Able to take more hits than any other building, these buildings are great for so
 
 #### Attack Building:
 The main offensive building you can build that fires straight line missiles toward the opposing side. This will be the main way to damage the opposing player's buildings and base.
-The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built.
+The attack building has a firing rate, meaning it will fire a missile every **{Fire rate}** turns after it has been successfully built. 
 
 **Attack building details:**
 * Cost:    **30**
@@ -131,7 +131,7 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 * Under construction character: **e**
 
 ## Missiles
-* Currently only attack units will create missiles.
+* Currently only attack buildings will create missiles.
 * A missile will always deal all its damage on the building it hits firsts and stops, even if the building hit has less health than the damage dealt.
 * There is no limit to how many missiles can be in a single cell at one time.
 * Missiles do not interact with each other, meaning opposing missiles will not stop or impact one another.
@@ -142,14 +142,16 @@ A utility building that provides **{Energy generated per turn}** extra energy pe
 * Missiles move at least one cell the moment it is created.
 
 ## Score
-Each player will have a score based on the value of the buildings that the player destroyed of his opponent.
-**Note that a building that is not fully built will reward the full amount of points.**
+Each player will have a score based on the damage dealt by the player on both the opponent's health and buildings, as
+well as the players own energy generated and buildings built.
 
-Scores are calculated by adding:
-* Total damage dealt
+Scores are calculated by adding the following together:
+* Total damage dealt to opponent buildings
 * Fixed score for each building constructed
 * Total energy generated
-* End game HP x 100
+* Damage bonus for any damage done to your opponent's health
+
+Note that damage bonus is awarded each time your opponent's health pool is damaged, the player receives points equal to damage dealt times 100.
 
 **Scores will be used to determine a victor in the event of a stalemate or draw. If both bots draw in a tournament, a random winner will be selected, as only stagnant bots should result in this situation**
 
