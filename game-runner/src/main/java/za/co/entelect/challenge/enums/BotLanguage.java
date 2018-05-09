@@ -30,6 +30,12 @@ public enum BotLanguage {
 
     @SerializedName("kotlin")
     KOTLIN,
+    
+    @SerializedName("php")
+    PHP,
+
+    @SerializedName("haskell")
+    HASKELL,
 
     @SerializedName("golang")
     GOLANG,

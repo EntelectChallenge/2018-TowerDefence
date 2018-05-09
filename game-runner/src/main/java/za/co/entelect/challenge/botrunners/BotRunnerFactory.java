@@ -24,6 +24,10 @@ public class BotRunnerFactory {
                 return new KotlinBotRunner(botMetaData, timeoutInMilliseconds);
             case GOLANG:
                 return new GolangBotRunner(botMetaData, timeoutInMilliseconds);
+            case HASKELL:
+                return new HaskellBotRunner(botMetaData, timeoutInMilliseconds);
+            case PHP:
+                return new PHPBotRunner(botMetaData, timeoutInMilliseconds);
             default:
                 break;
         }
