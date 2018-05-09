@@ -23,7 +23,7 @@ class Bot
     //If no defend orders then build randomly
     list($x,$y,$building) = $x === null ? $this->buildRandom() : [$x, $y, $building];
     
-    if ($this->_game->getBuildingPrice($building) <= $this->_game->getPlayerA()->energy)
+    if ($x !== null && $this->_game->getBuildingPrice($building) <= $this->_game->getPlayerA()->energy)
     {
       return "$x,$y,$building";
     }
@@ -36,11 +36,11 @@ class Bot
    */
   protected function checkDefense()
   {
-    for ($y = 0; $y < $this->_game->getMapHeight(); $y++)
+    for ($row = 0; $row < $this->_game->getMapHeight(); $row++)
     {
-      if ($this->_map->isAttackedRow($y) && !$this->_map->rowHasOwnDefense($y))
+      if ($this->_map->isAttackedRow($row) && !$this->_map->rowHasOwnDefense($row))
       {
-        list($x,$y,$building) = $this->buildDefense($y);
+        list($x,$y,$building) = $this->buildDefense($row);
         if ($x !== null)
         {
           return [$x,$y,$building];
@@ -53,11 +53,11 @@ class Bot
   /**
    * Returns defensive build order at last empty cell in a row
    */
-  protected function buildDefense($y)
+  protected function buildDefense($row)
   {
     //Check for last valid empty cell
-    $x = $this->_map->getLastEmptyCell($y);
-    return $x ? [$x, $y, Map::DEFENSE] : [null, null, null];
+    $x = $this->_map->getLastEmptyCell($row);
+    return $x === false ? [$x, $y, Map::DEFENSE] : [null, null, null];
   }
   
   /**
