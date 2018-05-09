@@ -34,4 +34,7 @@ public enum BotLanguage {
     @SerializedName("php")
     PHP,
 
+    @SerializedName("haskell")
+    HASKELL,
+
 }
