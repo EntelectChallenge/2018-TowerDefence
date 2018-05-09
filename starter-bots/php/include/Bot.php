@@ -23,7 +23,7 @@ class Bot
     //If no defend orders then build randomly
     list($x,$y,$building) = $x === null ? $this->buildRandom() : [$x, $y, $building];
     
-    if ($this->_game->getBuildingPrice(Map::DEFENSE) <= $this->_game->getPlayerA()->energy)
+    if ($this->_game->getBuildingPrice($building) <= $this->_game->getPlayerA()->energy)
     {
       return "$x,$y,$building";
     }
