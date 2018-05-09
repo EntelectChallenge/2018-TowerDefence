@@ -22,6 +22,8 @@ public class BotRunnerFactory {
                 return new Python3BotRunner(botMetaData, timeoutInMilliseconds);
             case KOTLIN:
                 return new KotlinBotRunner(botMetaData, timeoutInMilliseconds);
+            case PHP:
+                return new PHPBotRunner(botMetaData, timeoutInMilliseconds);
             default:
                 break;
         }
