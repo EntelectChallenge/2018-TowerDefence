@@ -1,6 +1,6 @@
 {
   "round-state-output-location": "./tower-defence-matches",
   "max-runtime-ms": 2000,
-  "player-a": "./starter-bots/python2",
+  "player-a": "./starter-bots/python3",
   "player-b": "./starter-bots/javascript"
 }
