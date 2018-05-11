@@ -10,7 +10,7 @@
 * As a player, you will always be player A.
 * The player can only build buildings in their half of the map.
 * The coordinates for a cell on the map takes the form of **'X,Y'** starting from 0, e.g. the coordinates **'0,0'** will be the top left cell.
-* The entire map, player information, and building information will be visible to both players, including the opposing player's units.
+* The entire map, player information, and building information will be visible to both players, including the opposing player's buildings.
 
 **{X} and {Y} will be variable.**
 
