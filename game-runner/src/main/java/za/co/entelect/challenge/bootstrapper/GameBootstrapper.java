@@ -36,7 +36,7 @@ public class GameBootstrapper {
         try {
             Config config = gameBootstrapper.loadConfig();
 
-            gameBootstrapper.prepareEngineRunner();
+            gameBootstrapper.prepareEngineRunner(config);
             gameBootstrapper.prepareHandlers();
             gameBootstrapper.prepareGame(config);
 
@@ -60,10 +60,10 @@ public class GameBootstrapper {
         }
     }
 
-    private void prepareEngineRunner() {
+    private void prepareEngineRunner(Config config) {
         gameEngineRunner = new GameEngineRunner();
 
-        gameEngineRunner.setGameEngine(new TowerDefenseGameEngine());
+        gameEngineRunner.setGameEngine(new TowerDefenseGameEngine(config.gameConfigFileLocation));
         gameEngineRunner.setGameMapGenerator(new TowerDefenseGameMapGenerator());
         gameEngineRunner.setGameRoundProcessor(new TowerDefenseRoundProcessor());
     }

@@ -8,14 +8,16 @@ public class GameConfig {
 
     private static Configuration configuration;
 
-    static {
-        Configurations configurations = new Configurations();
+    public static void initConfig(String configLocation) {
+        if (configuration == null) {
+            Configurations configurations = new Configurations();
 
-        try {
-            configuration = configurations.properties(GameConfig.class.getResource("/game-config.properties"));
+            try {
+                configuration = configurations.properties(configLocation);
 
-        } catch (ConfigurationException e) {
-            throw new RuntimeException("Unable to initialise configuration, please have a look at the inner exception.", e);
+            } catch (ConfigurationException e) {
+                throw new RuntimeException("Unable to initialise configuration, please have a look at the inner exception.", e);
+            }
         }
     }
 

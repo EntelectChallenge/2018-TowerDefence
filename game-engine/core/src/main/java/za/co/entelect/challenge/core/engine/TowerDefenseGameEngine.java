@@ -7,6 +7,10 @@ import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 public class TowerDefenseGameEngine implements GameEngine {
 
+    public TowerDefenseGameEngine(String configLocation) {
+        GameConfig.initConfig(configLocation);
+    }
+
     @Override
     public boolean isGameComplete(GameMap gameMap) {
         TowerDefenseGameMap towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
