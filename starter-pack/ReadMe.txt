@@ -52,6 +52,8 @@ The format of the 'config.json' is as follows:
 
     "game-config-file-location" => This is the path to the game-config.properties file that is used to set various game-engine settings such as map size and building stats.
 
+    "verbose-mode" => This is a true or false value to either print logs to the console or not respectively.
+
     "max-runtime-ms" => This is the amount of milliseconds that the game runner will allow a bot to run before making its command each round.
 
     "player-a" &
@@ -149,12 +151,12 @@ Kotlin bots
 
 Golang bots
     For more info on the Golang bot, see the readme file or contact the person who submitted the bot, dougcrawford (on GitHub)
-    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/kotlin]
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/golang]
 
 Haskell bots
     For more info on the Haskell bot, see the readme file or contact the person who submitted the bot, Quiescent (on GitHub)
-    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/kotlin]
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/haskell]
 
 PHP bots
     For more info on the PHP bot, see the readme file or contact the person who submitted the bot, PuffyZA (on GitHub)
-    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/kotlin]
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/php]
