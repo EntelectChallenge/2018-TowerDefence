@@ -13,7 +13,7 @@ Follow these steps to submit a starter bot.
 1. Clone this repository.
 1. Create the starter bot in the language of your choice.
 1. Include a readme of any environment configuration and setup guide for your language on the tournament server.
-1. Create a new pull request for your starter bot.
+1. Create a new pull request to the **develop** branch for your starter bot.
 1. After peer review we will consider your starter bot for inclusion in the tournament.
 1. If the pull request is merged then the starter bot and language can be considered officially included and supported for the tournament.
 
@@ -29,3 +29,4 @@ Please ensure your starter bot follow these rules:
    * A row is under attack if: there is an enemy Attack unit on the row, and NO ally Defence buildings on that row.
 1. Else if you have enough energy for the most expensive building, build a random building type at a random unoccupied location.
 1. If you can't do one of the above two, save energy until you have enough for the most expensive building.
+1. Include a ReadMe.txt/md to explain some of the basics for those who want to use the bot. For example links to where to download the language and links to useful websites for debugging.
