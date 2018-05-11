@@ -17,4 +17,7 @@ public class Config {
     @SerializedName("game-config-file-location")
     public String gameConfigFileLocation;
 
+    @SerializedName("verbose-mode")
+    public boolean isVerbose;
+
 }
