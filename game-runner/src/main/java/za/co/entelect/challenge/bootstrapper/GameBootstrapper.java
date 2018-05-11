@@ -2,15 +2,17 @@ package za.co.entelect.challenge.bootstrapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.botrunners.BotRunnerFactory;
 import za.co.entelect.challenge.core.engine.TowerDefenseGameEngine;
 import za.co.entelect.challenge.core.engine.TowerDefenseGameMapGenerator;
 import za.co.entelect.challenge.core.engine.TowerDefenseRoundProcessor;
-import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.entities.BotMetaData;
-import za.co.entelect.challenge.enums.BotLanguage;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.player.BotPlayer;
@@ -26,17 +28,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class GameBootstrapper {
-
+    private static final Logger log = LogManager.getLogger(GameBootstrapper.class);
+    
     private GameEngineRunner gameEngineRunner;
     private static String gameName;
 
     public static void main(String[] args) {
+
         GameBootstrapper gameBootstrapper = new GameBootstrapper();
 
         try {
             Config config = gameBootstrapper.loadConfig();
 
-            gameBootstrapper.prepareEngineRunner();
+            gameBootstrapper.prepareEngineRunner(config);
             gameBootstrapper.prepareHandlers();
             gameBootstrapper.prepareGame(config);
 
@@ -60,10 +64,10 @@ public class GameBootstrapper {
         }
     }
 
-    private void prepareEngineRunner() {
+    private void prepareEngineRunner(Config config) {
         gameEngineRunner = new GameEngineRunner();
 
-        gameEngineRunner.setGameEngine(new TowerDefenseGameEngine());
+        gameEngineRunner.setGameEngine(new TowerDefenseGameEngine(config.gameConfigFileLocation));
         gameEngineRunner.setGameMapGenerator(new TowerDefenseGameMapGenerator());
         gameEngineRunner.setGameRoundProcessor(new TowerDefenseRoundProcessor());
     }
@@ -87,6 +91,12 @@ public class GameBootstrapper {
 
         gameEngineRunner.preparePlayers(players);
         gameEngineRunner.prepareGameMap();
+
+        if (config.isVerbose) {
+            Configurator.setRootLevel(Level.DEBUG);
+        } else {
+            Configurator.setRootLevel(Level.ERROR);
+        }
     }
 
     private void parsePlayer(String playerConfig, List<Player> players, String playerNumber, int maximumBotRuntimeMilliSeconds) throws Exception {
@@ -127,9 +137,9 @@ public class GameBootstrapper {
 
     private BiConsumer<GameMap, Integer> getRoundCompleteHandler() {
         return (gameMap, round) -> {
-            System.out.println("=======================================");
-            System.out.println("Round ended " + round);
-            System.out.println("=======================================");
+            log.info("=======================================");
+            log.info("Round ended " + round);
+            log.info("=======================================");
         };
     }
 
@@ -147,13 +157,13 @@ public class GameBootstrapper {
             }
 
             if (winner == null) {
-                System.out.println("=======================================");
-                System.out.println("The game ended in a tie");
-                System.out.println("=======================================");
+                log.info("=======================================");
+                log.info("The game ended in a tie");
+                log.info("=======================================");
             } else {
-                System.out.println("=======================================");
-                System.out.println("The winner is: " + winner.getName());
-                System.out.println("=======================================");
+                log.info("=======================================");
+                log.info("The winner is: " + winner.getName());
+                log.info("=======================================");
             }
 
             BufferedWriter bufferedWriter = null;
@@ -174,17 +184,17 @@ public class GameBootstrapper {
 
     private BiConsumer<GameMap, Integer> getRoundStartingHandler() {
         return (gameMap, round) -> {
-            System.out.println("=======================================");
-            System.out.println("Starting round " + round);
-            System.out.println("=======================================");
+            log.info("=======================================");
+            log.info("Starting round " + round);
+            log.info("=======================================");
         };
     }
 
     private Consumer<GameMap> getGameStartedHandler() {
         return gameMap -> {
-            System.out.println("=======================================");
-            System.out.println("Starting game");
-            System.out.println("=======================================");
+            log.info("=======================================");
+            log.info("Starting game");
+            log.info("=======================================");
         };
     }
 }

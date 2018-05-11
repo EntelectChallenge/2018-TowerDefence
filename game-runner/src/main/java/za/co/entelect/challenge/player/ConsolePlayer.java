@@ -1,6 +1,9 @@
 package za.co.entelect.challenge.player;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
+import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
@@ -9,6 +12,8 @@ import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
 import java.util.Scanner;
 
 public class ConsolePlayer extends Player {
+
+    private static final Logger log = LogManager.getLogger(ConsolePlayer.class);
 
     private GameMapRenderer gameMapRenderer;
     private Scanner scanner;
@@ -29,10 +34,10 @@ public class ConsolePlayer extends Player {
     public void newRoundStarted(GameMap gameMap) {
 
         String output = gameMapRenderer.render(gameMap, getGamePlayer());
-        System.out.println(output);
+        log.info(output);
 
         String inputPrompt = gameMapRenderer.commandPrompt(getGamePlayer());
-        System.out.println(inputPrompt);
+        log.info(inputPrompt);
 
         String consoleInput = scanner.nextLine();
 
@@ -47,20 +52,20 @@ public class ConsolePlayer extends Player {
 
     @Override
     public void playerKilled(GameMap gameMap) {
-        System.out.println(String.format("Player %s has been killed", getName()));
+        log.info(String.format("Player %s has been killed", getName()));
     }
 
     @Override
     public void playerCommandFailed(GameMap gameMap, String reason) {
-        System.out.println(String.format("Could not process player command: %s", reason));
+        log.info(String.format("Could not process player command: %s", reason));
     }
 
     @Override
     public void firstRoundFailed(GameMap gameMap, String reason) {
-        System.out.println(reason);
-        System.out.println("The first round has failed.");
-        System.out.println("The round will now restart and both players will have to try again");
-        System.out.println("Press any key to continue");
+        log.info(reason);
+        log.info("The first round has failed.");
+        log.info("The round will now restart and both players will have to try again");
+        log.info("Press any key to continue");
 
         scanner.nextLine();
     }

@@ -9,9 +9,11 @@ namespace StarterBot
     public class Bot
     {
         private readonly GameState _gameState;
-        private readonly int _attackCost;
-        private readonly int _defenseCost;
-        private readonly int _energyCost;
+
+        private readonly BuildingStats _attackStats;
+        private readonly BuildingStats _defenseStats;
+        private readonly BuildingStats _energyStats;
+
         private readonly int _mapWidth;
         private readonly int _mapHeight;
         private readonly Player _player;
@@ -22,9 +24,11 @@ namespace StarterBot
             this._gameState = gameState;
             this._mapHeight = gameState.GameDetails.MapHeight;
             this._mapWidth = gameState.GameDetails.MapWidth;
-            this._attackCost = gameState.GameDetails.BuildingPrices[BuildingType.Attack];
-            this._defenseCost = gameState.GameDetails.BuildingPrices[BuildingType.Defense];
-            this._energyCost = gameState.GameDetails.BuildingPrices[BuildingType.Energy];
+
+            this._attackStats = gameState.GameDetails.BuildingsStats[BuildingType.Attack];
+            this._defenseStats = gameState.GameDetails.BuildingsStats[BuildingType.Defense];
+            this._energyStats = gameState.GameDetails.BuildingsStats[BuildingType.Energy];
+
             this._random = new Random((int) DateTime.Now.Ticks);
 
             _player = gameState.Players.Single(x => x.PlayerType == PlayerType.A);
@@ -35,7 +39,7 @@ namespace StarterBot
             var commandToReturn = "";
 
             //This will check if there is enough energy to build any building before processing any commands
-            if (_player.Energy < _defenseCost && _player.Energy < _energyCost && _player.Energy < _attackCost)
+            if (_player.Energy < _defenseStats.Price || _player.Energy < _energyStats.Price || _player.Energy < _attackStats.Price)
             {
                 return commandToReturn;
             }

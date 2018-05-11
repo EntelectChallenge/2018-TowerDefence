@@ -14,4 +14,10 @@ public class Config {
     @SerializedName("round-state-output-location")
     public String roundStateOutputLocation;
 
+    @SerializedName("game-config-file-location")
+    public String gameConfigFileLocation;
+
+    @SerializedName("verbose-mode")
+    public boolean isVerbose;
+
 }

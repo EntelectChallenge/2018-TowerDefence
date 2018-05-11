@@ -12,7 +12,14 @@ public class Python2BotRunner extends BotRunner {
 
     @Override
     protected String runBot() throws IOException {
-        String line = "py -2 \"" + this.getBotFileName() + "\"";
+        String line;
+
+        if(System.getProperty("os.name").contains("Windows")) {
+            line = "py -2 \"" + this.getBotFileName() + "\"";
+        } else {
+            line = "python2 \"" + this.getBotFileName() + "\"";
+        }
+
         return RunSimpleCommandLineCommand(line, 0);
     }
 

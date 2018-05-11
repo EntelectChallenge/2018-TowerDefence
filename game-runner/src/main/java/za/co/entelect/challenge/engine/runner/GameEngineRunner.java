@@ -1,5 +1,7 @@
 package za.co.entelect.challenge.engine.runner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
@@ -16,6 +18,8 @@ import java.util.function.Consumer;
 
 
 public class GameEngineRunner {
+
+    private static final Logger log = LogManager.getLogger(GameEngineRunner.class);
 
     public Consumer<GameMap> firstPhaseHandler;
     public Consumer<GameMap> gameStartedHandler;
@@ -95,9 +99,12 @@ public class GameEngineRunner {
         }
     }
 
+
     private void processRound() throws Exception {
+
         TowerDefenseConsoleMapRenderer renderer = new TowerDefenseConsoleMapRenderer();
-        System.out.println(renderer.render(gameMap, players.get(0).getGamePlayer()));
+        //Only execute the render if the log mode is in INFO.
+        log.info(() -> renderer.render(gameMap, players.get(0).getGamePlayer()));
 
         gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
 

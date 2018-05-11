@@ -1,9 +1,12 @@
 package za.co.entelect.challenge.player;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseTextMapRenderer;
+import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
@@ -23,6 +26,8 @@ public class BotPlayer extends Player {
     private Scanner scanner;
     private BotRunner botRunner;
     private String saveStateLocation;
+
+    private static final Logger log = LogManager.getLogger(BotPlayer.class);
 
     public BotPlayer(String name, BotRunner botRunner, String saveStateLocation) {
         super(name);
@@ -66,7 +71,7 @@ public class BotPlayer extends Player {
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
+            log.info(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
         }
         try{
             writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
@@ -121,9 +126,9 @@ public class BotPlayer extends Player {
         try {
             botConsoleOutput = botRunner.run();
         }catch (IOException e){
-            System.out.println("Bot execution failed: " + e.getLocalizedMessage());
+            log.info("Bot execution failed: " + e.getLocalizedMessage());
         }
-        System.out.println("BotRunner Started.");
+        log.info("BotRunner Started.");
         return botConsoleOutput;
     }
 
@@ -134,20 +139,20 @@ public class BotPlayer extends Player {
 
     @Override
     public void playerKilled(GameMap gameMap) {
-        System.out.println(String.format("Player %s has been killed", getName()));
+        log.info(String.format("Player %s has been killed", getName()));
     }
 
     @Override
     public void playerCommandFailed(GameMap gameMap, String reason) {
-        System.out.println(String.format("Could not process player command: %s", reason));
+        log.info(String.format("Could not process player command: %s", reason));
     }
 
     @Override
     public void firstRoundFailed(GameMap gameMap, String reason) {
-        System.out.println(reason);
-        System.out.println("The first round has failed.");
-        System.out.println("The round will now restart and both players will have to try again");
-        System.out.println("Press any key to continue");
+        log.info(reason);
+        log.info("The first round has failed.");
+        log.info("The round will now restart and both players will have to try again");
+        log.info("Press any key to continue");
 
         scanner.nextLine();
     }

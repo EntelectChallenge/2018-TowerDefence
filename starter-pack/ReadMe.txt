@@ -12,13 +12,13 @@
 | |____| |  | |/ ____ \| |____| |____| |____| |\  | |__| | |____ 
  \_____|_|  |_/_/    \_\______|______|______|_| \_|\_____|______|
 
- __       __        ___  
-/_ |     /_ |      / _ \ 
- | |      | |     | | | |
- | |      | |     | | | |
- | |  _   | |  _  | |_| |
- |_| (_)  |_| (_)  \___/ 
-                         
+ __       __       __ 
+/_ |     /_ |     /_ |
+ | |      | |      | |
+ | |      | |      | |
+ | |  _   | |  _   | |
+ |_| (_)  |_| (_)  |_|
+
 
 Welcome to the starter pack for the 2018 Entelect Challenge!
 Here you will find all that you'll need to run your first bot and compete in this year's challenge.
@@ -49,6 +49,10 @@ Now let's change things up a little bit. The previous match we ran, was between 
 The format of the 'config.json' is as follows:
 
     "round-state-output-location" => This is the path to where you want the match folder in which each round's folder with its respective logs will be saved.
+
+    "game-config-file-location" => This is the path to the game-config.properties file that is used to set various game-engine settings such as map size and building stats.
+
+    "verbose-mode" => This is a true or false value to either print logs to the console or not respectively.
 
     "max-runtime-ms" => This is the amount of milliseconds that the game runner will allow a bot to run before making its command each round.
 
@@ -81,6 +85,9 @@ Javascript      => "javascript"
 Rust            => "rust"
 C++             => "c++"
 Kotlin          => "kotlin"
+Golang          => "golang"
+Haskell         => "haskell"
+PHP             => "php"
 
 
 
@@ -141,3 +148,15 @@ C++ bots
 Kotlin bots
     For more info on the Kotlin bot, see the source files or contact the person who submitted the bot, gkmauer (on GitHub)
     [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/kotlin]
+
+Golang bots
+    For more info on the Golang bot, see the readme file or contact the person who submitted the bot, dougcrawford (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/golang]
+
+Haskell bots
+    For more info on the Haskell bot, see the readme file or contact the person who submitted the bot, Quiescent (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/haskell]
+
+PHP bots
+    For more info on the PHP bot, see the readme file or contact the person who submitted the bot, PuffyZA (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/php]
