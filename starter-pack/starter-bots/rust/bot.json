@@ -1,0 +1,8 @@
+{
+	"author": "John Doe",
+	"email": "john.doe@example.com",
+	"nickName": "Graydon",
+	"botLocation": "/target/release/",
+	"botFileName": "entelect_challenge_rust_sample",
+	"botLanguage": "rust"
+}
