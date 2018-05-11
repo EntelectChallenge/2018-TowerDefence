@@ -40,9 +40,33 @@ class StarterBot:
         
         self.round = self.game_state['gameDetails']['round']
         
-        self.prices = {"ATTACK":self.game_state['gameDetails']['buildingPrices']['ATTACK'],
-                       "DEFENSE":self.game_state['gameDetails']['buildingPrices']['DEFENSE'],
-                       "ENERGY":self.game_state['gameDetails']['buildingPrices']['ENERGY']}
+        self.buildings_stats = {"ATTACK":{"health": self.game_state['gameDetails']['buildingsStats']['ATTACK']['health'],
+                                 "constructionTime": self.game_state['gameDetails']['buildingsStats']['ATTACK']['constructionTime'],
+                                 "price": self.game_state['gameDetails']['buildingsStats']['ATTACK']['price'],
+                                 "weaponDamage": self.game_state['gameDetails']['buildingsStats']['ATTACK']['weaponDamage'],
+                                 "weaponSpeed": self.game_state['gameDetails']['buildingsStats']['ATTACK']['weaponSpeed'],
+                                 "weaponCooldownPeriod": self.game_state['gameDetails']['buildingsStats']['ATTACK']['weaponCooldownPeriod'],
+                                 "energyGeneratedPerTurn": self.game_state['gameDetails']['buildingsStats']['ATTACK']['energyGeneratedPerTurn'],
+                                 "destroyMultiplier": self.game_state['gameDetails']['buildingsStats']['ATTACK']['destroyMultiplier'],
+                                 "constructionScore": self.game_state['gameDetails']['buildingsStats']['ATTACK']['constructionScore']},
+                       "DEFENSE":{"health": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['health'],
+                                 "constructionTime": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['constructionTime'],
+                                 "price": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['price'],
+                                 "weaponDamage": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['weaponDamage'],
+                                 "weaponSpeed": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['weaponSpeed'],
+                                 "weaponCooldownPeriod": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['weaponCooldownPeriod'],
+                                 "energyGeneratedPerTurn": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['energyGeneratedPerTurn'],
+                                 "destroyMultiplier": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['destroyMultiplier'],
+                                 "constructionScore": self.game_state['gameDetails']['buildingsStats']['DEFENSE']['constructionScore']},
+                       "ENERGY":{"health": self.game_state['gameDetails']['buildingsStats']['ENERGY']['health'],
+                                 "constructionTime": self.game_state['gameDetails']['buildingsStats']['ENERGY']['constructionTime'],
+                                 "price": self.game_state['gameDetails']['buildingsStats']['ENERGY']['price'],
+                                 "weaponDamage": self.game_state['gameDetails']['buildingsStats']['ENERGY']['weaponDamage'],
+                                 "weaponSpeed": self.game_state['gameDetails']['buildingsStats']['ENERGY']['weaponSpeed'],
+                                 "weaponCooldownPeriod": self.game_state['gameDetails']['buildingsStats']['ENERGY']['weaponCooldownPeriod'],
+                                 "energyGeneratedPerTurn": self.game_state['gameDetails']['buildingsStats']['ENERGY']['energyGeneratedPerTurn'],
+                                 "destroyMultiplier": self.game_state['gameDetails']['buildingsStats']['ENERGY']['destroyMultiplier'],
+                                 "constructionScore": self.game_state['gameDetails']['buildingsStats']['ENERGY']['constructionScore']}}
         return None
         
         
@@ -217,7 +241,7 @@ class StarterBot:
             if len(self.getUnOccupied(self.player_buildings[i])) == 0:
                 #cannot place anything in a lane with no available cells.
                 continue
-            elif ( self.checkAttack(i) and (self.player_info['energy'] >= self.prices['DEFENSE']) and (self.checkMyDefense(i)) == False):
+            elif ( self.checkAttack(i) and (self.player_info['energy'] >= self.buildings_stats['DEFENSE']['price']) and (self.checkMyDefense(i)) == False):
                 #place defense unit if there is an attack building and you can afford a defense building
                 lanes.append(i)
         #lanes variable will now contain information about all lanes which have attacking units
@@ -230,9 +254,9 @@ class StarterBot:
             x = random.choice(self.getUnOccupied(self.player_buildings[i]))
         #otherwise, build a random building type at a random unoccupied location
         # if you can afford the most expensive building
-        elif  self.player_info['energy'] >= max(s.prices.values()):
+        elif  self.player_info['energy'] >= max(self.buildings_stats['ATTACK']['price'], self.buildings_stats['DEFENSE']['price'], self.buildings_stats['ENERGY']['price']):
             building = random.choice([0,1,2])
-            x = random.randint(0,self.rows)
+            x = random.randint(0,self.rows-1)
             y = random.randint(0,int(self.columns/2)-1)
         else:
             self.writeDoNothing()
