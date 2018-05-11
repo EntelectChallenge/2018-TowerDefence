@@ -12,7 +12,14 @@ public class Python3BotRunner extends BotRunner {
 
     @Override
     protected String runBot() throws IOException {
-        String line = "py -3 \"" + this.getBotFileName() + "\"";
+        String line;
+
+        if(System.getProperty("os.name").contains("Windows")) {
+            line = "py -3 \"" + this.getBotFileName() + "\"";
+        } else {
+            line = "python3 \"" + this.getBotFileName() + "\"";
+        }
+
         return RunSimpleCommandLineCommand(line, 0);
     }
 
