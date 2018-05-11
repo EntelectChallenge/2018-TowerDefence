@@ -2,6 +2,7 @@ package za.co.entelect.challenge.factories;
 
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.entities.Building;
+import za.co.entelect.challenge.entities.BuildingStats;
 import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.enums.PlayerType;
 
@@ -53,6 +54,11 @@ public class BuildingFactory {
         }
 
         return building;
+    }
+
+    public static BuildingStats createBuildingStats(BuildingType buildingType) {
+        Building building = createBuilding(0, 0, buildingType, PlayerType.A);
+        return new BuildingStats(building);
     }
 
 }

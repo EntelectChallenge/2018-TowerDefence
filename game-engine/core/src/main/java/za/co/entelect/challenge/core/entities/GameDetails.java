@@ -1,24 +1,33 @@
 package za.co.entelect.challenge.core.entities;
 
 import za.co.entelect.challenge.config.GameConfig;
+import za.co.entelect.challenge.entities.BuildingStats;
 import za.co.entelect.challenge.enums.BuildingType;
+import za.co.entelect.challenge.factories.BuildingFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class GameDetails {
+
     private int round;
     private int mapWidth;
     private int mapHeight;
-    private HashMap<BuildingType, Integer> buildingPrices;
+    private int roundIncomeEnergy;
 
-    public GameDetails(int round){
+    @Deprecated
+    private HashMap<BuildingType, Integer> buildingPrices = new HashMap<>();
+
+    private HashMap<BuildingType, BuildingStats> buildingsStats = new HashMap<>();
+
+    public GameDetails(int round) {
         this.round = round;
         this.mapWidth = GameConfig.getMapWidth();
         this.mapHeight = GameConfig.getMapHeight();
+        this.roundIncomeEnergy = GameConfig.getRoundIncomeEnergy();
 
-        buildingPrices = new HashMap<>();
-        buildingPrices.put(BuildingType.DEFENSE, GameConfig.getDefensePrice());
-        buildingPrices.put(BuildingType.ATTACK, GameConfig.getAttackPrice());
-        buildingPrices.put(BuildingType.ENERGY, GameConfig.getEnergyPrice());
+        Arrays.asList(BuildingType.values()).forEach(bt -> buildingPrices.put(bt, BuildingFactory.createBuildingStats(bt).price));
+
+        Arrays.stream(BuildingType.values()).forEach(bt -> buildingsStats.put(bt, BuildingFactory.createBuildingStats(bt)));
     }
 }

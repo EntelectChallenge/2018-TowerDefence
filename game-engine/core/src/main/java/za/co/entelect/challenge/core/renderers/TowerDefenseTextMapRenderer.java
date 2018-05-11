@@ -2,11 +2,10 @@ package za.co.entelect.challenge.core.renderers;
 
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.entities.CellStateContainer;
-import za.co.entelect.challenge.entities.Building;
-import za.co.entelect.challenge.entities.Missile;
-import za.co.entelect.challenge.entities.TowerDefenseGameMap;
-import za.co.entelect.challenge.entities.TowerDefensePlayer;
+import za.co.entelect.challenge.entities.*;
+import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.enums.PlayerType;
+import za.co.entelect.challenge.factories.BuildingFactory;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
@@ -28,10 +27,11 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
         stringBuilder.append("\n");
 
-        stringBuilder.append("****** BUILDING PRICES ******\n");
-        stringBuilder.append("ATTACK : " + GameConfig.getAttackPrice() + "\n");
-        stringBuilder.append("DEFEND : " + GameConfig.getDefensePrice() + "\n");
-        stringBuilder.append("ENERGY : " + GameConfig.getEnergyPrice() + "\n");
+        stringBuilder.append("****** BUILDING STATS ******\n");
+        stringBuilder.append("type;" + BuildingStats.getTextHeader() + "\n");
+        stringBuilder.append("ATTACK;" + BuildingFactory.createBuildingStats(BuildingType.ATTACK) + "\n");
+        stringBuilder.append("DEFENSE;" + BuildingFactory.createBuildingStats(BuildingType.DEFENSE) + "\n");
+        stringBuilder.append("ENERGY;" + BuildingFactory.createBuildingStats(BuildingType.ENERGY) + "\n");
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 
@@ -159,28 +159,9 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         return stringBuilderRow.toString();
     }
 
-    private String padString(String stringToPad, int targetLength, PaddingDirection paddingDirection){
-        String newString = stringToPad;
-        int difference = targetLength - stringToPad.length();
-
-        for (int i =0; i< difference; i++){
-            if (paddingDirection == PaddingDirection.LEFT){
-                newString = " " + newString;
-            }else{
-                newString = newString + " ";
-            }
-        }
-
-        return newString;
-    }
-
     @Override
     public String commandPrompt(GamePlayer gamePlayer) {
         return "";
     }
 
-    private enum PaddingDirection{
-        LEFT,
-        RIGHT
-    }
 }
