@@ -91,9 +91,10 @@ public class Bot {
      * @return the result
      **/
     private boolean hasEnoughEnergyForMostExpensiveBuilding() {
-        return gameDetails.buildingPrices.values().stream()
-                .filter(bp -> bp < myself.energy)
-                .toArray().length == 3;
+        return gameDetails.buildingsStats.values().stream()
+                .filter(b -> b.price <= myself.energy)
+                .toArray()
+                .length == 3;
     }
 
     /**
@@ -185,6 +186,6 @@ public class Bot {
      * @return the result
      **/
     private boolean canAffordBuilding(BuildingType buildingType) {
-        return myself.energy >= gameDetails.buildingPrices.get(buildingType);
+        return myself.energy >= gameDetails.buildingsStats.get(buildingType).price;
     }
 }

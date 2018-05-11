@@ -1,7 +1,7 @@
 {
   "round-state-output-location": "./tower-defence-matches",
-  "max-runtime-ms": 2000,
   "game-config-file-location": "./game-config.properties",
-  "player-a": "../starter-bots/javascript",
-  "player-b": "../starter-bots/javascript"
+  "max-runtime-ms": 2000,
+  "player-a": "../starter-bots/java",
+  "player-b": "../reference-bot/java"
 }
