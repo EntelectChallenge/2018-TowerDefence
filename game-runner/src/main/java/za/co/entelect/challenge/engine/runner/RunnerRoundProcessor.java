@@ -1,5 +1,7 @@
 package za.co.entelect.challenge.engine.runner;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.engine.exceptions.InvalidCommandException;
 import za.co.entelect.challenge.engine.exceptions.InvalidOperationException;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 public class RunnerRoundProcessor {
+    private static final Logger log = LogManager.getLogger(RunnerRoundProcessor.class);
 
     private GameMap gameMap;
     private GameRoundProcessor gameRoundProcessor;
@@ -35,7 +38,7 @@ public class RunnerRoundProcessor {
         boolean processed = gameRoundProcessor.processRound(gameMap, commandsToProcess);
         ArrayList<String> errorList = gameRoundProcessor.getErrorList();
         //TODO: Remove later
-        System.out.println("Error List: " + Arrays.toString(errorList.toArray()));
+        log.info("Error List: " + Arrays.toString(errorList.toArray()));
         roundProcessed = true;
 
         return processed;
@@ -48,7 +51,7 @@ public class RunnerRoundProcessor {
 
             commandsToProcess.put(player.getGamePlayer(), command);
         } catch (InvalidCommandException e) {
-            e.printStackTrace();
+            log.error(e.getStackTrace());
         }
     }
 
