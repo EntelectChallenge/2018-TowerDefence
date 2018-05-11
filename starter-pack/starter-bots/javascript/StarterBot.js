@@ -15,7 +15,7 @@ let mapSize = "";
 let cells = "";
 let buildings = "";
 let missiles = "";
-let buildingPrices = [];
+let buildingStats = [];
 
 // Capture the arguments
 initBot(process.argv.slice(2));
@@ -34,10 +34,10 @@ function initBot(args) {
         y: stateFile.gameDetails.mapHeight
     };
 
-    let prices = stateFile.gameDetails.buildingPrices;
-	buildingPrices[0]= prices.DEFENSE;
-	buildingPrices[1]= prices.ATTACK;
-	buildingPrices[2]= prices.ENERGY;
+    let stats = stateFile.gameDetails.buildingsStats;
+	buildingStats[0]= stats.DEFENSE;
+	buildingStats[1]= stats.ATTACK;
+	buildingStats[2]= stats.ENERGY;
 
     gameMap = stateFile.gameMap;
     initEntities();
@@ -71,7 +71,7 @@ function isUnderAttack() {
     let opponentAttackers = buildings.filter(b => b.playerType == 'B' && b.buildingType == 'ATTACK')
 									 .filter(b => !myDefenders.some(d => d.y == b.y));
     
-    return (opponentAttackers.length > 0) && (myself.energy >= buildingPrices[0]);
+    return (opponentAttackers.length > 0) && (myself.energy >= buildingStats[0].price);
 }
 
 function defendRow() {
@@ -101,7 +101,7 @@ function defendRow() {
 }
 
 function hasEnoughEnergyForMostExpensiveBuilding() {
-    return (myself.energy >= Math.max(...buildingPrices));
+    return (myself.energy >= Math.max(...(buildingStats.map(stat => stat.price))));
 }
 
 function buildRandom() {

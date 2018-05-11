@@ -1,5 +1,5 @@
 default:
-	java -jar tower-defense-runner-1.0.0.jar
+	java -jar tower-defence-runner-1.1.1.jar
 
 run:
-	java -jar tower-defense-runner-1.0.0.jar
+	java -jar tower-defence-runner-1.1.1.jar
