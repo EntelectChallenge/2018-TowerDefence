@@ -9,6 +9,9 @@
 
 (define-data-class command (x y building))
 
+(defun seed-random ()
+  (setf *random-state* (make-random-state t)))
+
 (defmethod write-command-to-stream ((command command) out)
   (with-slots (x y building) command
       (format out "~a,~a,~a~%" x y building)))
@@ -82,7 +85,7 @@
        (let ((unoccupied (unoccupied-cells state)))
          (when (> (length unoccupied) 0)
            (let* ((choice (aref unoccupied (random (length unoccupied))))
-                    (building (aref #(attack defense energy) (random 3))))
+                    (building (aref (vector defense attack energy) (random 3))))
                (make-instance 'command :x (car choice) :y (cdr choice) 
                               :building building))))))
 
@@ -96,6 +99,8 @@
       (write-command-to-stream command file))))
 
 (defun take-turn ()
+  (seed-random)
   (let* ((state (read-state state-path))
          (command (choose-move state)))
-    (write-command command-path command)))
+    (if command
+        (write-command command-path command))))
