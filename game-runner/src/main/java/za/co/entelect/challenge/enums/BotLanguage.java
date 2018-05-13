@@ -37,6 +37,9 @@ public enum BotLanguage {
     @SerializedName("haskell")
     HASKELL,
 
+    @SerializedName("lisp")
+    LISP,
+
     @SerializedName("golang")
     GOLANG,
 
