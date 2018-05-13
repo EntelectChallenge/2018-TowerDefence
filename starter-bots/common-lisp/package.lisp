@@ -5,5 +5,3 @@
            #:camel-case
            #:snake-case
            #:screaming-snake-case))
-
-(in-package :bot)
