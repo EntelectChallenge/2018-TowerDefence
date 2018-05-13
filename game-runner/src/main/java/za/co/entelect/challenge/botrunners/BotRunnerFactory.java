@@ -26,7 +26,7 @@ public class BotRunnerFactory {
                 return new GolangBotRunner(botMetaData, timeoutInMilliseconds);
             case HASKELL:
                 return new HaskellBotRunner(botMetaData, timeoutInMilliseconds);
-            case COMMON_LISP:
+            case LISP:
                 return new LispBotRunner(botMetaData, timeoutInMilliseconds);
             case PHP:
                 return new PHPBotRunner(botMetaData, timeoutInMilliseconds);
