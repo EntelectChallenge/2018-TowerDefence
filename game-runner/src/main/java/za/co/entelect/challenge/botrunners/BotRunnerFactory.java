@@ -28,6 +28,8 @@ public class BotRunnerFactory {
                 return new HaskellBotRunner(botMetaData, timeoutInMilliseconds);
             case PHP:
                 return new PHPBotRunner(botMetaData, timeoutInMilliseconds);
+            case PASCAL:
+                return new PascalBotRunner(botMetaData, timeoutInMilliseconds);
             default:
                 break;
         }

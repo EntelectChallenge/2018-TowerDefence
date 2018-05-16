@@ -40,4 +40,7 @@ public enum BotLanguage {
     @SerializedName("golang")
     GOLANG,
 
+    @SerializedName("pascal")
+    PASCAL,
+
 }
