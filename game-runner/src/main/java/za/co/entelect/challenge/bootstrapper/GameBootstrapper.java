@@ -36,31 +36,40 @@ public class GameBootstrapper {
     private static String gameName;
 
     public static void main(String[] args) {
+        new GameBootstrapper().run(args);
+    }
 
-        GameBootstrapper gameBootstrapper = new GameBootstrapper();
-
+    public void run(String[] args) {
         try {
-            Config config = gameBootstrapper.loadConfig();
+            Config config = loadConfig(args);
 
-            gameBootstrapper.prepareEngineRunner(config);
-            gameBootstrapper.prepareHandlers();
-            gameBootstrapper.prepareGame(config);
+            prepareEngineRunner(config);
+            prepareHandlers();
+            prepareGame(config);
 
-            gameBootstrapper.startGame();
+            startGame();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
-    private Config loadConfig() throws Exception {
-        try (FileReader fileReader = new FileReader("./config.json")) {
+    private Config loadConfig(String[] args) throws Exception {
+        try (FileReader fileReader = new FileReader("./game-runner-config.json")) {
             Gson gson = new GsonBuilder().create();
             Config config = gson.fromJson(fileReader, Config.class);
 
             if (config == null)
                 throw new Exception("Failed to load config");
+
+            if (config.isTournamentMode) {
+
+                if (args.length != 2)
+                    throw new Exception("No bot locations specified for tournament");
+
+                config.playerAConfig = args[0];
+                config.playerBConfig = args[1];
+            }
 
             return config;
         }
