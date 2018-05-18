@@ -2,6 +2,7 @@ package za.co.entelect.challenge.bootstrapper;
 import com.google.gson.annotations.SerializedName;
 
 public class Config {
+
     @SerializedName("player-a")
     public String playerAConfig;
 
@@ -20,4 +21,6 @@ public class Config {
     @SerializedName("verbose-mode")
     public boolean isVerbose;
 
+    @SerializedName("is-tournament-mode")
+    public boolean isTournamentMode;
 }
