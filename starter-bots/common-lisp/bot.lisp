@@ -103,4 +103,5 @@
   (let* ((state (read-state state-path))
          (command (choose-move state)))
     (if command
-        (write-command command-path command))))
+        (write-command command-path command))
+		(write-command command-path "")))

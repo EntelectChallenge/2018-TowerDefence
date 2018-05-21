@@ -1,8 +1,8 @@
 {
 	"author": "John Doe",
 	"email": "john.doe@example.com",
-	"nickName": "Geoff",
-	"botLocation": ".",
+	"nickName": "McCarthy",
+	"botLocation": "/",
 	"botFileName": "bot",
-	"botLanguage": "common lisp"
+	"botLanguage": "lisp"
 }

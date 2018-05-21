@@ -2,4 +2,4 @@
 
 (ql:quickload :bot)
 
-(save-lisp-and-die "bot" :toplevel #'bot:take-turn :executable t)
+(save-lisp-and-die "bot.exe" :toplevel #'bot:take-turn :executable t)
