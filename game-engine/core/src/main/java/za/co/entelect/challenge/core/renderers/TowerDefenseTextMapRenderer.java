@@ -13,6 +13,7 @@ import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
 public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
     private TowerDefenseGameMap tdMap;
+
     @Override
     public String render(GameMap gameMap, GamePlayer gamePlayer) {
         tdMap = (TowerDefenseGameMap) gameMap;
@@ -24,6 +25,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("Round Number : " + gameMap.getCurrentRound() + "\n");
         stringBuilder.append("Map Width : " + GameConfig.getMapWidth() + "\n");
         stringBuilder.append("Map Height : " + GameConfig.getMapHeight() + "\n");
+        stringBuilder.append("Round Income Energy : " + GameConfig.getRoundIncomeEnergy() + "\n");
         stringBuilder.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
         stringBuilder.append("\n");
 
@@ -74,7 +76,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
             cellStateMap = RendererHelper.renderPlayerB(tdMap);
         }
 
-        for (int y = 0; y < GameConfig.getMapHeight(); y++){
+        for (int y = 0; y < GameConfig.getMapHeight(); y++) {
             CellStateContainer[] row = cellStateMap[y];
             stringBuilder.append(getRowStringForPlayer(row, y));
             stringBuilder.append("\n");
@@ -85,29 +87,30 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
         stringBuilder.append("######## BUILDING DATA #########\n");
 
-        stringBuilder.append("FORMAT : [x,y] Owner|ConstructionTimeLeft|Health|WeaponCooldownTimeLeft|WeaponDamage|EnergyGeneratedPerTurn \n\n");
+        stringBuilder.append("FORMAT : [x,y] Owner|BuildingType|ConstructionTimeLeft|Health|WeaponCooldownTimeLeft|WeaponDamage|EnergyGeneratedPerTurn \n\n");
 
         for (Building building :
-            tdMap.getBuildings()) {
-            Building presentedBuilding  = building;
+                tdMap.getBuildings()) {
+            Building presentedBuilding = building;
             if (playerType == PlayerType.B) {
                 presentedBuilding = presentedBuilding.getInvertedXInstance();
             }
 
             stringBuilder.append("[" + presentedBuilding.getX() + "," + presentedBuilding.getY() + "] ");
-            stringBuilder.append(presentedBuilding.getPlayerType() +"|");
-            stringBuilder.append(presentedBuilding.getConstructionTimeLeft() +"|");
-            stringBuilder.append(presentedBuilding.getHealth() +"|");
-            stringBuilder.append(presentedBuilding.getWeaponCooldownTimeLeft() +"|");
-            stringBuilder.append(presentedBuilding.getWeaponDamage() +"|");
-            stringBuilder.append(presentedBuilding.getEnergyGeneratedPerTurn() +"\n");
+            stringBuilder.append(presentedBuilding.getPlayerType() + "|");
+            stringBuilder.append(presentedBuilding.getBuildingType() + "|");
+            stringBuilder.append(presentedBuilding.getConstructionTimeLeft() + "|");
+            stringBuilder.append(presentedBuilding.getHealth() + "|");
+            stringBuilder.append(presentedBuilding.getWeaponCooldownTimeLeft() + "|");
+            stringBuilder.append(presentedBuilding.getWeaponDamage() + "|");
+            stringBuilder.append(presentedBuilding.getEnergyGeneratedPerTurn() + "\n");
         }
         stringBuilder.append("###############################\n");
         stringBuilder.append('\n');
 
         stringBuilder.append("####### MISSILE DATA ########\n");
 
-        stringBuilder.append("FORMAT : [x,y] Owner|Damage \n\n");
+        stringBuilder.append("FORMAT : [x,y] Owner|Damage|Speed \n\n");
 
         for (Missile missile :
                 tdMap.getMissiles()) {
@@ -120,27 +123,28 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
             stringBuilder.append("[" + presentedMissile.getX() + "," + presentedMissile.getY() + "] ");
             stringBuilder.append(presentedMissile.getPlayerType() + "|");
             stringBuilder.append(presentedMissile.getDamage() + "\n");
+            stringBuilder.append(presentedMissile.getSpeed() + "\n");
         }
         stringBuilder.append("###############################\n");
 
         return stringBuilder.toString();
     }
 
-    private String getRowStringForPlayer(CellStateContainer[] row, int y){
+    private String getRowStringForPlayer(CellStateContainer[] row, int y) {
         StringBuilder stringBuilderRow = new StringBuilder();
 
-        for (int x  = 0; x < row.length; x ++) {
+        for (int x = 0; x < row.length; x++) {
             stringBuilderRow.append("[");
             stringBuilderRow.append(x + "," + y + ",");
 
-            if (row[x].buildings.size() > 0){
+            if (row[x].buildings.size() > 0) {
                 Building building = row[x].buildings.get(0);
-                if (building.isConstructed()){
+                if (building.isConstructed()) {
                     stringBuilderRow.append(building.getIcon().toUpperCase());
-                }else{
+                } else {
                     stringBuilderRow.append(building.getIcon().toLowerCase());
                 }
-            }else{
+            } else {
                 stringBuilderRow.append("N");
             }
 

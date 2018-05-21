@@ -111,7 +111,8 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                                     towerDefenseGameMap.getBuildings().stream()
                                             .filter(b -> b.isConstructed()
                                                     && positionMatch(missile, b)
-                                                    && !b.isPlayers(missile.getPlayerType()))
+                                                    && !b.isPlayers(missile.getPlayerType())
+                                                    && b.getHealth() > 0)
                                             .forEach(b -> {
                                                 TowerDefensePlayer missileOwner = null;
                                                 try {
