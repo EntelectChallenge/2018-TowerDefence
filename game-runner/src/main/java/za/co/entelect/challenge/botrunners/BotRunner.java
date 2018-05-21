@@ -9,11 +9,13 @@ import za.co.entelect.challenge.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public abstract class BotRunner {
+
     protected BotMetaData botMetaData;
     protected int timeoutInMilliseconds;
 
@@ -29,7 +31,7 @@ public abstract class BotRunner {
     protected abstract String runBot() throws IOException;
 
     public String getBotDirectory(){
-        return Paths.get(botMetaData.getBotLocation()).toAbsolutePath().normalize().toString();
+        return botMetaData.getBotDirectory();
     }
 
     public String getBotFileName(){ return botMetaData.getBotFileName(); }

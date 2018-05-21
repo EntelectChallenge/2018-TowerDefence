@@ -3,6 +3,8 @@ package za.co.entelect.challenge.entities;
 import com.google.gson.annotations.SerializedName;
 import za.co.entelect.challenge.enums.BotLanguage;
 
+import java.nio.file.Paths;
+
 public class BotMetaData {
     @SerializedName("author")
     private String author;
@@ -50,5 +52,9 @@ public class BotMetaData {
 
     public BotLanguage getBotLanguage(){
         return this.botLanguage;
+    }
+
+    public String getBotDirectory() {
+        return Paths.get(getBotLocation()).toAbsolutePath().normalize().toString();
     }
 }

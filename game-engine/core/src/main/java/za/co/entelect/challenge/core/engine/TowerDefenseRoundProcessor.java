@@ -77,14 +77,14 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private void addResources() {
         towerDefenseGameMap.getTowerDefensePlayers()
                 .forEach(p -> {
+                    int energy = GameConfig.getRoundIncomeEnergy()
+                            + getBuildingGeneratedEnergyForPlayer(p.getPlayerType());
                     try {
-                        int energy = GameConfig.getRoundIncomeEnergy()
-                                + getBuildingGeneratedEnergyForPlayer(p.getPlayerType());
                         p.addEnergy(energy);
-                        p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                 });
     }
 
@@ -103,24 +103,25 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     private void calculateMissileMovement() {
-
         towerDefenseGameMap.getMissiles()
-                .forEach(missile -> IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
-                        .forEach(i -> {
-                            try {
-                                towerDefenseGameMap.moveMissileSingleSpace(missile);
-                                towerDefenseGameMap.getBuildings().stream()
-                                        .filter(b -> b.isConstructed() && positionMatch(missile, b))
-                                        .findAny()
-                                        .ifPresent(b -> {
-                                            b.damageSelf(missile);
-                                            towerDefenseGameMap.getPlayerByStream(missile.getPlayerType())
-                                                    .forEach(player -> player.addScore(b.getDestroyMultiplier() * missile.getDamage()));
-                                        });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        })
+                .forEach(missile ->
+                        IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
+                                .forEach(i -> {
+                                    towerDefenseGameMap.moveMissileSingleSpace(missile);
+                                    towerDefenseGameMap.getBuildings().stream()
+                                            .filter(b -> b.isConstructed()
+                                                    && positionMatch(missile, b)
+                                                    && !b.isPlayers(missile.getPlayerType()))
+                                            .forEach(b -> {
+                                                TowerDefensePlayer missileOwner = null;
+                                                try {
+                                                    missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                b.damageSelf(missile, missileOwner);
+                                            });
+                                })
                 );
     }
 
