@@ -71,14 +71,15 @@
 (defmethod defence-building ((state state))
   (and (can-afford-defence-building state)
        (loop for y from 0 to (- (map-height (game-details state)) 1)
-          until (> (length unoccupied) 0)
+          until (> (length found) 0)
           when (and (is-under-attack state y)
                     (unoccupied-in-row state y))
-          collect it into unoccupied
-          finally (if (> (length unoccupied) 0)
+          collect it into found
+          finally (let ((unoccupied (car found)))                 
+                    (if (> (length unoccupied) 0)
                       (let ((x (aref unoccupied (random (length unoccupied)))))
-                        (return (make-instance 'command :x x :y y :building defense)))
-                      (return nil)))))
+                        (return (make-instance 'command :x x :y (- y 1) :building defense)))
+                      (return nil))))))
             
 (defmethod random-building ((state state))
   (and (can-afford-all-buildings state)
@@ -98,10 +99,16 @@
     (when file
       (write-command-to-stream command file))))
 
+(defun write-empty ()
+  (with-open-file (file command-path :direction :output
+                        :if-does-not-exist :create 
+                        :if-exists :supersede)
+    (when file (format file " "))))
+
 (defun take-turn ()
   (seed-random)
   (let* ((state (read-state state-path))
          (command (choose-move state)))
     (if command
-        (write-command command-path command))
-		(write-command command-path "")))
+        (write-command command-path command)
+        (write-empty))))
