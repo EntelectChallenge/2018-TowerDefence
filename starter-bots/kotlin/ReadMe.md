@@ -1,6 +1,6 @@
 # Kotlin Sample Bot
 
-Kotlin is a statically typed programming language that runs on the Java virtual machine. It is 100% interoperable with Java.
+Kotlin is a statically typed programming language that runs on the Java virtual machine. It is 100% interoperable with Java, but was built to be more expressive, concise and safer.
 
 ## Learn Kotlin
 
