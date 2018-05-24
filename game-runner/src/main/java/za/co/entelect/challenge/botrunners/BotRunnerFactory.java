@@ -30,6 +30,8 @@ public class BotRunnerFactory {
                 return new LispBotRunner(botMetaData, timeoutInMilliseconds);
             case PHP:
                 return new PHPBotRunner(botMetaData, timeoutInMilliseconds);
+            case SCALA:
+                return new ScalaBotRunner(botMetaData, timeoutInMilliseconds);
             default:
                 break;
         }
