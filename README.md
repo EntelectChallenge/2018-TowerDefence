@@ -42,4 +42,4 @@ The game engine has been made available to the community for peer review and bug
 
 If you guys are looking to view your bot's shenanigans in a more visual way, we have a nice little viewer built by someone from the forum that will let you do just that.
 
-Check out his [replay viewer](https://github.com/avanderw/alysm/tree/master/replay-viewer), and if you have any issues running it, let us know on [our forum](https://forum.entelect.co.za) so we can help you out!
+Check out his [replay viewer](https://github.com/avanderw/alysm/tree/master/replay-viewer), and if you have any issues running it, let us know on [our forum](https://forum.entelect.co.za) so we can help you out!  
