@@ -7,7 +7,7 @@ import scala.util.Random
 object App {
   def main(args: Array[String]): Unit = {
     val stateFile = "state.json"
-    val commandFile = "command.json"
+    val commandFile = "command.txt"
     implicit val NOTHING_COMMAND = ""
 
     val stateRaw = Parser.readFile(stateFile)
