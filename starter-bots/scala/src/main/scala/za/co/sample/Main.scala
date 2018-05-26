@@ -4,8 +4,8 @@ import za.co.sample.models.Models.{Cell, GameDetails, Player, State}
 
 import scala.util.Random
 
-object App {
-  def main(args: Array[String]): Unit = {
+object Main extends App{
+//  override def main(args: Array[String]): Unit = {
     val stateFile = "state.json"
     val commandFile = "command.txt"
     implicit val NOTHING_COMMAND = ""
@@ -35,7 +35,7 @@ object App {
     }
 
     Parser.writeToFile(commandFile, action)
-  }
+//  }
 
   /**
     * Chooses a random unoccupied spot in row to place a defending building.
