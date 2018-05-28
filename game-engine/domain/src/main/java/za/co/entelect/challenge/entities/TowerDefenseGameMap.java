@@ -88,9 +88,11 @@ public class TowerDefenseGameMap implements GameMap {
 
     public void removeBuilding(Building building) {
         buildings.remove(building);
-        towerDefensePlayers.stream()
-                .filter(p -> !building.isPlayers(p.getPlayerType()))
-                .forEach(p -> p.addScore(building.getDestroyMultiplier()));
+        try {
+            getPlayerOpponent(building.getPlayerType()).addScore(building.getDestroyMultiplier());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addMissileFromBuilding(Building b) {
@@ -118,14 +120,29 @@ public class TowerDefenseGameMap implements GameMap {
         this.missiles.remove(missile);
     }
 
-    public void moveMissileSingleSpace(Missile p) throws Exception {
+    public void moveMissileSingleSpace(Missile p) {
         int newPosition = p.getX() + (p.getDirection().getMultiplier());
 
         boolean homeBaseIsHit = (newPosition < 0 || newPosition >= GameConfig.getMapWidth());
         if (homeBaseIsHit) {
-            TowerDefensePlayer opponent = getPlayerOpponent(p.playerType);
-            TowerDefensePlayer missileOwner = getPlayer(p.playerType);
-            opponent.takesHitByPlayer(p, missileOwner);
+
+            TowerDefensePlayer opponent = null;
+            try {
+                opponent = getPlayerOpponent(p.playerType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            TowerDefensePlayer missileOwner = null;
+            try {
+                missileOwner = getPlayer(p.playerType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (opponent != null) {
+                opponent.takesHitByPlayer(p, missileOwner);
+            }
 
             p.setSpeed(0);
         }

@@ -76,19 +76,16 @@ public class Building extends Cell {
         return newBuilding;
     }
 
-    public void damageSelf(Missile incomingMissile) {
-        if (this.playerType.equals(incomingMissile.playerType)) {
-            return;
-        }
+    public void damageSelf(Missile m, TowerDefensePlayer missileOwner) {
+        int damageTaken = Math.min(health, m.getDamage());
 
-        if (this.health > 0){
-            this.health -= incomingMissile.getDamage();
+        health -= damageTaken;
+        health = Math.max(0, health);
 
-            if (health <= 0) {
-                health = 0;
-            }
+        missileOwner.addScore(damageTaken * destroyMultiplier);
 
-            incomingMissile.setSpeed(0);
+        if (damageTaken > 0) {
+            m.setSpeed(0);
         }
     }
 
