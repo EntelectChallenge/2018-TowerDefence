@@ -25,7 +25,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private TowerDefenseGameMap towerDefenseGameMap;
 
     @Override
-    public boolean processRound(GameMap gameMap, Map<GamePlayer, Command> commands) {
+    public boolean processRound(GameMap gameMap, Map<GamePlayer, RawCommand> commands) {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
 
@@ -59,10 +59,10 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void processCommands(Map<GamePlayer, Command> commands) {
-        for (Map.Entry<GamePlayer, Command> gamePlayerCommandEntry : commands.entrySet()) {
+    private void processCommands(Map<GamePlayer, RawCommand> commands) {
+        for (Map.Entry<GamePlayer, RawCommand> gamePlayerCommandEntry : commands.entrySet()) {
             GamePlayer player = gamePlayerCommandEntry.getKey();
-            Command command = gamePlayerCommandEntry.getValue();
+            RawCommand command = gamePlayerCommandEntry.getValue();
             parseAndExecuteCommand(command, player);
         }
     }
@@ -127,39 +127,37 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     // Converts Raw Commands into Commands the game engine can understand
-    private void parseAndExecuteCommand(Command command, GamePlayer player) {
+    private void parseAndExecuteCommand(RawCommand command, GamePlayer player) {
         DoNothingCommand doNothingCommand = new DoNothingCommand();
 
         TowerDefensePlayer towerDefensePlayer = (TowerDefensePlayer) player;
 
         Command parsedCommand = doNothingCommand;
 
-        if (command instanceof RawCommand) {
-            String commandSting = ((RawCommand) command).getCommand();
+        String commandSting = command.getCommand();
 
-            String[] commandLine = commandSting.split(",");
+        String[] commandLine = commandSting.split(",");
 
-            if (commandLine.length != 3) {
+        if (commandLine.length != 3) {
+            towerDefenseGameMap.addErrorToErrorList(String.format(
+                    "Unable to parse command expected 3 parameters, got %d", commandLine.length), towerDefensePlayer);
+        } else {
+            try {
+                int positionX = Integer.parseInt(commandLine[0]);
+                int positionY = Integer.parseInt(commandLine[1]);
+                BuildingType buildingType = BuildingType.values()[Integer.parseInt(commandLine[2])];
+                parsedCommand = new PlaceBuildingCommand(positionX, positionY, buildingType);
+            } catch (NumberFormatException e) {
                 towerDefenseGameMap.addErrorToErrorList(String.format(
-                        "Unable to parse command expected 3 parameters, got %d", commandLine.length), towerDefensePlayer);
-            } else {
-                try {
-                    int positionX = Integer.parseInt(commandLine[0]);
-                    int positionY = Integer.parseInt(commandLine[1]);
-                    BuildingType buildingType = BuildingType.values()[Integer.parseInt(commandLine[2])];
-                    parsedCommand = new PlaceBuildingCommand(positionX, positionY, buildingType);
-                } catch (NumberFormatException e) {
-                    towerDefenseGameMap.addErrorToErrorList(String.format(
-                            "Unable to parse command entries, all parameters should be integers. Received:%s",
-                            commandSting), towerDefensePlayer);
-                } catch (IllegalArgumentException e) {
-                    towerDefenseGameMap.addErrorToErrorList(String.format(
-                            "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
-                            commandLine[2]), towerDefensePlayer);
-                } catch (IndexOutOfBoundsException e) {
-                    towerDefenseGameMap.addErrorToErrorList(String.format(
-                            "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
-                }
+                        "Unable to parse command entries, all parameters should be integers. Received:%s",
+                        commandSting), towerDefensePlayer);
+            } catch (IllegalArgumentException e) {
+                towerDefenseGameMap.addErrorToErrorList(String.format(
+                        "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
+                        commandLine[2]), towerDefensePlayer);
+            } catch (IndexOutOfBoundsException e) {
+                towerDefenseGameMap.addErrorToErrorList(String.format(
+                        "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
             }
         }
 

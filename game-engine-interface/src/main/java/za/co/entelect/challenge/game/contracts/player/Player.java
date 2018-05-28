@@ -1,6 +1,6 @@
 package za.co.entelect.challenge.game.contracts.player;
 
-import za.co.entelect.challenge.game.contracts.command.Command;
+import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
@@ -47,7 +47,7 @@ public abstract class Player {
         return String.format("Player{name='%s'}", name);
     }
 
-    public abstract Command getPlayerCommand(GameMap gameMap);
+    public abstract RawCommand getPlayerCommand(GameMap gameMap);
 
     public abstract void gameEnded(GameMap gameMap);
 

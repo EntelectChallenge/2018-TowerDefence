@@ -3,7 +3,7 @@ package za.co.entelect.challenge.engine.runner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.engine.exceptions.InvalidOperationException;
-import za.co.entelect.challenge.game.contracts.command.Command;
+import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
@@ -25,7 +25,7 @@ public class RunnerRoundProcessor {
         this.gameRoundProcessor = gameRoundProcessor;
     }
 
-    boolean processRound(Map<GamePlayer, Command> commands) throws Exception {
+    boolean processRound(Map<GamePlayer, RawCommand> commands) throws Exception {
         if (roundProcessed) {
             throw new InvalidOperationException("This round has already been processed!");
         }

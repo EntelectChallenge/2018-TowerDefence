@@ -6,7 +6,6 @@ import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseTextMapRenderer;
-import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
@@ -42,7 +41,7 @@ public class BotPlayer extends Player {
     }
 
     @Override
-    public Command getPlayerCommand(GameMap gameMap) {
+    public RawCommand getPlayerCommand(GameMap gameMap) {
         String playerSpecificJsonState = jsonRenderer.render(gameMap, getGamePlayer());
         String playerSpecificTextState = textRenderer.render(gameMap, getGamePlayer());
         String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());

@@ -6,6 +6,7 @@ import za.co.entelect.challenge.commands.DoNothingCommand;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.Command;
+import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.game.GameEngine;
 import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
@@ -85,7 +86,7 @@ public class GameEngineRunner {
 
         boolean successfulRound = false;
         while (!successfulRound) {
-            Map<GamePlayer, Command> commands = getPlayerCommands();
+            Map<GamePlayer, RawCommand> commands = getPlayerCommands();
 
             successfulRound = roundProcessor.processRound(commands);
 
@@ -116,7 +117,7 @@ public class GameEngineRunner {
 
         startNewRound();
 
-        Map<GamePlayer, Command> commands = getPlayerCommands();
+        Map<GamePlayer, RawCommand> commands = getPlayerCommands();
 
         roundProcessor.processRound(commands);
 
@@ -130,19 +131,19 @@ public class GameEngineRunner {
      *
      * @return Map of player commands
      */
-    private Map<GamePlayer, Command> getPlayerCommands() {
-        Map<Player, Future<Command>> futures = new HashMap<>();
+    private Map<GamePlayer, RawCommand> getPlayerCommands() {
+        Map<Player, Future<RawCommand>> futures = new HashMap<>();
         for (final Player player : players) {
-            Future<Command> playerCommand = PLAYER_EXECUTOR.submit(() -> player.getPlayerCommand(gameMap));
+            Future<RawCommand> playerCommand = PLAYER_EXECUTOR.submit(() -> player.getPlayerCommand(gameMap));
             futures.put(player, playerCommand);
         }
-        Map<GamePlayer, Command> commands = new HashMap<>();
-        for (Map.Entry<Player, Future<Command>> entry : futures.entrySet()) {
+        Map<GamePlayer, RawCommand> commands = new HashMap<>();
+        for (Map.Entry<Player, Future<RawCommand>> entry : futures.entrySet()) {
             try {
                 //The get will block until the thread completes:
                 commands.put(entry.getKey().getGamePlayer(), entry.getValue().get());
             } catch (InterruptedException | ExecutionException ignored) {
-                commands.put(entry.getKey().getGamePlayer(), new DoNothingCommand());
+                commands.put(entry.getKey().getGamePlayer(), new RawCommand());
             }
         }
         return commands;
