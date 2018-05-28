@@ -3,7 +3,7 @@ package za.co.entelect.challenge.player;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
-import za.co.entelect.challenge.engine.runner.GameEngineRunner;
+import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
@@ -26,12 +26,7 @@ public class ConsolePlayer extends Player {
     }
 
     @Override
-    public void startGame(GameMap gameMap) {
-        newRoundStarted(gameMap);
-    }
-
-    @Override
-    public void newRoundStarted(GameMap gameMap) {
+    public Command getPlayerCommand(GameMap gameMap) {
 
         String output = gameMapRenderer.render(gameMap, getGamePlayer());
         log.info(output);
@@ -41,8 +36,7 @@ public class ConsolePlayer extends Player {
 
         String consoleInput = scanner.nextLine();
 
-        RawCommand rawCommand = new RawCommand(consoleInput);
-        publishCommand(rawCommand);
+        return new RawCommand(consoleInput);
     }
 
     @Override

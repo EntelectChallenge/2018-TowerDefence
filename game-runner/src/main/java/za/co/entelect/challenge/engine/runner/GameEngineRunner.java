@@ -2,9 +2,10 @@ package za.co.entelect.challenge.engine.runner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import za.co.entelect.challenge.commands.DoNothingCommand;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
-import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.game.GameEngine;
 import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
@@ -12,7 +13,13 @@ import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -37,15 +44,14 @@ public class GameEngineRunner {
     private GameMapGenerator gameMapGenerator;
     private GameRoundProcessor gameRoundProcessor;
 
+    private ExecutorService PLAYER_EXECUTOR = Executors.newFixedThreadPool(2);
+
     public void preparePlayers(List<Player> players) throws InvalidRunnerState {
 
         if (players == null || players.size() == 0)
             throw new InvalidRunnerState("No players provided");
 
         this.players = players;
-        for (Player player : players) {
-            player.publishCommandHandler = getPlayerCommandListener();
-        }
     }
 
     public void prepareGameMap() throws InvalidRunnerState {
@@ -79,14 +85,9 @@ public class GameEngineRunner {
 
         boolean successfulRound = false;
         while (!successfulRound) {
+            Map<GamePlayer, Command> commands = getPlayerCommands();
 
-            for (Player player : players) {
-                Thread thread = new Thread(() -> player.startGame(gameMap));
-                thread.start();
-                thread.join();
-            }
-
-            successfulRound = roundProcessor.processRound();
+            successfulRound = roundProcessor.processRound(commands);
 
             for (Player player : players) {
                 player.roundComplete(gameMap, gameMap.getCurrentRound());
@@ -115,17 +116,36 @@ public class GameEngineRunner {
 
         startNewRound();
 
-        for (Player player : players) {
-            Thread thread = new Thread(() -> player.newRoundStarted(gameMap));
-            thread.start();
-            thread.join();
-        }
+        Map<GamePlayer, Command> commands = getPlayerCommands();
 
-        roundProcessor.processRound();
+        roundProcessor.processRound(commands);
 
         for (Player player : players) {
             player.roundComplete(gameMap, gameMap.getCurrentRound());
         }
+    }
+
+    /**
+     * Call all the players and find out what command they want to run
+     *
+     * @return Map of player commands
+     */
+    private Map<GamePlayer, Command> getPlayerCommands() {
+        Map<Player, Future<Command>> futures = new HashMap<>();
+        for (final Player player : players) {
+            Future<Command> playerCommand = PLAYER_EXECUTOR.submit(() -> player.getPlayerCommand(gameMap));
+            futures.put(player, playerCommand);
+        }
+        Map<GamePlayer, Command> commands = new HashMap<>();
+        for (Map.Entry<Player, Future<Command>> entry : futures.entrySet()) {
+            try {
+                //The get will block until the thread completes:
+                commands.put(entry.getKey().getGamePlayer(), entry.getValue().get());
+            } catch (InterruptedException | ExecutionException ignored) {
+                commands.put(entry.getKey().getGamePlayer(), new DoNothingCommand());
+            }
+        }
+        return commands;
     }
 
     private void startNewRound() {
@@ -143,10 +163,6 @@ public class GameEngineRunner {
 
     public void setGameRoundProcessor(GameRoundProcessor gameRoundProcessor) {
         this.gameRoundProcessor = gameRoundProcessor;
-    }
-
-    private BiConsumer<Player, RawCommand> getPlayerCommandListener() {
-        return (player, command) -> roundProcessor.addPlayerCommand(player, command);
     }
 
     private void publishGameComplete() {
