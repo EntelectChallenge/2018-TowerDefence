@@ -7,6 +7,7 @@ import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -170,30 +171,26 @@ public class TowerDefenseGameMap implements GameMap {
     @Override
     public GamePlayer getWinningPlayer() {
         List<GamePlayer> deadPlayers = getDeadPlayers();
+        List<TowerDefensePlayer> players = getTowerDefensePlayers();
         TowerDefensePlayer winner = null;
+
         if (deadPlayers.size() == 1) {
             try {
                 winner = getPlayerOpponent(((TowerDefensePlayer) deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            for (GamePlayer gamePlayer :
-                    getTowerDefensePlayers()) {
-                TowerDefensePlayer tdPlayer = (TowerDefensePlayer) gamePlayer;
-                if (winner == null) {
-                    winner = tdPlayer;
-                } else {
-                    if (winner.getScore() == tdPlayer.getScore()) {
-                        return null;
-                    }
-                    if (winner.getScore() < tdPlayer.getScore()) {
-                        winner = tdPlayer;
-                    }
-                }
+        } else if (deadPlayers.size() == 0 || deadPlayers.size() == 2) {
+            TowerDefensePlayer playerA = players.get(0);
+            TowerDefensePlayer playerB = players.get(1);
+
+            if (playerA.getScore() != playerB.getScore()) {
+                winner = players.stream()
+                        .max(Comparator.comparingInt(TowerDefensePlayer::getScore))
+                        .get();
             }
         }
 
-        return winner;
+        return winner; // If winner is null, game ended in a tie
     }
 }
