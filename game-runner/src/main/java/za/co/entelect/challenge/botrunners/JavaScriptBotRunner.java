@@ -14,4 +14,9 @@ public class JavaScriptBotRunner extends BotRunner {
         String line = "node \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
+
+    @Override
+    public int getDockerPort() {
+        return 9008;
+    }
 }

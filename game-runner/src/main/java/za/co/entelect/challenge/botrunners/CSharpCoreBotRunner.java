@@ -15,4 +15,9 @@ public class CSharpCoreBotRunner extends BotRunner {
         String line = "dotnet " + this.getBotFileName();
         return RunSimpleCommandLineCommand(line, 0);
     }
+
+    @Override
+    public int getDockerPort() {
+        return 9001;
+    }
 }

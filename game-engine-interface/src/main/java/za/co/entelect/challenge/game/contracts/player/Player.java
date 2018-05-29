@@ -66,12 +66,6 @@ public abstract class Player {
 
     public abstract void gameEnded(GameMap gameMap);
 
-    public abstract void playerKilled(GameMap gameMap);
-
-    public abstract void playerCommandFailed(GameMap gameMap, String reason);
-
-    public abstract void firstRoundFailed(GameMap gameMap, String reason);
-
     public String getName() {
         return name;
     }
