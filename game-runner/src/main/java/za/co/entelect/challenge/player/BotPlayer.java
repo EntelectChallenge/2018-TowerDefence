@@ -61,15 +61,12 @@ public class BotPlayer extends Player {
         //receive response from bot
         String botInput = "";
         File botCommandFile = new File(String.format("%s/%s", botRunner.getBotDirectory(), BOT_COMMAND));
-        Scanner scanner = null;
-        try {
-            scanner = new Scanner(botCommandFile);
+        try (Scanner scanner = new Scanner(botCommandFile)) {
             if (scanner.hasNext()) {
                 botInput = scanner.nextLine();
             }else{
                 botInput = "No Command";
             }
-            scanner.close();
         } catch (FileNotFoundException e) {
             log.info(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
         }
@@ -135,25 +132,5 @@ public class BotPlayer extends Player {
     @Override
     public void gameEnded(GameMap gameMap) {
 
-    }
-
-    @Override
-    public void playerKilled(GameMap gameMap) {
-        log.info(String.format("Player %s has been killed", getName()));
-    }
-
-    @Override
-    public void playerCommandFailed(GameMap gameMap, String reason) {
-        log.info(String.format("Could not process player command: %s", reason));
-    }
-
-    @Override
-    public void firstRoundFailed(GameMap gameMap, String reason) {
-        log.info(reason);
-        log.info("The first round has failed.");
-        log.info("The round will now restart and both players will have to try again");
-        log.info("Press any key to continue");
-
-        scanner.nextLine();
     }
 }

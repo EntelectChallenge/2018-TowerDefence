@@ -5,5 +5,6 @@
   "max-runtime-ms": 2000,
   "player-a": "../starter-bots/java",
   "player-b": "../reference-bot/java",
-  "is-tournament-mode": "false"
+  "is-tournament-mode": "false",
+
 }

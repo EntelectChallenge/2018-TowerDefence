@@ -30,6 +30,8 @@ public abstract class BotRunner {
 
     protected abstract String runBot() throws IOException;
 
+    public abstract int getDockerPort();
+
     public String getBotDirectory(){
         return botMetaData.getBotDirectory();
     }

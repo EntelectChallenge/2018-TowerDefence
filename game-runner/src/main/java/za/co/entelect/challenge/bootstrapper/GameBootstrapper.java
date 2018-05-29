@@ -18,6 +18,7 @@ import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.player.BotPlayer;
 import za.co.entelect.challenge.player.ConsolePlayer;
+import za.co.entelect.challenge.player.TournamentPlayer;
 import za.co.entelect.challenge.utils.FileUtils;
 
 import java.io.*;
@@ -97,8 +98,8 @@ public class GameBootstrapper {
 
         List<Player> players = new ArrayList<>();
 
-        parsePlayer(config.playerAConfig, players, "A", config.maximumBotRuntimeMilliSeconds);
-        parsePlayer(config.playerBConfig, players, "B", config.maximumBotRuntimeMilliSeconds);
+        players.add(parsePlayer(config.playerAConfig, "A", config));
+        players.add(parsePlayer(config.playerBConfig, "B", config));
 
         gameEngineRunner.preparePlayers(players);
         gameEngineRunner.prepareGameMap();
@@ -110,19 +111,22 @@ public class GameBootstrapper {
         }
     }
 
-    private void parsePlayer(String playerConfig, List<Player> players, String playerNumber, int maximumBotRuntimeMilliSeconds) throws Exception {
+    private Player parsePlayer(String playerConfig, String playerNumber, Config config) throws Exception {
         if (playerConfig.equals("console")) {
-            players.add(new ConsolePlayer(String.format("Player %s", playerNumber)));
+            return new ConsolePlayer(String.format("Player %s", playerNumber));
         } else {
             BotMetaData botConfig = getBotMetaData(playerConfig);
-            BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, maximumBotRuntimeMilliSeconds);
+            BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, config.maximumBotRuntimeMilliSeconds);
 
             File botFile = new File(botConfig.getBotDirectory());
             if (!botFile.exists()) {
                 throw new FileNotFoundException(String.format("Could not find %s bot file for %s(%s)", botConfig.getBotLanguage(), botConfig.getAuthor(), botConfig.getNickName()));
             }
-            BotPlayer player = new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
-            players.add(player);
+
+            if(config.isTournamentMode)
+                return new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage());
+            else
+                return new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
         }
     }
 

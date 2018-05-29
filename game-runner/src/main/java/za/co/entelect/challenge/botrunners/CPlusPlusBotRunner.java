@@ -23,4 +23,8 @@ public class CPlusPlusBotRunner extends BotRunner {
         return RunSimpleCommandLineCommand(line, 0);
     }
 
+    @Override
+    public int getDockerPort() {
+        return 9010;
+    }
 }

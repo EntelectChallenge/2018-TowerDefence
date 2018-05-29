@@ -14,4 +14,9 @@ public class GolangBotRunner extends BotRunner {
         String line = "go run \"" + this.getBotDirectory() + "/" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
+
+    @Override
+    public int getDockerPort() {
+        return 9011;
+    }
 }
