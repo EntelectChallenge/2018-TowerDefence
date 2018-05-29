@@ -174,27 +174,23 @@ public class TowerDefenseGameMap implements GameMap {
         List<TowerDefensePlayer> players = getTowerDefensePlayers();
         TowerDefensePlayer winner = null;
 
-        if (deadPlayers.size() == 0 || deadPlayers.size() == 2) {
-            TowerDefensePlayer playerA = players.get(0);
-            TowerDefensePlayer playerB = players.get(1);
-
-            if (playerA.getScore() == playerB.getScore()) {
-                return null; // Game ended in a tie
-            } else {
-                winner = players.stream()
-                        .max(Comparator.comparingInt(TowerDefensePlayer::getScore))
-                        .get();
-            }
-        } else if (deadPlayers.size() == 1) {
+        if (deadPlayers.size() == 1) {
             try {
                 winner = getPlayerOpponent(((TowerDefensePlayer) deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            // TODO: something unexpected happened. Throw exception or something
+        } else if (deadPlayers.size() == 0 || deadPlayers.size() == 2) {
+            TowerDefensePlayer playerA = players.get(0);
+            TowerDefensePlayer playerB = players.get(1);
+
+            if (playerA.getScore() != playerB.getScore()) {
+                winner = players.stream()
+                        .max(Comparator.comparingInt(TowerDefensePlayer::getScore))
+                        .get();
+            }
         }
 
-        return winner;
+        return winner; // If winner is null, game ended in a tie
     }
 }
