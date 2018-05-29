@@ -155,8 +155,13 @@ public class GameEngineRunner {
         }
 
         gameComplete = true;
+        GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
         gameCompleteHandler.accept(gameMap, players);
+
+        if (winningPlayer == null) {
+            // TODO: game ended in a tie, how do we publish this to the tournament?
+        }
     }
 
     private void publishFirstPhaseFailed() {

@@ -152,21 +152,19 @@ public class GameBootstrapper {
 
     private BiConsumer<GameMap, List<Player>> getGameCompleteHandler() {
         return (gameMap, players) -> {
-            Player winner = null;
+            GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
-            GamePlayer winningPlayer = gameEngineRunner.getWinningPlayer();
-            if (winningPlayer == null) {
-                // TODO: this is a tie
-            }
+            Player winner = players.stream()
+                    .filter(p -> p.getGamePlayer() == winningPlayer)
+                    .findFirst().orElse(null);
 
             StringBuilder winnerStringBuilder = new StringBuilder();
-            for (Player player : players) {
 
-                if (player.getGamePlayer() == winningPlayer) {
-                    winner = player;
-                }
-                winnerStringBuilder.append(player.getName() + "- score:" + player.getGamePlayer().getScore()
-                        + " health:" + player.getGamePlayer().getHealth() + "\n");
+            for (Player player : players) {
+                winnerStringBuilder.append(player.getName()
+                        + "- score:" + player.getGamePlayer().getScore()
+                        + " health:" + player.getGamePlayer().getHealth()
+                        + "\n");
             }
 
             log.info("=======================================");

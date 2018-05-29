@@ -179,8 +179,7 @@ public class TowerDefenseGameMap implements GameMap {
             TowerDefensePlayer playerB = players.get(1);
 
             if (playerA.getScore() == playerB.getScore()) {
-                // TODO: its a tie
-                return null;
+                return null; // Game ended in a tie
             } else {
                 winner = players.stream()
                         .max(Comparator.comparingInt(TowerDefensePlayer::getScore))
@@ -193,7 +192,7 @@ public class TowerDefenseGameMap implements GameMap {
                 e.printStackTrace();
             }
         } else {
-            // TODO: something unexpected happened
+            // TODO: something unexpected happened. Throw exception or something
         }
 
         return winner;
