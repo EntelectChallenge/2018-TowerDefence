@@ -23,6 +23,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
         stringBuilder.append("XXXXXXXXX GAME INFO XXXXXXXXX\n");
         stringBuilder.append("Round Number : " + gameMap.getCurrentRound() + "\n");
+        stringBuilder.append("Maximum Amount Of Rounds : " + GameConfig.getMaxRounds() + "\n");
         stringBuilder.append("Map Width : " + GameConfig.getMapWidth() + "\n");
         stringBuilder.append("Map Height : " + GameConfig.getMapHeight() + "\n");
         stringBuilder.append("Round Income Energy : " + GameConfig.getRoundIncomeEnergy() + "\n");
