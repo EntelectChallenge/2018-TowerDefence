@@ -9,6 +9,7 @@ import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.entities.TowerDefensePlayer;
 import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.enums.PlayerType;
+import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
@@ -16,7 +17,6 @@ import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.IntStream;
 
@@ -25,7 +25,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private TowerDefenseGameMap towerDefenseGameMap;
 
     @Override
-    public boolean processRound(GameMap gameMap, Hashtable<GamePlayer, RawCommand> commands) {
+    public boolean processRound(GameMap gameMap, Map<GamePlayer, RawCommand> commands) {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
 
@@ -59,7 +59,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void processCommands(Hashtable<GamePlayer, RawCommand> commands) {
+    private void processCommands(Map<GamePlayer, RawCommand> commands) {
         for (Map.Entry<GamePlayer, RawCommand> gamePlayerCommandEntry : commands.entrySet()) {
             GamePlayer player = gamePlayerCommandEntry.getKey();
             RawCommand command = gamePlayerCommandEntry.getValue();

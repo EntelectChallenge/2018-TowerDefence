@@ -1,11 +1,8 @@
 package za.co.entelect.challenge.game.contracts.player;
 
-import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
-
-import java.util.function.BiConsumer;
 
 /**
  * The base class for all players/test harnesses of the game to extend.
@@ -42,14 +39,6 @@ public abstract class Player {
         this.name = name;
     }
 
-    public void playerRegistered(GamePlayer gamePlayer) {
-        this.gamePlayer = gamePlayer;
-    }
-
-    public void publishCommand(RawCommand command) {
-        publishCommandHandler.accept(this, command);
-    }
-
     public void roundComplete(GameMap gameMap, int round) {
     }
 
@@ -58,11 +47,7 @@ public abstract class Player {
         return String.format("Player{name='%s'}", name);
     }
 
-    public BiConsumer<Player, RawCommand> publishCommandHandler;
-
-    public abstract void startGame(GameMap gameMap);
-
-    public abstract void newRoundStarted(GameMap gameMap);
+    public abstract RawCommand getPlayerCommand(GameMap gameMap);
 
     public abstract void gameEnded(GameMap gameMap);
 
