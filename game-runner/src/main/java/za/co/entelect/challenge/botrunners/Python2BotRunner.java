@@ -17,7 +17,7 @@ public class Python2BotRunner extends BotRunner {
         if(System.getProperty("os.name").contains("Windows")) {
             line = "py -2 \"" + this.getBotFileName() + "\"";
         } else {
-            line = "python2 \"" + this.getBotFileName() + "\"";
+            line = "python \"" + this.getBotFileName() + "\"";
         }
 
         return RunSimpleCommandLineCommand(line, 0);
