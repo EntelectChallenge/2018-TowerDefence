@@ -40,7 +40,7 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
             return gson.toJson(container);
         }
 
-        log.error("The gamemmap must be an instance of the tower defence fame map");
+        log.error("The gamemmap must be an instance of the tower defence game map");
         return "";
     }
 
