@@ -127,7 +127,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
             stringBuilder.append("[").append(presentedMissile.getX()).append(",").append(presentedMissile.getY()).append("] ");
             stringBuilder.append(presentedMissile.getPlayerType()).append("|");
-            stringBuilder.append(presentedMissile.getDamage()).append("\n");
+            stringBuilder.append(presentedMissile.getDamage()).append("|");
             stringBuilder.append(presentedMissile.getSpeed()).append("\n");
         }
         stringBuilder.append("###############################\n");
