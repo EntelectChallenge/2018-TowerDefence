@@ -1,7 +1,8 @@
 package za.co.entelect.challenge.core.renderers;
 
 import com.google.gson.Gson;
-import za.co.entelect.challenge.core.entities.CellStateContainer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.core.entities.PlayerData;
 import za.co.entelect.challenge.core.entities.TowerDefenseJsonContainer;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
@@ -17,6 +18,8 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
 
     private TowerDefenseGameMap towerDefenseGameMap;
 
+    private static final Logger log = LogManager.getLogger(TowerDefenseJsonGameMapRenderer.class);
+
     @Override
     public String render(GameMap gameMap, GamePlayer player) {
         if(gameMap instanceof TowerDefenseGameMap) {
@@ -31,13 +34,13 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
                 container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound());
             }
             if (container == null){
-                //TODO: throw error (we need to add error handling on GameMapRenderer)
+               log.error("The container cannot be empty.");
                 return "";
             }
             return gson.toJson(container);
         }
 
-        //TODO: throw exception
+        log.error("The gamemmap must be an instance of the tower defence game map");
         return "";
     }
 

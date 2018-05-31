@@ -14,6 +14,8 @@ import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandExceptio
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class TowerDefenseRoundProcessor implements GameRoundProcessor {
+
+    private static final Logger log = LogManager.getLogger(TowerDefenseRoundProcessor.class);
 
     private TowerDefenseGameMap towerDefenseGameMap;
 
@@ -70,7 +74,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private int getBuildingGeneratedEnergyForPlayer(PlayerType player) {
         return towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.getPlayerType() == player && b.isConstructed())
-                .mapToInt(b -> b.getEnergyGeneratedPerTurn())
+                .mapToInt(Building::getEnergyGeneratedPerTurn)
                 .sum();
     }
 
@@ -82,7 +86,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                     try {
                         p.addEnergy(energy);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error(e);
                     }
                     p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                 });
@@ -118,7 +122,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                                                 try {
                                                     missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
                                                 } catch (Exception e) {
-                                                    e.printStackTrace();
+                                                    log.error(e);
                                                 }
                                                 b.damageSelf(missile, missileOwner);
                                             });
@@ -156,21 +160,27 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse command entries, all parameters should be integers. Received:%s",
                     commandSting), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
         } catch (InvalidCommandException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(
                     "Invalid command received: " + e.getMessage(), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
         } catch (IndexOutOfBoundsException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
         }
     }
-
-
 }

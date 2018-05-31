@@ -3,10 +3,13 @@ package za.co.entelect.challenge.config;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class GameConfig {
 
     private static Configuration configuration;
+    private static final Logger log = LogManager.getLogger(GameConfig.class);
 
     public static void initConfig(String configLocation) {
         if (configuration == null) {
@@ -16,6 +19,7 @@ public class GameConfig {
                 configuration = configurations.properties(configLocation);
 
             } catch (ConfigurationException e) {
+                log.error("Unable to initialise configuration, please have a look at the inner exception.", e);
                 throw new RuntimeException("Unable to initialise configuration, please have a look at the inner exception.", e);
             }
         }
