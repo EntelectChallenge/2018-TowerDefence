@@ -11,12 +11,16 @@ import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PlaceBuildingCommand extends RawCommand {
 
     private int positionX;
     private int positionY;
     private BuildingType buildingType;
+
+    private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
 
     public PlaceBuildingCommand(int positionX, int positionY, BuildingType buildingType) {
         this.positionX = positionX;
@@ -33,7 +37,9 @@ public class PlaceBuildingCommand extends RawCommand {
         int mapHeight = GameConfig.getMapHeight();
 
         if ((positionX >= (mapWidth / 2) || positionX < 0) || (positionY >= (mapHeight) || positionY < 0)) {
-            throw new InvalidCommandException(String.format("The position is out of bounds x:[%d] y:[%d]", positionX, positionY));
+            String errorString = String.format("The position is out of bounds x:[%d] y:[%d]", positionX, positionY);
+            log.error(errorString);
+            throw new InvalidCommandException(errorString);
         }
 
         mirrorXIndex(currentPlayer.getPlayerType());
@@ -54,7 +60,7 @@ public class PlaceBuildingCommand extends RawCommand {
             try {
                 currentPlayer.removeEnergy(buildingToAdd.getPrice());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
         } else {
             throw new InvalidCommandException(String.format("You don't have enough energy to build this building. Required:[%d], Current:[%d]",

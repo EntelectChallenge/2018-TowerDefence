@@ -176,8 +176,10 @@ instance ToJSON BuildingPriceIndex where
             "ENERGY"  .= energyCost]
 
 data GameDetails = GameDetails { round          :: Int,
+                                 maxRounds      :: Int,
                                  mapWidth       :: Int,
                                  mapHeight      :: Int,
+                                 roundIncomeEnergy :: Int,
                                  buildingPrices :: BuildingPriceIndex }
                    deriving (Show, Generic, Eq)
 

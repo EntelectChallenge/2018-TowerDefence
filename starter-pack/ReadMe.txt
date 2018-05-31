@@ -12,12 +12,12 @@
 | |____| |  | |/ ____ \| |____| |____| |____| |\  | |__| | |____ 
  \_____|_|  |_/_/    \_\______|______|______|_| \_|\_____|______|
 
- __       __       __ 
-/_ |     /_ |     /_ |
- | |      | |      | |
- | |      | |      | |
- | |  _   | |  _   | |
- |_| (_)  |_| (_)  |_|
+ __       __       ___  
+/_ |     /_ |     |__ \ 
+ | |      | |        ) |
+ | |      | |       / / 
+ | |  _   | |  _   / /_ 
+ |_| (_)  |_| (_) |____|
 
 
 Welcome to the starter pack for the 2018 Entelect Challenge!
@@ -79,7 +79,6 @@ To change the bots that play in the match, replace the "player-a" value in the "
 
 Java            => "java"
 C# (.net core)  => "c#core"
-Python2         => "python2"
 Python3         => "python3"
 Javascript      => "javascript"
 Rust            => "rust"
@@ -88,6 +87,7 @@ Kotlin          => "kotlin"
 Golang          => "golang"
 Haskell         => "haskell"
 PHP             => "php"
+LISP            => "lisp"
 
 
 
@@ -160,3 +160,7 @@ Haskell bots
 PHP bots
     For more info on the PHP bot, see the readme file or contact the person who submitted the bot, PuffyZA (on GitHub)
     [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/php]
+
+LISP bots
+    For more info on the LISP bot, see the readme file or contact the person who submitted the bot, HenryS1 (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/common-lisp]

@@ -17,7 +17,7 @@ public class Python3BotRunner extends BotRunner {
         if(System.getProperty("os.name").contains("Windows")) {
             line = "py -3 \"" + this.getBotFileName() + "\"";
         } else {
-            line = "python3 \"" + this.getBotFileName() + "\"";
+            line = "python \"" + this.getBotFileName() + "\"";
         }
 
         return RunSimpleCommandLineCommand(line, 0);

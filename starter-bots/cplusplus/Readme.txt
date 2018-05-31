@@ -7,6 +7,8 @@ compile.bat needs to be updated to your local MinGW path
 
 C++ Source code: samplebot.cpp 
 Compile with : compile.bat
+	- Do not add full path too g++ compiler in compile.bat, for bot uploads. E.g.
+		g++.exe -Wall samplebot.cpp -o samplebot.exe
 Run bot : samplebot.exe
 
 I'm using the TextMap.txt, haven't used json before.

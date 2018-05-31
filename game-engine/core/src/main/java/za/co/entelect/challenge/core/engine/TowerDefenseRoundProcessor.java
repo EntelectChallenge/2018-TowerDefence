@@ -14,6 +14,8 @@ import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandExceptio
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.stream.IntStream;
 
 public class TowerDefenseRoundProcessor implements GameRoundProcessor {
+
+    private static final Logger log = LogManager.getLogger(TowerDefenseRoundProcessor.class);
 
     private TowerDefenseGameMap towerDefenseGameMap;
 
@@ -70,21 +74,21 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private int getBuildingGeneratedEnergyForPlayer(PlayerType player) {
         return towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.getPlayerType() == player && b.isConstructed())
-                .mapToInt(b -> b.getEnergyGeneratedPerTurn())
+                .mapToInt(Building::getEnergyGeneratedPerTurn)
                 .sum();
     }
 
     private void addResources() {
         towerDefenseGameMap.getTowerDefensePlayers()
                 .forEach(p -> {
+                    int energy = GameConfig.getRoundIncomeEnergy()
+                            + getBuildingGeneratedEnergyForPlayer(p.getPlayerType());
                     try {
-                        int energy = GameConfig.getRoundIncomeEnergy()
-                                + getBuildingGeneratedEnergyForPlayer(p.getPlayerType());
                         p.addEnergy(energy);
-                        p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error(e);
                     }
+                    p.addScore(energy * GameConfig.getEnergyScoreMultiplier());
                 });
     }
 
@@ -103,24 +107,26 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     private void calculateMissileMovement() {
-
         towerDefenseGameMap.getMissiles()
-                .forEach(missile -> IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
-                        .forEach(i -> {
-                            try {
-                                towerDefenseGameMap.moveMissileSingleSpace(missile);
-                                towerDefenseGameMap.getBuildings().stream()
-                                        .filter(b -> b.isConstructed() && positionMatch(missile, b))
-                                        .findAny()
-                                        .ifPresent(b -> {
-                                            b.damageSelf(missile);
-                                            towerDefenseGameMap.getPlayerByStream(missile.getPlayerType())
-                                                    .forEach(player -> player.addScore(b.getDestroyMultiplier() * missile.getDamage()));
-                                        });
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        })
+                .forEach(missile ->
+                        IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
+                                .forEach(i -> {
+                                    towerDefenseGameMap.moveMissileSingleSpace(missile);
+                                    towerDefenseGameMap.getBuildings().stream()
+                                            .filter(b -> b.isConstructed()
+                                                    && positionMatch(missile, b)
+                                                    && !b.isPlayers(missile.getPlayerType())
+                                                    && b.getHealth() > 0)
+                                            .forEach(b -> {
+                                                TowerDefensePlayer missileOwner = null;
+                                                try {
+                                                    missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
+                                                } catch (Exception e) {
+                                                    log.error(e);
+                                                }
+                                                b.damageSelf(missile, missileOwner);
+                                            });
+                                })
                 );
     }
 
@@ -154,21 +160,27 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse command entries, all parameters should be integers. Received:%s",
                     commandSting), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (InvalidCommandException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(
                     "Invalid command received: " + e.getMessage(), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (IndexOutOfBoundsException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
+
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         }
     }
-
-
 }

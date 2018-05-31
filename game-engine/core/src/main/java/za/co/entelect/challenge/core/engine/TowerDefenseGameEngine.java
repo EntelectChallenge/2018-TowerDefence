@@ -14,11 +14,6 @@ public class TowerDefenseGameEngine implements GameEngine {
     @Override
     public boolean isGameComplete(GameMap gameMap) {
         TowerDefenseGameMap towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
-        if (gameMap.getCurrentRound() > GameConfig.getMaxRounds()) {
-            return true;
-        }
-
-        return (towerDefenseGameMap.getDeadPlayers().size() > 0);
+        return gameMap.getCurrentRound() > GameConfig.getMaxRounds() || (towerDefenseGameMap.getDeadPlayers().size() > 0);
     }
-
 }

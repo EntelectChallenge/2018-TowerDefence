@@ -11,6 +11,7 @@ import java.util.HashMap;
 public class GameDetails {
 
     private int round;
+    private int maxRounds;
     private int mapWidth;
     private int mapHeight;
     private int roundIncomeEnergy;
@@ -22,6 +23,7 @@ public class GameDetails {
 
     public GameDetails(int round) {
         this.round = round;
+        this.maxRounds = GameConfig.getMaxRounds();
         this.mapWidth = GameConfig.getMapWidth();
         this.mapHeight = GameConfig.getMapHeight();
         this.roundIncomeEnergy = GameConfig.getRoundIncomeEnergy();

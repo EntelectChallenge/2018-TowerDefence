@@ -52,7 +52,7 @@ indexOfFirstEmpty (GameState {gameMap = gameMap'}) =
   fmap yPos . find (cellIsEmpty &&& cellBelongsToMe) . (gameMap' !!)
 
 defendAttack :: GameState -> Maybe (Int, Int, BuildingType)
-defendAttack state@(GameState _ _ (GameDetails _ _ height _)) = do
+defendAttack state@(GameState _ _ (GameDetails _ _ _ height _ _)) = do
   x <- find rowUnderAttack [0..height - 1]
   y <- indexOfFirstEmpty state x
   return (x, y, DEFENSE)

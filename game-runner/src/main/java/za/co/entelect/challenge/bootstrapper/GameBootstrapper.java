@@ -13,6 +13,7 @@ import za.co.entelect.challenge.core.engine.TowerDefenseGameMapGenerator;
 import za.co.entelect.challenge.core.engine.TowerDefenseRoundProcessor;
 import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.entities.BotMetaData;
+import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.player.BotPlayer;
@@ -28,8 +29,9 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class GameBootstrapper {
+
     private static final Logger log = LogManager.getLogger(GameBootstrapper.class);
-    
+
     private GameEngineRunner gameEngineRunner;
     private static String gameName;
 
@@ -105,6 +107,11 @@ public class GameBootstrapper {
         } else {
             BotMetaData botConfig = getBotMetaData(playerConfig);
             BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, maximumBotRuntimeMilliSeconds);
+
+            File botFile = new File(botConfig.getBotDirectory());
+            if (!botFile.exists()) {
+                throw new FileNotFoundException(String.format("Could not find %s bot file for %s(%s)", botConfig.getBotLanguage(), botConfig.getAuthor(), botConfig.getNickName()));
+            }
             BotPlayer player = new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
             players.add(player);
         }
@@ -145,33 +152,36 @@ public class GameBootstrapper {
 
     private BiConsumer<GameMap, List<Player>> getGameCompleteHandler() {
         return (gameMap, players) -> {
-            Player winner = null;
+            GamePlayer winningPlayer = gameMap.getWinningPlayer();
+
+            Player winner = players.stream()
+                    .filter(p -> p.getGamePlayer() == winningPlayer)
+                    .findFirst().orElse(null);
+
             StringBuilder winnerStringBuilder = new StringBuilder();
-            for (Player player :
-                    players) {
-                if (player.getGamePlayer() == gameEngineRunner.getWinningPlayer()) {
-                    winner = player;
-                }
-                winnerStringBuilder.append(player.getName() + "- score:" + player.getGamePlayer().getScore()
-                        + " health:" + player.getGamePlayer().getHealth() + "\n");
+
+            for (Player player : players) {
+                winnerStringBuilder.append(player.getName()
+                        + "- score:" + player.getGamePlayer().getScore()
+                        + " health:" + player.getGamePlayer().getHealth()
+                        + "\n");
             }
 
-            if (winner == null) {
-                log.info("=======================================");
-                log.info("The game ended in a tie");
-                log.info("=======================================");
-            } else {
-                log.info("=======================================");
-                log.info("The winner is: " + winner.getName());
-                log.info("=======================================");
-            }
+            log.info("=======================================");
+            log.info((winner == null)
+                    ? "The game ended in a tie"
+                    : "The winner is: " + winner.getName());
+            log.info("=======================================");
 
-            BufferedWriter bufferedWriter = null;
             try {
                 String roundLocation = String.format("%s/%s/endGameState.txt", gameName, FileUtils.getRoundDirectory(gameMap.getCurrentRound() - 1));
-                bufferedWriter = new BufferedWriter(new FileWriter(new File(roundLocation)));
+                BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(roundLocation)));
 
-                winnerStringBuilder.insert(0, "The winner is: " + winner.getName() + "\n\n");
+                if (winner == null) {
+                    winnerStringBuilder.insert(0, "The game ended in a tie" + "\n\n");
+                } else {
+                    winnerStringBuilder.insert(0, "The winner is: " + winner.getName() + "\n\n");
+                }
 
                 bufferedWriter.write(winnerStringBuilder.toString());
                 bufferedWriter.flush();

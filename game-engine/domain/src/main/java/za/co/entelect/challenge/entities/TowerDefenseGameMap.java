@@ -1,5 +1,6 @@
 package za.co.entelect.challenge.entities;
 
+import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.Direction;
 import za.co.entelect.challenge.enums.PlayerType;
@@ -7,10 +8,14 @@ import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class TowerDefenseGameMap implements GameMap {
 
@@ -19,6 +24,8 @@ public class TowerDefenseGameMap implements GameMap {
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<String> errorList = new ArrayList<>();
     private int currentRound;
+
+    private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
 
     public List<TowerDefensePlayer> getTowerDefensePlayers() {
         return towerDefensePlayers;
@@ -82,15 +89,17 @@ public class TowerDefenseGameMap implements GameMap {
         try {
             getPlayer(building.getPlayerType()).addScore(building.getConstructionScore());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
     public void removeBuilding(Building building) {
         buildings.remove(building);
-        towerDefensePlayers.stream()
-                .filter(p -> !building.isPlayers(p.getPlayerType()))
-                .forEach(p -> p.addScore(building.getDestroyMultiplier()));
+        try {
+            getPlayerOpponent(building.getPlayerType()).addScore(building.getDestroyMultiplier());
+        } catch (Exception e) {
+            log.error(e);
+        }
     }
 
     public void addMissileFromBuilding(Building b) {
@@ -118,14 +127,29 @@ public class TowerDefenseGameMap implements GameMap {
         this.missiles.remove(missile);
     }
 
-    public void moveMissileSingleSpace(Missile p) throws Exception {
+    public void moveMissileSingleSpace(Missile p) {
         int newPosition = p.getX() + (p.getDirection().getMultiplier());
 
         boolean homeBaseIsHit = (newPosition < 0 || newPosition >= GameConfig.getMapWidth());
         if (homeBaseIsHit) {
-            TowerDefensePlayer opponent = getPlayerOpponent(p.playerType);
-            TowerDefensePlayer missileOwner = getPlayer(p.playerType);
-            opponent.takesHitByPlayer(p, missileOwner);
+
+            TowerDefensePlayer opponent = null;
+            try {
+                opponent = getPlayerOpponent(p.playerType);
+            } catch (Exception e) {
+                log.error(e);
+            }
+
+            TowerDefensePlayer missileOwner = null;
+            try {
+                missileOwner = getPlayer(p.playerType);
+            } catch (Exception e) {
+               log.error(e);
+            }
+
+            if (opponent != null) {
+                opponent.takesHitByPlayer(p, missileOwner);
+            }
 
             p.setSpeed(0);
         }
@@ -153,30 +177,26 @@ public class TowerDefenseGameMap implements GameMap {
     @Override
     public GamePlayer getWinningPlayer() {
         List<GamePlayer> deadPlayers = getDeadPlayers();
+        List<TowerDefensePlayer> players = getTowerDefensePlayers();
         TowerDefensePlayer winner = null;
+
         if (deadPlayers.size() == 1) {
             try {
                 winner = getPlayerOpponent(((TowerDefensePlayer) deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
-        } else {
-            for (GamePlayer gamePlayer :
-                    getTowerDefensePlayers()) {
-                TowerDefensePlayer tdPlayer = (TowerDefensePlayer) gamePlayer;
-                if (winner == null) {
-                    winner = tdPlayer;
-                } else {
-                    if (winner.getScore() == tdPlayer.getScore()) {
-                        return null;
-                    }
-                    if (winner.getScore() < tdPlayer.getScore()) {
-                        winner = tdPlayer;
-                    }
-                }
+        } else if (deadPlayers.size() == 0 || deadPlayers.size() == 2) {
+            TowerDefensePlayer playerA = players.get(0);
+            TowerDefensePlayer playerB = players.get(1);
+
+            if (playerA.getScore() != playerB.getScore()) {
+                winner = players.stream()
+                        .max(Comparator.comparingInt(TowerDefensePlayer::getScore))
+                        .get();
             }
         }
 
-        return winner;
+        return winner; // If winner is null, game ended in a tie
     }
 }

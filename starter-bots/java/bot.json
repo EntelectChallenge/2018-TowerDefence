@@ -3,6 +3,6 @@
 	"email": "john.doe@example.com",
 	"nickName": "James",
 	"botLocation": "/target",
-	"botFileName": "java-sample-bot-1.0-SNAPSHOT-jar-with-dependencies.jar",
+	"botFileName": "java-sample-bot-jar-with-dependencies.jar",
 	"botLanguage": "java"
 }
