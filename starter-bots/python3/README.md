@@ -3,7 +3,7 @@
 ## Python Installation:
 
 	Simply download the desired version of Python and OS from https://www.python.org/downloads/ 
-		- 3.6.x for Python3 Bots
+		- 3.6.x for Python 3 Bots
 		- 2.7.x for Python 2 Bots
 		
 	If you plan on using Anaconda, or any other python distribution,
