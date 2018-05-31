@@ -161,26 +161,26 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                     "Unable to parse command entries, all parameters should be integers. Received:%s",
                     commandSting), towerDefensePlayer);
 
-            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
-            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (InvalidCommandException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(
                     "Invalid command received: " + e.getMessage(), towerDefensePlayer);
 
-            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         } catch (IndexOutOfBoundsException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Out of map bounds, X:%s Y: %s", commandLine[0], commandLine[1]), towerDefensePlayer);
 
-            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size()));
+            log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
         }
     }
 }
