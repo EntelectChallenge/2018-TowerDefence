@@ -1,6 +1,5 @@
 package za.co.entelect.challenge.core.engine;
 
-import org.apache.log4j.BasicConfigurator;
 import za.co.entelect.challenge.commands.DoNothingCommand;
 import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
@@ -31,27 +30,17 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
     @Override
     public boolean processRound(GameMap gameMap, Hashtable<GamePlayer, RawCommand> commands) {
-        log.info(1.1);
-        log.info(String.format("Starting round: %s", gameMap.getCurrentRound()));
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
 
-        log.info(String.format("Step 1 - Processing Commands for round: %s", gameMap.getCurrentRound()));
         processCommands(commands);
 
-        log.info(String.format("Step 2 - Constructing buildings for round: %s", gameMap.getCurrentRound()));
         constructBuildings();
 
-        log.info(String.format("Step 3 - Generating missiles for round %s", gameMap.getCurrentRound()));
         createMissilesFromGuns();
-
-        log.info(String.format("Step 4 - Moving missiles for round %s", gameMap.getCurrentRound()));
         calculateMissileMovement();
-
-        log.info(String.format("Step 5 - Remove dead entities for round %s", gameMap.getCurrentRound()));
         removeDeadEntities();
 
-        log.info(String.format("Step 6 - Adding resources for round %s", gameMap.getCurrentRound()));
         addResources();
 
         return true;
