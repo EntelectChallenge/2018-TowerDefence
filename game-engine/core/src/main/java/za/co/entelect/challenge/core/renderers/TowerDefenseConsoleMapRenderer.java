@@ -3,6 +3,7 @@ package za.co.entelect.challenge.core.renderers;
 import org.apache.commons.lang3.StringUtils;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.entities.ThreeEntityCell;
+import za.co.entelect.challenge.entities.Building;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.entities.TowerDefensePlayer;
 import za.co.entelect.challenge.enums.Direction;
@@ -10,6 +11,8 @@ import za.co.entelect.challenge.enums.PlayerType;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +48,8 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
     public static final String ANSI_PURPLE_BACKGROUND = "";
     public static final String ANSI_CYAN_BACKGROUND = "";
 
+    private static final Logger log = LogManager.getLogger(TowerDefenseConsoleMapRenderer.class);
+
     @Override
     public String render(GameMap gameMap, GamePlayer player) {
         if (gameMap instanceof TowerDefenseGameMap) {
@@ -53,7 +58,7 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
             return renderMap(towerDefenseGameMap);
         }
 
-        //TODO: throw exception
+        log.error("The game map is not a TowerDefenseGameMap");
         return "";
     }
 
@@ -82,7 +87,7 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
                 );
 
         towerDefenseGameMap.getBuildings()
-                .forEach(b -> {
+                .forEach((Building b) -> {
                     String icon = b.isConstructed() ? b.getIcon() : b.getIcon().toLowerCase();
                     outputMap[b.getY()][b.getX()].setMiddle(
                             wrapPlayerColour(icon, b.getPlayerType())
@@ -115,20 +120,12 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
             towerDefensePlayerA = towerDefenseGameMap.getPlayer(PlayerType.A);
             towerDefensePlayerB = towerDefenseGameMap.getPlayer(PlayerType.B);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
-        outputString.append(ANSI_BLUE_BRIGHT +
-                "Player " + towerDefensePlayerA.getPlayerType()
-                + " Health=" + towerDefensePlayerA.getHealth()
-                + ", Energy=" + towerDefensePlayerA.getEnergy()
-                + ", Score=" + towerDefensePlayerA.getScore() + ANSI_RESET);
+        outputString.append(ANSI_BLUE_BRIGHT + "Player ").append(towerDefensePlayerA.getPlayerType()).append(" Health=").append(towerDefensePlayerA.getHealth()).append(", Energy=").append(towerDefensePlayerA.getEnergy()).append(", Score=").append(towerDefensePlayerA.getScore()).append(ANSI_RESET);
         outputString.append("\n");
-        outputString.append(ANSI_RED_BRIGHT +
-                "Player " + towerDefensePlayerB.getPlayerType()
-                + " Health=" + towerDefensePlayerB.getHealth()
-                + ", Energy=" + towerDefensePlayerB.getEnergy()
-                + ", Score=" + towerDefensePlayerB.getScore() + ANSI_RESET);
+        outputString.append(ANSI_RED_BRIGHT + "Player ").append(towerDefensePlayerB.getPlayerType()).append(" Health=").append(towerDefensePlayerB.getHealth()).append(", Energy=").append(towerDefensePlayerB.getEnergy()).append(", Score=").append(towerDefensePlayerB.getScore()).append(ANSI_RESET);
 
         outputString.append("\n");
 

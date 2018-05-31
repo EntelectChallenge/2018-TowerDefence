@@ -1,5 +1,7 @@
 package za.co.entelect.challenge.core.renderers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.entities.CellStateContainer;
 import za.co.entelect.challenge.entities.*;
@@ -14,6 +16,8 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
     private TowerDefenseGameMap tdMap;
 
+    private static final Logger log = LogManager.getLogger(TowerDefenseTextMapRenderer.class);
+
     @Override
     public String render(GameMap gameMap, GamePlayer gamePlayer) {
         tdMap = (TowerDefenseGameMap) gameMap;
@@ -22,19 +26,19 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("XXXXXXXXX GAME INFO XXXXXXXXX\n");
-        stringBuilder.append("Round Number : " + gameMap.getCurrentRound() + "\n");
-        stringBuilder.append("Maximum Amount Of Rounds : " + GameConfig.getMaxRounds() + "\n");
-        stringBuilder.append("Map Width : " + GameConfig.getMapWidth() + "\n");
-        stringBuilder.append("Map Height : " + GameConfig.getMapHeight() + "\n");
-        stringBuilder.append("Round Income Energy : " + GameConfig.getRoundIncomeEnergy() + "\n");
+        stringBuilder.append("Round Number : ").append(gameMap.getCurrentRound()).append("\n");
+        stringBuilder.append("Maximum Amount Of Rounds : ").append(GameConfig.getMaxRounds()).append("\n");
+        stringBuilder.append("Map Width : ").append(GameConfig.getMapWidth()).append("\n");
+        stringBuilder.append("Map Height : ").append(GameConfig.getMapHeight()).append("\n");
+        stringBuilder.append("Round Income Energy : ").append(GameConfig.getRoundIncomeEnergy()).append("\n");
         stringBuilder.append("XXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n");
         stringBuilder.append("\n");
 
         stringBuilder.append("****** BUILDING STATS ******\n");
-        stringBuilder.append("type;" + BuildingStats.getTextHeader() + "\n");
-        stringBuilder.append("ATTACK;" + BuildingFactory.createBuildingStats(BuildingType.ATTACK) + "\n");
-        stringBuilder.append("DEFENSE;" + BuildingFactory.createBuildingStats(BuildingType.DEFENSE) + "\n");
-        stringBuilder.append("ENERGY;" + BuildingFactory.createBuildingStats(BuildingType.ENERGY) + "\n");
+        stringBuilder.append("type;").append(BuildingStats.getTextHeader()).append("\n");
+        stringBuilder.append("ATTACK;").append(BuildingFactory.createBuildingStats(BuildingType.ATTACK)).append("\n");
+        stringBuilder.append("DEFENSE;").append(BuildingFactory.createBuildingStats(BuildingType.DEFENSE)).append("\n");
+        stringBuilder.append("ENERGY;").append(BuildingFactory.createBuildingStats(BuildingType.ENERGY)).append("\n");
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 
@@ -49,22 +53,22 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
                 playerB = tdMap.getPlayer(PlayerType.A);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         stringBuilder.append("---------- PLAYER A ----------\n");
-        stringBuilder.append("Energy : " + playerA.getEnergy() + "\n");
-        stringBuilder.append("Health : " + playerA.getHealth() + "\n");
-        stringBuilder.append("HitsTaken : " + playerA.getHitsTaken() + "\n");
-        stringBuilder.append("Score : " + playerA.getScore() + "\n");
+        stringBuilder.append("Energy : ").append(playerA.getEnergy()).append("\n");
+        stringBuilder.append("Health : ").append(playerA.getHealth()).append("\n");
+        stringBuilder.append("HitsTaken : ").append(playerA.getHitsTaken()).append("\n");
+        stringBuilder.append("Score : ").append(playerA.getScore()).append("\n");
         stringBuilder.append("------------------------------\n");
         stringBuilder.append("\n");
 
         stringBuilder.append("---------- PLAYER B ----------\n");
-        stringBuilder.append("Energy : " + playerB.getEnergy() + "\n");
-        stringBuilder.append("Health : " + playerB.getHealth() + "\n");
-        stringBuilder.append("HitsTaken : " + playerB.getHitsTaken() + "\n");
-        stringBuilder.append("Score : " + playerB.getScore() + "\n");
+        stringBuilder.append("Energy : ").append(playerB.getEnergy()).append("\n");
+        stringBuilder.append("Health : ").append(playerB.getHealth()).append("\n");
+        stringBuilder.append("HitsTaken : ").append(playerB.getHitsTaken()).append("\n");
+        stringBuilder.append("Score : ").append(playerB.getScore()).append("\n");
         stringBuilder.append("------------------------------\n");
         stringBuilder.append("\n");
 
@@ -97,14 +101,14 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
                 presentedBuilding = presentedBuilding.getInvertedXInstance();
             }
 
-            stringBuilder.append("[" + presentedBuilding.getX() + "," + presentedBuilding.getY() + "] ");
-            stringBuilder.append(presentedBuilding.getPlayerType() + "|");
-            stringBuilder.append(presentedBuilding.getBuildingType() + "|");
-            stringBuilder.append(presentedBuilding.getConstructionTimeLeft() + "|");
-            stringBuilder.append(presentedBuilding.getHealth() + "|");
-            stringBuilder.append(presentedBuilding.getWeaponCooldownTimeLeft() + "|");
-            stringBuilder.append(presentedBuilding.getWeaponDamage() + "|");
-            stringBuilder.append(presentedBuilding.getEnergyGeneratedPerTurn() + "\n");
+            stringBuilder.append("[").append(presentedBuilding.getX()).append(",").append(presentedBuilding.getY()).append("] ");
+            stringBuilder.append(presentedBuilding.getPlayerType()).append("|");
+            stringBuilder.append(presentedBuilding.getBuildingType()).append("|");
+            stringBuilder.append(presentedBuilding.getConstructionTimeLeft()).append("|");
+            stringBuilder.append(presentedBuilding.getHealth()).append("|");
+            stringBuilder.append(presentedBuilding.getWeaponCooldownTimeLeft()).append("|");
+            stringBuilder.append(presentedBuilding.getWeaponDamage()).append("|");
+            stringBuilder.append(presentedBuilding.getEnergyGeneratedPerTurn()).append("\n");
         }
         stringBuilder.append("###############################\n");
         stringBuilder.append('\n');
@@ -121,10 +125,10 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
                 presentedMissile = presentedMissile.getInvertedXInstance();
             }
 
-            stringBuilder.append("[" + presentedMissile.getX() + "," + presentedMissile.getY() + "] ");
-            stringBuilder.append(presentedMissile.getPlayerType() + "|");
-            stringBuilder.append(presentedMissile.getDamage() + "\n");
-            stringBuilder.append(presentedMissile.getSpeed() + "\n");
+            stringBuilder.append("[").append(presentedMissile.getX()).append(",").append(presentedMissile.getY()).append("] ");
+            stringBuilder.append(presentedMissile.getPlayerType()).append("|");
+            stringBuilder.append(presentedMissile.getDamage()).append("\n");
+            stringBuilder.append(presentedMissile.getSpeed()).append("\n");
         }
         stringBuilder.append("###############################\n");
 
@@ -136,7 +140,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
         for (int x = 0; x < row.length; x++) {
             stringBuilderRow.append("[");
-            stringBuilderRow.append(x + "," + y + ",");
+            stringBuilderRow.append(x).append(",").append(y).append(",");
 
             if (row[x].buildings.size() > 0) {
                 Building building = row[x].buildings.get(0);
@@ -157,7 +161,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
                     .filter(p -> p.getPlayerType() == PlayerType.B)
                     .count();
 
-            stringBuilderRow.append(playerAMissileCount + "," + playerBMissileCount);
+            stringBuilderRow.append(playerAMissileCount).append(",").append(playerBMissileCount);
             stringBuilderRow.append("]");
         }
 

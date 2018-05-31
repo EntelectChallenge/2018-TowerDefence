@@ -1,5 +1,6 @@
 package za.co.entelect.challenge.entities;
 
+import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.Direction;
 import za.co.entelect.challenge.enums.PlayerType;
@@ -13,6 +14,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class TowerDefenseGameMap implements GameMap {
 
     private List<TowerDefensePlayer> towerDefensePlayers = new ArrayList<>();
@@ -20,6 +24,8 @@ public class TowerDefenseGameMap implements GameMap {
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<String> errorList = new ArrayList<>();
     private int currentRound;
+
+    private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
 
     public List<TowerDefensePlayer> getTowerDefensePlayers() {
         return towerDefensePlayers;
@@ -83,7 +89,7 @@ public class TowerDefenseGameMap implements GameMap {
         try {
             getPlayer(building.getPlayerType()).addScore(building.getConstructionScore());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -92,7 +98,7 @@ public class TowerDefenseGameMap implements GameMap {
         try {
             getPlayerOpponent(building.getPlayerType()).addScore(building.getDestroyMultiplier());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -131,14 +137,14 @@ public class TowerDefenseGameMap implements GameMap {
             try {
                 opponent = getPlayerOpponent(p.playerType);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
 
             TowerDefensePlayer missileOwner = null;
             try {
                 missileOwner = getPlayer(p.playerType);
             } catch (Exception e) {
-                e.printStackTrace();
+               log.error(e);
             }
 
             if (opponent != null) {
@@ -178,7 +184,7 @@ public class TowerDefenseGameMap implements GameMap {
             try {
                 winner = getPlayerOpponent(((TowerDefensePlayer) deadPlayers.get(0)).getPlayerType());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
         } else if (deadPlayers.size() == 0 || deadPlayers.size() == 2) {
             TowerDefensePlayer playerA = players.get(0);
