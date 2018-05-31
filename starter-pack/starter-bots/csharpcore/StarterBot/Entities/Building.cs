@@ -2,7 +2,7 @@
 
 namespace StarterBot.Entities
 {
-    public class Building
+    public class Building : Cell
     {
         public int Health { get; set; }
         public int ConstructionTimeLeft { get; set; }

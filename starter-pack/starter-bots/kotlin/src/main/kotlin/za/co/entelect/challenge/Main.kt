@@ -12,14 +12,14 @@ object Main {
     fun main(args: Array<String>) {
         var state = ""
         try {
-            val br = BufferedReader(FileReader(STATE_FILE_NAME))
-            state = br.readLine()
+            state = File(STATE_FILE_NAME).bufferedReader().use {
+                it.readLine()
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
-        val gson = Gson()
-        val gameState = gson.fromJson(state, GameState::class.java)
+        val gameState = Gson().fromJson(state, GameState::class.java)
 
         val bot = Bot(gameState)
         val command = bot.run()
@@ -29,10 +29,9 @@ object Main {
 
     private fun writeBotResponseToFile(command: String) {
         try {
-            val bufferedWriter = BufferedWriter(FileWriter(File(COMMAND_FILE_NAME)))
-            bufferedWriter.write(command)
-            bufferedWriter.flush()
-            bufferedWriter.close()
+            File(COMMAND_FILE_NAME).bufferedWriter().use {
+                it.write(command)
+            }
         } catch (e: IOException) {
             e.printStackTrace()
         }
