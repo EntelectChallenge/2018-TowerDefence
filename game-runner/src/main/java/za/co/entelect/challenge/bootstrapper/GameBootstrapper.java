@@ -126,7 +126,7 @@ public class GameBootstrapper {
             }
 
             if(config.isTournamentMode)
-                return new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage());
+                return new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage(), gameName);
             else
                 return new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
         }
