@@ -16,8 +16,8 @@ object Parser{
   }
 
   def readJsonParse4s(fileName: String): State = {
-    val file = readFile(fileName)
-    val json = parse(file)
+//    val file = readFile(fileName)
+    val json = parse(fileName)
     json.extract[State]
   }
 
