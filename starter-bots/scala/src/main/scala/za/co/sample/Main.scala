@@ -10,11 +10,8 @@ object Main extends App{
     val commandFile = "command.txt"
     implicit val NOTHING_COMMAND = ""
 
-  println("Starting file read")
     val stateRaw = Parser.readFile(stateFile)
-  println("Ended file reading, starting case class parsing")
     val state: State = Parser.readJsonParse4s(stateRaw)
-  println("Ended parsing to case class")
 
     implicit val gameDetails = state.gameDetails
 
