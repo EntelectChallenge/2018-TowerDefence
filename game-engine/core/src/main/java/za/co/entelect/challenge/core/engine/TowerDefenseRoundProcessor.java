@@ -111,21 +111,23 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(missile ->
                         IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
                                 .forEach(i -> {
-                                    towerDefenseGameMap.moveMissileSingleSpace(missile);
-                                    towerDefenseGameMap.getBuildings().stream()
-                                            .filter(b -> b.isConstructed()
-                                                    && positionMatch(missile, b)
-                                                    && !b.isPlayers(missile.getPlayerType())
-                                                    && b.getHealth() > 0)
-                                            .forEach(b -> {
-                                                TowerDefensePlayer missileOwner = null;
-                                                try {
-                                                    missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
-                                                } catch (Exception e) {
-                                                    log.error(e);
-                                                }
-                                                b.damageSelf(missile, missileOwner);
-                                            });
+                                    if (missile.getSpeed() > 0) {
+                                        towerDefenseGameMap.moveMissileSingleSpace(missile);
+                                        towerDefenseGameMap.getBuildings().stream()
+                                                .filter(b -> b.isConstructed()
+                                                        && positionMatch(missile, b)
+                                                        && !b.isPlayers(missile.getPlayerType())
+                                                        && b.getHealth() > 0)
+                                                .forEach(b -> {
+                                                    TowerDefensePlayer missileOwner = null;
+                                                    try {
+                                                        missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
+                                                    } catch (Exception e) {
+                                                        log.error(e);
+                                                    }
+                                                    b.damageSelf(missile, missileOwner);
+                                                });
+                                    }
                                 })
                 );
     }
