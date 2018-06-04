@@ -38,6 +38,39 @@ Improvements and enhancements will be made to the game engine code over time.  T
 
 The game engine has been made available to the community for peer review and bug fixes, so if you find any bugs or have any concerns, please [e-mail us](challenge@entelect.co.za) or discuss it with us on the [Challenge forum](http://forum.entelect.co.za/), alternatively submit a pull request on Github and we will review it.
 
+## Bot upload archive structure
+
+Your archive should contain at least a bot.json with your source code in the **root** of the archive.
+
+```
+{bot-archive-name}.zip
+|--- bot.json
+|--- {source_code}
+```
+
+For example the Java sample bot should look like:
+```
+|--- bot.json
+|--- src
+   |--- main
+      |--- {package_directories}
+         |--- Bot.java
+         |--- Main.java
+         |--- entities
+            |--- Building.java
+            |--- BuildingStats.java
+            |--- Cell.java
+            |--- CellStateContainer.java
+            |--- GameDetails.java
+            |--- GameState.java
+            |--- Missle.java
+            |--- Player.java
+         |--- enum
+            |--- BuildingType.java
+            |--- Direction.java
+            |--- PlayerType.java
+```
+
 ## Interim replay viewer
 
 If you guys are looking to view your bot's shenanigans in a more visual way, we have a nice little viewer built by someone from the forum that will let you do just that.
