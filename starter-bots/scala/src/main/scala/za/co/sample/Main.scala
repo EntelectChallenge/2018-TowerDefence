@@ -47,7 +47,29 @@ object Main extends App{
       val attacking = row.exists(cell => cell.cellOwner == playerB.playerType && cell.buildings.exists(building => building.buildingType == "A" || building.buildingType == "a"))
       val defending = row.exists(cell => cell.cellOwner == playerA.playerType && cell.buildings.exists(building => building.buildingType == "d" || building.buildingType == "D"))
       attacking && !defending
-    }).head.head.y
+    })//.head.head.y
+
+    println(gameMap.filter(row => row.exists(cell => cell.cellOwner == playerB.playerType)))
+
+//    println(gameMap.filter(row => row.exists(cell => cell.cellOwner == playerB.playerType && cell.buildings.exists(building => building.buildingType == "A" || building.buildingType == "a"))))
+//    println(gameMap.flatMap(row => row.filter(cell => cell.buildings.exists(building => building.buildingType == "A" || building.buildingType == "a"))))
+//    gameMap.foreach(row => {
+//      row.foreach(cell => print(s" $cell "))
+//      println("")
+//    })
+    gameMap.foreach(row => {
+      row.foreach(cell => print(s" ${
+        if (cell.buildings.nonEmpty)
+          cell.buildings.head.buildingType
+        else
+          "NONE"
+      } "
+        )
+        )
+      println("")
+    })
+//    println(gameMap.exists(row => row.exists(cell => /*cell.cellOwner == playerB.playerType*/cell.buildings.filter(building => building.buildingType == "A" || building.buildingType == "a"))))
+    println(gettingAttackedInRow)
 
     val cells = gameMap.flatMap(row => row.filter(cell => cell.cellOwner == playerA.playerType && cell.buildings.isEmpty && cell.y == gettingAttackedInRow))
     val chosenCell = cells(Random.nextInt(cells.size))
@@ -61,7 +83,9 @@ object Main extends App{
     */
   def placeRandomBuilding(playerA: Player)(implicit gameMap: List[List[Cell]]): String = {
     val unoccupiedCells = gameMap.flatMap(row => row.filter(cell => cell.cellOwner == playerA.playerType && cell.buildings.isEmpty))
+    println(unoccupiedCells)
     val chosenCell = unoccupiedCells(Random.nextInt(unoccupiedCells.size))
+    println(chosenCell)
     s"${chosenCell.x},${chosenCell.y},${Random.nextInt(2)}"
   }
 
@@ -71,12 +95,28 @@ object Main extends App{
     * @return Boolean
     */
   def isUnderAttack(playerA: Player, playerB: Player)(implicit gameMap: List[List[Cell]]): Boolean = {
-    val gettingAttackedInRow = gameMap.map(row => {
-      val attacking = row.exists(cell => cell.cellOwner == playerB.playerType && cell.buildings.exists(_.buildingType == "ATTACK"))
-      val defending = row.exists(cell => cell.cellOwner == playerA.playerType && cell.buildings.exists(_.buildingType == "DEFENSE"))
-      attacking && !defending
+    val gettingAttackedInRow = gameMap.filter(row => {
+      val attacking = row.filter(cell => cell.cellOwner == playerB.playerType && cell.buildings.exists(_.buildingType == "ATTACK"))
+      val defending = row.filter(cell => cell.cellOwner == playerA.playerType && cell.buildings.exists(_.buildingType == "DEFENSE"))
+      attacking.zip(defending).exists(cells => (cells._1.x, cells._1.y) == (cells._2.x, cells._2.y))
     })
-    gettingAttackedInRow.exists(attacked => attacked)
+
+//
+//
+//    println("+++++++++++++++++++++")
+//
+//    gameMap.map(row => row.filter(cell => cell.cellOwner == playerA.playerType && cell.buildings.exists(_.buildingType == "DEFENSE"))).foreach(row => {
+//      row.foreach(cell => print(s" ${
+//        if(cell.buildings.nonEmpty)
+//          cell.buildings.head.buildingType
+//        else
+//          "NONE"
+//      }"))
+//    })
+//    println(gameMap.exists(row => row.exists(cell => cell.buildings.exists(_.buildingType == "ATTACK"))))
+//    println(ga)
+
+    gettingAttackedInRow.nonEmpty
   }
 
 
