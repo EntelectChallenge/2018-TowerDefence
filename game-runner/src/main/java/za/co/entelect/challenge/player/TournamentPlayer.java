@@ -14,6 +14,7 @@ import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseTextMapRenderer;
 import za.co.entelect.challenge.enums.BotLanguage;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
@@ -81,7 +82,7 @@ public class TournamentPlayer extends Player {
             Response<JsonObject> execution = call.execute();
 
             if (!execution.isSuccessful()) {
-                throw new Exception(String.format("Unable to run bot in container. Language: %s Port: %d Response code: %d Response body: %s", botLanguage.toString(), botRunner.getDockerPort(), execution.code(), execution.errorBody().string()));
+                throw new RuntimeException(String.format("Unable to run bot in container. Language: %s Port: %d Response code: %d Response body: %s", botLanguage.toString(), botRunner.getDockerPort(), execution.code(), execution.errorBody().string()));
             }
 
             String consoleOutput = execution.body().get("message").toString();
@@ -91,6 +92,7 @@ public class TournamentPlayer extends Player {
                 if (scanner.hasNext()) {
                     botInput = scanner.nextLine();
                 }
+
             } catch (FileNotFoundException e) {
                 log.info(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
             }
@@ -99,7 +101,7 @@ public class TournamentPlayer extends Player {
                     playerSpecificConsoleState, botInput, gameMap.getCurrentRound(),
                     consoleOutput);
 
-        } catch (Exception e) {
+        } catch (RuntimeException | IOException e) {
             log.warn(e);
             e.printStackTrace();
         }

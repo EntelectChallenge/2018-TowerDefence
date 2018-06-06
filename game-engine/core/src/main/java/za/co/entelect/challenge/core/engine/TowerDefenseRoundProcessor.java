@@ -157,6 +157,8 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             BuildingType buildingType = BuildingType.values()[Integer.parseInt(commandLine[2])];
 
             new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
+
+            towerDefensePlayer.setConsecutiveDoNothings(0);
         } catch (NumberFormatException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player);
             towerDefenseGameMap.addErrorToErrorList(String.format(
