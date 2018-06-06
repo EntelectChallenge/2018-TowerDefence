@@ -3,9 +3,12 @@ package za.co.entelect.challenge.engine.runner;
 import io.reactivex.subjects.BehaviorSubject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.TriConsumer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.exceptions.MatchFailedException;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 import za.co.entelect.challenge.game.contracts.game.GameEngine;
 import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
@@ -14,10 +17,11 @@ import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.regex.MatchResult;
 
 public class GameEngineRunner {
 
@@ -26,11 +30,11 @@ public class GameEngineRunner {
     public Consumer<GameMap> firstPhaseHandler;
     public Function<GameMap, String> gameStartedHandler;
     public BiConsumer<GameMap, Integer> roundCompleteHandler;
-    public BiFunction<GameMap, Integer, String> roundStartingHandler;
-    public BiConsumer<GameMap, List<Player>> gameCompleteHandler;
     private String consoleOutput = "";
     private BehaviorSubject<String> addToConsoleOutput;
     private BehaviorSubject<Boolean> unsubscribe;
+    public BiFunction<GameMap, Integer, String> roundStartingHandler;
+    public TriConsumer<GameMap, List<Player>, Boolean> gameCompleteHandler;
 
     private GameMap gameMap;
     private List<Player> players;
@@ -97,6 +101,8 @@ public class GameEngineRunner {
 
     private void runInitialPhase() throws Exception {
         boolean successfulRound = false;
+        boolean botExceptionOccurred = false;
+
         while (!successfulRound) {
 
             for (Player player : players) {
@@ -128,8 +134,14 @@ public class GameEngineRunner {
         });
 
         gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
-        if (gameEngine.isGameComplete(gameMap)) {
-            publishGameComplete();
+
+        try {
+            if (gameEngine.isGameComplete(gameMap)) {
+                publishGameComplete(true);
+                return;
+            }
+        } catch (TimeoutException e) {
+            publishGameComplete(false);
             return;
         }
 
@@ -166,7 +178,7 @@ public class GameEngineRunner {
         return (player, command) -> roundProcessor.addPlayerCommand(player, command);
     }
 
-    private void publishGameComplete() {
+    private void publishGameComplete(boolean matchSuccessful) throws Exception {
         for (Player player : players) {
             player.gameEnded(gameMap);
         }
@@ -174,11 +186,10 @@ public class GameEngineRunner {
         gameComplete = true;
         GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
-        gameCompleteHandler.accept(gameMap, players);
+        gameCompleteHandler.accept(gameMap, players, matchSuccessful);
 
-        if (winningPlayer == null) {
-            // TODO: game ended in a tie, how do we publish this to the tournament?
-        }
+        if (!matchSuccessful)
+            throw new MatchFailedException("Match Failed");
     }
 
     private void publishFirstPhaseFailed() {

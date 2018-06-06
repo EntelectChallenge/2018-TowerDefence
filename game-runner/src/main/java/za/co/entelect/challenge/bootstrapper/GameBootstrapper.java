@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.util.TriConsumer;
 import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.botrunners.BotRunnerFactory;
 import za.co.entelect.challenge.core.engine.TowerDefenseGameEngine;
@@ -38,13 +39,15 @@ public class GameBootstrapper {
     private GameEngineRunner gameEngineRunner;
     private static String gameName;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new GameBootstrapper().run(args);
     }
 
-    public void run(String[] args) {
+    public void run(String[] args) throws Exception {
+
+        Config config = null;
         try {
-            Config config = loadConfig(args);
+            config = loadConfig(args);
 
             prepareEngineRunner(config);
             prepareHandlers();
@@ -53,7 +56,11 @@ public class GameBootstrapper {
             startGame();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
+
+            if (config != null && config.isTournamentMode) {
+                throw e;
+            }
         }
     }
 
@@ -165,8 +172,8 @@ public class GameBootstrapper {
         };
     }
 
-    private BiConsumer<GameMap, List<Player>> getGameCompleteHandler() {
-        return (gameMap, players) -> {
+    private TriConsumer<GameMap, List<Player>, Boolean> getGameCompleteHandler() {
+        return (gameMap, players, matchSuccessful) -> {
             GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
             Player winner = players.stream()
@@ -196,6 +203,10 @@ public class GameBootstrapper {
                     winnerStringBuilder.insert(0, "The game ended in a tie" + "\n\n");
                 } else {
                     winnerStringBuilder.insert(0, "The winner is: " + winner.getName() + "\n\n");
+                }
+
+                if (!matchSuccessful) {
+                    winnerStringBuilder.insert(0, "Bot did nothing too many consecutive rounds" + "\n\n");
                 }
 
                 bufferedWriter.write(winnerStringBuilder.toString());

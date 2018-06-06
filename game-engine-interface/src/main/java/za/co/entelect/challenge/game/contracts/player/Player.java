@@ -2,6 +2,7 @@ package za.co.entelect.challenge.game.contracts.player;
 
 import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
