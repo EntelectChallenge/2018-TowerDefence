@@ -9,19 +9,14 @@ import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.MatchFailedException;
 import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
-import za.co.entelect.challenge.game.contracts.game.GameEngine;
-import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
-import za.co.entelect.challenge.game.contracts.game.GamePlayer;
-import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
+import za.co.entelect.challenge.game.contracts.game.*;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.regex.MatchResult;
 
 public class GameEngineRunner {
 
@@ -40,11 +35,10 @@ public class GameEngineRunner {
     private List<Player> players;
     private RunnerRoundProcessor roundProcessor;
 
-    private boolean gameComplete;
-
     private GameEngine gameEngine;
     private GameMapGenerator gameMapGenerator;
     private GameRoundProcessor gameRoundProcessor;
+    private GameResult gameResult;
 
     public GameEngineRunner() {
         this.unsubscribe = BehaviorSubject.create();
@@ -88,13 +82,15 @@ public class GameEngineRunner {
             throw new InvalidRunnerState("Game has not yet been prepared");
         }
 
-        gameComplete = false;
+        gameResult = new GameResult();
+        gameResult.isComplete = false;
+        gameResult.verificationRequired = false;
 
         gameStartedHandler.apply(gameMap);
         startNewRound();
 
         runInitialPhase();
-        while (!gameComplete) {
+        while (!gameResult.isComplete) {
             processRound();
         }
     }
@@ -179,17 +175,39 @@ public class GameEngineRunner {
     }
 
     private void publishGameComplete(boolean matchSuccessful) throws Exception {
+        GamePlayer winningPlayer = gameMap.getWinningPlayer();
+
+        gameResult.winner = 0;
+
         for (Player player : players) {
             player.gameEnded(gameMap);
+
+            int score = player.getGamePlayer().getScore();
+
+            if (player.getName().equals("A")) {
+                gameResult.playerOnePoints = score;
+
+                if (winningPlayer != null && winningPlayer.getScore() == score) {
+                    gameResult.winner = 1;
+                }
+            } else {
+                gameResult.playerTwoPoints = score;
+
+                if (winningPlayer != null && winningPlayer.getScore() == score) {
+                    gameResult.winner = 2;
+                }
+            }
         }
 
-        gameComplete = true;
-        GamePlayer winningPlayer = gameMap.getWinningPlayer();
+        gameResult.roundsPlayed = gameMap.getCurrentRound();
+        gameResult.isComplete = true;
 
         gameCompleteHandler.accept(gameMap, players, matchSuccessful);
 
-        if (!matchSuccessful)
+        if (!matchSuccessful) {
+            gameResult.verificationRequired = true;
             throw new MatchFailedException("Match Failed");
+        }
     }
 
     private void publishFirstPhaseFailed() {
@@ -198,6 +216,17 @@ public class GameEngineRunner {
 
     public GamePlayer getWinningPlayer() {
         return gameMap.getWinningPlayer();
+    }
+
+    public GameResult getGameResult() {
+        return gameResult;
+    }
+
+    public void setMatchSuccess(boolean status) {
+        gameResult.isSuccessful = status;
+
+        if(status)
+            gameResult.verificationRequired = true;
     }
 }
 
