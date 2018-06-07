@@ -15,6 +15,7 @@ import za.co.entelect.challenge.core.engine.TowerDefenseRoundProcessor;
 import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.entities.BotMetaData;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
+import za.co.entelect.challenge.game.contracts.game.GameResult;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.player.BotPlayer;
@@ -37,11 +38,11 @@ public class GameBootstrapper {
     private GameEngineRunner gameEngineRunner;
     private static String gameName;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new GameBootstrapper().run(args);
     }
 
-    public void run(String[] args) throws Exception {
+    public GameResult run(String[] args) {
 
         Config config = null;
         try {
@@ -55,11 +56,10 @@ public class GameBootstrapper {
 
         } catch (Exception e) {
             log.error(e);
-
-            if (config != null && config.isTournamentMode) {
-                throw e;
-            }
+            gameEngineRunner.setMatchSuccess(false);
         }
+
+        return gameEngineRunner.getGameResult();
     }
 
     private Config loadConfig(String[] args) throws Exception {

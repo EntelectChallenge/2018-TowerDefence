@@ -35,6 +35,8 @@ import java.util.function.BiConsumer;
  */
 public abstract class Player {
 
+    private int number;
+
     private String name;
 
     private GamePlayer gamePlayer;
@@ -66,6 +68,14 @@ public abstract class Player {
     public abstract void newRoundStarted(GameMap gameMap);
 
     public abstract void gameEnded(GameMap gameMap);
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public String getName() {
         return name;
