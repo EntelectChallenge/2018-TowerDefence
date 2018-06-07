@@ -4,10 +4,13 @@ import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.Direction;
 import za.co.entelect.challenge.enums.PlayerType;
 
+import java.util.UUID;
+
 public class Missile extends Cell {
 
     private int damage;
     private int speed;
+    private String id;
     private transient Direction direction;
     private transient String icon;
 
@@ -19,6 +22,7 @@ public class Missile extends Cell {
         this.direction = direction;
         this.playerType = playerType;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
+        this.id = UUID.randomUUID().toString();
     }
 
     public Missile getInvertedXInstance(){
@@ -36,6 +40,7 @@ public class Missile extends Cell {
                 this.direction,
                 type);
 
+        newMissile.id = this.id;
         newMissile.direction = (newMissile.direction == Direction.LEFT) ? Direction.RIGHT : Direction.LEFT;
         newMissile.icon = (newMissile.direction == Direction.LEFT) ? "<" : ">";
 
@@ -49,6 +54,7 @@ public class Missile extends Cell {
         this.speed = b.getWeaponSpeed();
         this.direction = direction;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
+        this.id = UUID.randomUUID().toString();
     }
 
     public int getSpeed() {

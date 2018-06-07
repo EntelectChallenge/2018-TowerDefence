@@ -147,13 +147,12 @@ public class TowerDefenseGameMap implements GameMap {
                log.error(e);
             }
 
-            if (opponent != null) {
+            if (opponent != null && missileOwner != null) {
                 opponent.takesHitByPlayer(p, missileOwner);
             }
 
             p.setSpeed(0);
         }
-
         int offsetToMove = p.getDirection().getMultiplier();
         p.moveX(offsetToMove);
     }

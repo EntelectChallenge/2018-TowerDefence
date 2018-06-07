@@ -107,10 +107,13 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     private void calculateMissileMovement() {
+        int maxMissileSpeed = towerDefenseGameMap.getMissiles().stream()
+                .mapToInt(m -> m.getSpeed())
+                .max().orElse(0);
+// every missile will move as much as the fastest missile on map, 0 speed will be ignored
+        IntStream.rangeClosed(1, maxMissileSpeed).forEach(i -> {
         towerDefenseGameMap.getMissiles()
-                .forEach(missile ->
-                        IntStream.rangeClosed(1, missile.getSpeed()) // higher speed bullets
-                                .forEach(i -> {
+                    .forEach(missile -> {
                                     if (missile.getSpeed() > 0) {
                                         towerDefenseGameMap.moveMissileSingleSpace(missile);
                                         towerDefenseGameMap.getBuildings().stream()
@@ -119,17 +122,16 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                                                         && !b.isPlayers(missile.getPlayerType())
                                                         && b.getHealth() > 0)
                                                 .forEach(b -> {
-                                                    TowerDefensePlayer missileOwner = null;
                                                     try {
-                                                        missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
+                                            TowerDefensePlayer missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
+                                            b.damageSelf(missile, missileOwner);
                                                     } catch (Exception e) {
                                                         log.error(e);
                                                     }
-                                                    b.damageSelf(missile, missileOwner);
                                                 });
                                     }
-                                })
-                );
+                    });
+        });
     }
 
     // Converts Raw Commands into Commands the game engine can understand
