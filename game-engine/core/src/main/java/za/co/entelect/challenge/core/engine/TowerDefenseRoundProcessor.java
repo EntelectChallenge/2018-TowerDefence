@@ -1,10 +1,11 @@
 package za.co.entelect.challenge.core.engine;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.commands.DoNothingCommand;
 import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.entities.Building;
-import za.co.entelect.challenge.entities.Cell;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.entities.TowerDefensePlayer;
 import za.co.entelect.challenge.enums.BuildingType;
@@ -14,8 +15,6 @@ import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandExceptio
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -102,36 +101,19 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(p -> towerDefenseGameMap.removeMissile(p));
     }
 
-    private static boolean positionMatch(Cell a, Cell b) {
-        return (a.getY() == b.getY()) && (a.getX() == b.getX());
-    }
-
     private void calculateMissileMovement() {
         int maxMissileSpeed = towerDefenseGameMap.getMissiles().stream()
                 .mapToInt(m -> m.getSpeed())
                 .max().orElse(0);
-// every missile will move as much as the fastest missile on map, 0 speed will be ignored
-        IntStream.rangeClosed(1, maxMissileSpeed).forEach(i -> {
+
+        IntStream.rangeClosed(1, maxMissileSpeed)
+                .forEach(i -> new ArrayList<>(towerDefenseGameMap.getMissiles()).stream()
+                        .filter(m -> m.getUnprocessedMovement() > 0)
+                        .forEach(missile -> towerDefenseGameMap.moveMissileSingleSpace(missile))
+                );
+
         towerDefenseGameMap.getMissiles()
-                    .forEach(missile -> {
-                                    if (missile.getSpeed() > 0) {
-                                        towerDefenseGameMap.moveMissileSingleSpace(missile);
-                                        towerDefenseGameMap.getBuildings().stream()
-                                                .filter(b -> b.isConstructed()
-                                                        && positionMatch(missile, b)
-                                                        && !b.isPlayers(missile.getPlayerType())
-                                                        && b.getHealth() > 0)
-                                                .forEach(b -> {
-                                                    try {
-                                            TowerDefensePlayer missileOwner = towerDefenseGameMap.getPlayer(missile.getPlayerType());
-                                            b.damageSelf(missile, missileOwner);
-                                                    } catch (Exception e) {
-                                                        log.error(e);
-                                                    }
-                                                });
-                                    }
-                    });
-        });
+                .forEach(m -> m.resetUnprocessedMovement());
     }
 
     // Converts Raw Commands into Commands the game engine can understand

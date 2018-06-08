@@ -13,6 +13,12 @@ public class Missile extends Cell {
     private String id;
     private transient Direction direction;
     private transient String icon;
+    private transient int unprocessedMovement;
+
+    private void setDefaults() {
+        this.id = UUID.randomUUID().toString();
+        this.unprocessedMovement = this.speed;
+    }
 
     public Missile(int x, int y, int damage, int speed, Direction direction, PlayerType playerType) {
         this.x = x;
@@ -22,7 +28,7 @@ public class Missile extends Cell {
         this.direction = direction;
         this.playerType = playerType;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
-        this.id = UUID.randomUUID().toString();
+        setDefaults();
     }
 
     public Missile getInvertedXInstance(){
@@ -41,7 +47,7 @@ public class Missile extends Cell {
                 type);
 
         newMissile.id = this.id;
-        newMissile.direction = (newMissile.direction == Direction.LEFT) ? Direction.RIGHT : Direction.LEFT;
+        newMissile.direction = (this.direction == Direction.LEFT) ? Direction.RIGHT : Direction.LEFT;
         newMissile.icon = (newMissile.direction == Direction.LEFT) ? "<" : ">";
 
         return newMissile;
@@ -54,7 +60,7 @@ public class Missile extends Cell {
         this.speed = b.getWeaponSpeed();
         this.direction = direction;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
-        this.id = UUID.randomUUID().toString();
+        setDefaults();
     }
 
     public int getSpeed() {
@@ -73,12 +79,23 @@ public class Missile extends Cell {
         return icon;
     }
 
-
     public void setSpeed(int newSpeed) {
         speed = newSpeed;
     }
 
     public void moveX(int numberOfCellsToMove) {
         x += numberOfCellsToMove;
+    }
+
+    public int getUnprocessedMovement() {
+        return unprocessedMovement;
+    }
+
+    public void reduceUnprocessedMovement() {
+        this.unprocessedMovement--;
+    }
+
+    public void resetUnprocessedMovement() {
+        this.unprocessedMovement = this.speed;
     }
 }

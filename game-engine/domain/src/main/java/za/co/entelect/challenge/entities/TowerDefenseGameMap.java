@@ -1,5 +1,7 @@
 package za.co.entelect.challenge.entities;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.Direction;
@@ -13,9 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TowerDefenseGameMap implements GameMap {
 
@@ -127,10 +126,39 @@ public class TowerDefenseGameMap implements GameMap {
         this.missiles.remove(missile);
     }
 
-    public void moveMissileSingleSpace(Missile p) {
-        int newPosition = p.getX() + (p.getDirection().getMultiplier());
 
-        boolean homeBaseIsHit = (newPosition < 0 || newPosition >= GameConfig.getMapWidth());
+    private static boolean positionMatch(Cell a, Cell b) {
+        return (a.getY() == b.getY()) && (a.getX() == b.getX());
+    }
+
+    public void moveMissileSingleSpace(Missile p) {
+        int offsetToMove = p.getDirection().getMultiplier();
+        p.moveX(offsetToMove);
+        p.reduceUnprocessedMovement();
+
+        checkHomeBaseHit(p);
+        checkBuildingsHit(p);
+    }
+
+    private void checkBuildingsHit(Missile p) {
+        buildings.stream()
+                .filter(b -> b.isConstructed()
+                        && positionMatch(p, b)
+                        && !b.isPlayers(p.getPlayerType())
+                        && b.getHealth() > 0)
+                .forEach(b -> {
+                    try {
+                        TowerDefensePlayer missileOwner = getPlayer(p.getPlayerType());
+                        b.damageSelf(p, missileOwner);
+                    } catch (Exception e) {
+                        log.error(e);
+                    }
+                    removeMissile(p);
+                });
+    }
+
+    private void checkHomeBaseHit(Missile p) {
+        boolean homeBaseIsHit = (p.getX() < 0 || p.getX() >= GameConfig.getMapWidth());
         if (homeBaseIsHit) {
 
             TowerDefensePlayer opponent = null;
@@ -144,17 +172,15 @@ public class TowerDefenseGameMap implements GameMap {
             try {
                 missileOwner = getPlayer(p.playerType);
             } catch (Exception e) {
-               log.error(e);
+                log.error(e);
             }
 
-            if (opponent != null && missileOwner != null) {
+            if (opponent != null) {
                 opponent.takesHitByPlayer(p, missileOwner);
             }
 
-            p.setSpeed(0);
+            removeMissile(p);
         }
-        int offsetToMove = p.getDirection().getMultiplier();
-        p.moveX(offsetToMove);
     }
 
     @Override
