@@ -14,7 +14,6 @@ import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseTextMapRenderer;
 import za.co.entelect.challenge.enums.BotLanguage;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
-import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
@@ -95,6 +94,7 @@ public class TournamentPlayer extends Player {
 
             } catch (FileNotFoundException e) {
                 log.info(String.format("File %s not found", botRunner.getBotDirectory() + "/" + BOT_COMMAND));
+                botInput = "Exception";
             }
 
             writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
@@ -104,6 +104,7 @@ public class TournamentPlayer extends Player {
         } catch (RuntimeException | IOException e) {
             log.warn(e);
             e.printStackTrace();
+            botInput = "Exception";
         }
 
         RawCommand rawCommand = new RawCommand(botInput);
