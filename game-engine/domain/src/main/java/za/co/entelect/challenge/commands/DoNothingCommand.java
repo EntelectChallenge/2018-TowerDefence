@@ -14,8 +14,18 @@ public class DoNothingCommand implements Command {
      */
     @Override
     public void performCommand(GameMap gameMap, GamePlayer gamePlayer) {
-        TowerDefensePlayer player = (TowerDefensePlayer) gamePlayer;
-        player.setConsecutiveDoNothings(player.getConsecutiveDoNothings() + 1);
+
+        return;
+    }
+
+    public void performCommand(GameMap gameMap, GamePlayer gamePlayer, Boolean causedByException) {
+
+        if (causedByException) {
+            TowerDefensePlayer player = (TowerDefensePlayer) gamePlayer;
+            player.setConsecutiveDoNothings(player.getConsecutiveDoNothings() + 1);
+        }
+
+        performCommand(gameMap, gamePlayer);
 
         return;
     }

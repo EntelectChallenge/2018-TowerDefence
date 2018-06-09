@@ -20,7 +20,7 @@ public class TowerDefenseGameEngine implements GameEngine {
         TowerDefenseGameMap towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
 
         if (!playersInValidState(towerDefenseGameMap)) {
-            throw new TimeoutException("Too many do nothing commands received");
+            throw new TimeoutException("Too many do nothing commands received due to exceptions");
         }
 
         return gameMap.getCurrentRound() > GameConfig.getMaxRounds() || (towerDefenseGameMap.getDeadPlayers().size() > 0);
