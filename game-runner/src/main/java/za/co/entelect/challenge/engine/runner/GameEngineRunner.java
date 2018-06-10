@@ -184,6 +184,7 @@ public class GameEngineRunner {
 
         gameResult.roundsPlayed = gameMap.getCurrentRound();
         gameResult.isComplete = true;
+        gameResult.isSuccessful = matchSuccessful;
 
         gameCompleteHandler.accept(gameMap, players, matchSuccessful);
 
