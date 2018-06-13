@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GameBootstrapper {
 
@@ -192,19 +194,23 @@ public class GameBootstrapper {
         };
     }
 
-    private BiConsumer<GameMap, Integer> getRoundStartingHandler() {
+    private BiFunction<GameMap, Integer, String> getRoundStartingHandler() {
         return (gameMap, round) -> {
-            log.info("=======================================");
-            log.info("Starting round " + round);
-            log.info("=======================================");
+            StringBuilder s = new StringBuilder();
+            s.append("=======================================" + "\n");
+            s.append("Starting round " + round + "\n");
+            s.append("=======================================" + "\n");
+            return s.toString();
         };
     }
 
-    private Consumer<GameMap> getGameStartedHandler() {
+    private Function<GameMap, String> getGameStartedHandler() {
         return gameMap -> {
-            log.info("=======================================");
-            log.info("Starting game");
-            log.info("=======================================");
+            StringBuilder s = new StringBuilder();
+            s.append("=======================================" + "\n");
+            s.append("Starting game" + "\n");
+            s.append("=======================================" + "\n");
+            return s.toString();
         };
     }
 }

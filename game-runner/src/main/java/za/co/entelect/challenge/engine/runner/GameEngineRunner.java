@@ -1,5 +1,6 @@
 package za.co.entelect.challenge.engine.runner;
 
+import io.reactivex.subjects.BehaviorSubject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
@@ -14,18 +15,22 @@ import za.co.entelect.challenge.game.contracts.player.Player;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
+import java.util.function.Function;
 
 public class GameEngineRunner {
 
     private static final Logger log = LogManager.getLogger(GameEngineRunner.class);
 
     public Consumer<GameMap> firstPhaseHandler;
-    public Consumer<GameMap> gameStartedHandler;
+    public Function<GameMap, String> gameStartedHandler;
     public BiConsumer<GameMap, Integer> roundCompleteHandler;
-    public BiConsumer<GameMap, Integer> roundStartingHandler;
+    public BiFunction<GameMap, Integer, String> roundStartingHandler;
     public BiConsumer<GameMap, List<Player>> gameCompleteHandler;
+    private String consoleOutput = "";
+    private BehaviorSubject<String> addToConsoleOutput;
+    private BehaviorSubject<Boolean> unsubscribe;
 
     private GameMap gameMap;
     private List<Player> players;
@@ -36,6 +41,20 @@ public class GameEngineRunner {
     private GameEngine gameEngine;
     private GameMapGenerator gameMapGenerator;
     private GameRoundProcessor gameRoundProcessor;
+
+    public GameEngineRunner() {
+        this.unsubscribe = BehaviorSubject.create();
+        this.addToConsoleOutput = BehaviorSubject.create();
+        this.addToConsoleOutput
+                .takeUntil(this.unsubscribe)
+                .subscribe(text -> consoleOutput += text);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        this.unsubscribe.onNext(Boolean.TRUE);
+    }
 
     public void preparePlayers(List<Player> players) throws InvalidRunnerState {
 
@@ -61,12 +80,13 @@ public class GameEngineRunner {
 
     public void startNewGame() throws Exception {
 
-        if (gameMap == null)
+        if (gameMap == null) {
             throw new InvalidRunnerState("Game has not yet been prepared");
+        }
 
         gameComplete = false;
 
-        gameStartedHandler.accept(gameMap);
+        gameStartedHandler.apply(gameMap);
         startNewRound();
 
         runInitialPhase();
@@ -76,7 +96,6 @@ public class GameEngineRunner {
     }
 
     private void runInitialPhase() throws Exception {
-
         boolean successfulRound = false;
         while (!successfulRound) {
 
@@ -86,11 +105,8 @@ public class GameEngineRunner {
                 thread.join();
             }
 
-            successfulRound = roundProcessor.processRound();
-
-            for (Player player : players) {
-                player.roundComplete(gameMap, gameMap.getCurrentRound());
-            }
+            successfulRound = roundProcessor.processRound(addToConsoleOutput);
+            players.forEach(p -> p.roundComplete(gameMap, gameMap.getCurrentRound()));
 
             if (!successfulRound) {
                 roundProcessor.resetBackToStart();
@@ -101,36 +117,37 @@ public class GameEngineRunner {
 
 
     private void processRound() throws Exception {
-
         TowerDefenseConsoleMapRenderer renderer = new TowerDefenseConsoleMapRenderer();
-        //Only execute the render if the log mode is in INFO.
-        log.info(() -> renderer.render(gameMap, players.get(0).getGamePlayer()));
+
+        // Only execute the render if the log mode is in INFO.
+        log.info(() -> {
+            String consoleText = consoleOutput + renderer.render(gameMap, players.get(0).getGamePlayer());
+            consoleOutput = "";
+
+            return consoleText;
+        });
 
         gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
-
         if (gameEngine.isGameComplete(gameMap)) {
             publishGameComplete();
             return;
         }
 
         startNewRound();
-
         for (Player player : players) {
             Thread thread = new Thread(() -> player.newRoundStarted(gameMap));
             thread.start();
             thread.join();
         }
 
-        roundProcessor.processRound();
-
-        for (Player player : players) {
-            player.roundComplete(gameMap, gameMap.getCurrentRound());
-        }
+        roundProcessor.processRound(addToConsoleOutput);
+        players.forEach(p -> p.roundComplete(gameMap, gameMap.getCurrentRound()));
     }
 
     private void startNewRound() {
         roundProcessor = new RunnerRoundProcessor(gameMap, gameRoundProcessor);
-        roundStartingHandler.accept(gameMap, gameMap.getCurrentRound());
+        String newRoundText = roundStartingHandler.apply(gameMap, gameMap.getCurrentRound());
+        addToConsoleOutput.onNext(newRoundText);
     }
 
     public void setGameMapGenerator(GameMapGenerator gameMapGenerator) {
@@ -168,7 +185,7 @@ public class GameEngineRunner {
         firstPhaseHandler.accept(gameMap);
     }
 
-    public GamePlayer getWinningPlayer(){
+    public GamePlayer getWinningPlayer() {
         return gameMap.getWinningPlayer();
     }
 }
