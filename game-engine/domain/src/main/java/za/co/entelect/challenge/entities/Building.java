@@ -83,10 +83,6 @@ public class Building extends Cell {
         health = Math.max(0, health);
 
         missileOwner.addScore(damageTaken * destroyMultiplier);
-
-        if (damageTaken > 0) {
-            m.setSpeed(0);
-        }
     }
 
     public void decreaseCooldown() {
