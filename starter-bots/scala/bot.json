@@ -4,5 +4,5 @@
   "nickName": "Odersky",
   "botLocation": "/target/scala-2.12",
   "botFileName": "Entelect-Scala-Bot-assembly-0.1.jar",
-  "botLanguage": "java"
+  "botLanguage": "scala"
 }
