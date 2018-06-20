@@ -65,9 +65,12 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     private void fireTeslaTower(){
+
+
+
         towerDefenseGameMap.getBuildings().stream()
-                .filter(Building::isConstructed)
                 .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
+                .filter(Building::isConstructed)
                 .forEach(b -> towerDefenseGameMap.fireTeslaTower(b));
     }
 

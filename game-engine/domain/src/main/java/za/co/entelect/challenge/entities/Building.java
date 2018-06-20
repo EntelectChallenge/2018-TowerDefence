@@ -83,13 +83,14 @@ public class Building extends Cell {
     public void damageSelf(Missile m, TowerDefensePlayer missileOwner) {
         int damageTaken = Math.min(health, m.getDamage());
 
-        health -= damageTaken;
-        health = Math.max(0, health);
-
-        missileOwner.addScore(damageTaken * destroyMultiplier);
+        setHealthAndAddScore(damageTaken,missileOwner);
     }
 
     public void damageSelfDirectly(int damageTaken, TowerDefensePlayer missileOwner) {
+        setHealthAndAddScore(damageTaken,missileOwner);
+    }
+
+    private void setHealthAndAddScore(int damageTaken,TowerDefensePlayer missileOwner){
 
         health -= damageTaken;
         health = Math.max(0, health);

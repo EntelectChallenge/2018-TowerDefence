@@ -98,10 +98,10 @@ public class GameConfig {
     }
 
     public static int getDefenseEnergyPerTurn() {
-        return configuration.getInt("game.config.defense.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.defense.config.energy-produced-per-turn");
     }
 
-    public static int getDefenceRange() {
+    public static int getDefenseRange() {
         return configuration.getInt("game.config.defense.config.max-range");
     }
 
@@ -142,7 +142,7 @@ public class GameConfig {
     }
 
     public static int getEnergyEnergyPerTurn() {
-        return configuration.getInt("game.config.energy.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.energy.config.energy-produced-per-turn");
     }
 
     public static int getEnergyRange() {
@@ -186,7 +186,7 @@ public class GameConfig {
     }
 
     public static int getAttackEnergyPerTurn() {
-        return configuration.getInt("game.config.attack.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.attack.config.energy-produced-per-turn");
     }
 
     public static int getAttackRange() {
@@ -230,7 +230,7 @@ public class GameConfig {
     }
 
     public static int getTeslaEnergyPerTurn() {
-        return configuration.getInt("game.config.tesla.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.tesla.config.energy-produced-per-turn");
     }
 
     public static int getTeslaRange() {

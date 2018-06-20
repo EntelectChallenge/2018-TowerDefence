@@ -21,7 +21,7 @@ public class BuildingFactory {
                 GameConfig.getDefenseDestroyMultiplier(),
                 GameConfig.getDefenseConstructionScore(),
                 GameConfig.getDefenseEnergyPerTurn(),
-                GameConfig.getDefenceRange(),
+                GameConfig.getDefenseRange(),
                 BuildingType.DEFENSE);
 
         if (buildingType == BuildingType.ATTACK) {
