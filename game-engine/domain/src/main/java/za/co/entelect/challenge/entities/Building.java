@@ -17,6 +17,7 @@ public class Building extends Cell {
     private int destroyMultiplier;
     private int constructionScore;
     private int energyGeneratedPerTurn;
+    private int maxRange;
     private BuildingType buildingType;
 
     public Building(int x,
@@ -32,6 +33,7 @@ public class Building extends Cell {
                     int destroyMultiplier,
                     int constructionScore,
                     int energyGeneratedPerTurn,
+                    int maxRange,
                     BuildingType buildingType) {
         super(x, y, playerType);
         this.health = health;
@@ -45,6 +47,7 @@ public class Building extends Cell {
         this.weaponCooldownPeriod = weaponCooldownPeriod;
         this.icon = icon;
         this.energyGeneratedPerTurn = energyGeneratedPerTurn;
+        this.maxRange = maxRange;
         this.buildingType = buildingType;
     }
 
@@ -69,6 +72,7 @@ public class Building extends Cell {
                 this.destroyMultiplier,
                 this.constructionScore,
                 this.energyGeneratedPerTurn,
+                this.maxRange,
                 this.buildingType);
 
         newBuilding.weaponCooldownTimeLeft = this.weaponCooldownTimeLeft;
@@ -78,6 +82,14 @@ public class Building extends Cell {
 
     public void damageSelf(Missile m, TowerDefensePlayer missileOwner) {
         int damageTaken = Math.min(health, m.getDamage());
+
+        health -= damageTaken;
+        health = Math.max(0, health);
+
+        missileOwner.addScore(damageTaken * destroyMultiplier);
+    }
+
+    public void damageSelfDirectly(int damageTaken, TowerDefensePlayer missileOwner) {
 
         health -= damageTaken;
         health = Math.max(0, health);
@@ -147,5 +159,9 @@ public class Building extends Cell {
 
     public int getConstructionScore() {
         return constructionScore;
+    }
+
+    public int getMaxRange() {
+        return maxRange;
     }
 }

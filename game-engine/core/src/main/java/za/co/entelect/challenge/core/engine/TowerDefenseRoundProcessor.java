@@ -36,6 +36,8 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
         constructBuildings();
 
+        fireTeslaTower();
+
         createMissilesFromGuns();
         calculateMissileMovement();
         removeDeadEntities();
@@ -60,6 +62,13 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         towerDefenseGameMap.getBuildings().stream()
                 .filter(Building::isConstructed)
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
+    }
+
+    private void fireTeslaTower(){
+        towerDefenseGameMap.getBuildings().stream()
+                .filter(Building::isConstructed)
+                .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
+                .forEach(b -> towerDefenseGameMap.fireTeslaTower(b));
     }
 
     private void processCommands(Hashtable<GamePlayer, RawCommand> commands) {
@@ -153,7 +162,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(
-                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Tesla]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
             log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
