@@ -97,6 +97,10 @@ public class TowerDefenseGameMap implements GameMap {
         }
     }
 
+    public void deconstructBuilding(Building building) {
+        buildings.remove(building);
+    }
+
     public void removeBuilding(Building building) {
         buildings.remove(building);
         try {

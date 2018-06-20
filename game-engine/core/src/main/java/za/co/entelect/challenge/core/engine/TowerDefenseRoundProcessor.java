@@ -2,6 +2,7 @@ package za.co.entelect.challenge.core.engine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import za.co.entelect.challenge.commands.DeconstructBuildingCommand;
 import za.co.entelect.challenge.commands.DoNothingCommand;
 import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
@@ -175,9 +176,13 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             int positionY = Integer.parseInt(commandLine[1]);
             BuildingType buildingType = BuildingType.values()[Integer.parseInt(commandLine[2])];
 
-            new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
-
             towerDefensePlayer.setConsecutiveDoNothings(0);
+            
+            if (buildingType == BuildingType.DECONSTRUCT) {
+                new DeconstructBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
+            } else {
+                new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
+            }
         } catch (NumberFormatException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(

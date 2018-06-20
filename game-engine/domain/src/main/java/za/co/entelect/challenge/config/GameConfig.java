@@ -57,6 +57,10 @@ public class GameConfig {
         return configuration.getInt("game.config.energy-score-multiplier");
     }
 
+    public static int getDeconstructionRefundAmount() {
+        return configuration.getInt("game.config.deconstruction-refund-amount");
+    }
+
     public static int getMaxDoNothings() {
         return configuration.getInt("game.config.max-do-nothings");
     }
