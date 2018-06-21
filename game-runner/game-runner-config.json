@@ -3,7 +3,7 @@
   "game-config-file-location": "./game-config.properties",
   "verbose-mode": true,
   "max-runtime-ms": 2000,
-  "player-a": "../starter-bots/javascript",
-  "player-b": "../starter-bots/javascript",
-  "is-tournament-mode": true
+  "player-a": "../starter-bots/java",
+  "player-b": "../starter-bots/java",
+  "is-tournament-mode": false
 }
