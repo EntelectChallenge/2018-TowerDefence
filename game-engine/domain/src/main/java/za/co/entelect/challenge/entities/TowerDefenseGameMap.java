@@ -23,20 +23,6 @@ public class TowerDefenseGameMap implements GameMap {
     private ArrayList<List<Cell>> teslaTargetList = new ArrayList<>();
     private int currentRound;
 
-    public TowerDefenseGameMap() {
-        buildings.add(new Building(6, 4, PlayerType.A, 5, 1, 20, 20, 5, 5, "T", 0, 5, 0, 9,100, BuildingType.TESLA));
-        buildings.add(new Building(9, 4, PlayerType.B, 5, 1, 20, 20, 5, 5, "T", 0, 5, 0, 9,100, BuildingType.TESLA));
-
-        buildings.add(new Building(8, 4, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(9, 3, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(10, 4, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(11, 4, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(12, 5, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(13, 3, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(14, 3, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-        buildings.add(new Building(15, 3, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
-    }
-
     private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
 
     public List<TowerDefensePlayer> getTowerDefensePlayers() {
@@ -173,7 +159,7 @@ public class TowerDefenseGameMap implements GameMap {
 
         if(direction.equals(Direction.RIGHT)){
             for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
-                targetHitsByTeslaBuilding =  possiblyFireTeslaTower(x,possibleTargets,teslaBuilding,missileOwner, targetHitsByTeslaBuilding);
+                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x,possibleTargets,teslaBuilding,missileOwner, targetHitsByTeslaBuilding);
             }
         }else{
             for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
@@ -181,8 +167,10 @@ public class TowerDefenseGameMap implements GameMap {
             }
         }
 
-        if(targetHitsByTeslaBuilding.size() > 0)
+        if(targetHitsByTeslaBuilding.size() > 0){
             this.teslaTargetList.add(targetHitsByTeslaBuilding);
+        }
+
     }
 
     private ArrayList<Cell> possiblyFireTeslaTower(int x, ArrayList<Building> possibleTargets, Building teslaBuilding, TowerDefensePlayer missileOwner,  ArrayList<Cell> teslaHitBuildings){

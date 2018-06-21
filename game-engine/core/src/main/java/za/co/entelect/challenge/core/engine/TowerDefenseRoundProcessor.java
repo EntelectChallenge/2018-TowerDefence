@@ -60,12 +60,6 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
     private void constructBuildings() {
         towerDefenseGameMap.getBuildings().stream()
-                .filter(b -> !b.isConstructed())
-                .forEach(Building::decreaseConstructionTimeLeft);
-
-        towerDefenseGameMap.getBuildings().stream()
-                .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
-                .filter(b -> b.isConstructed())
                 .forEach(Building::decreaseConstructionTimeLeft);
     }
 
@@ -87,7 +81,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         //Oldest building first.
         playerTeslaTowers.sort(Comparator.comparing(Building::getConstructionTimeLeft));
 
-        for(Building possibleFiringTeslaTower : playerTeslaTowers ){
+        for(Building possibleFiringTeslaTower : playerTeslaTowers ) {
 
             TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(possibleFiringTeslaTower.getPlayerType());
             int playerEnergy = currentPlayer.getEnergy();
@@ -95,6 +89,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             if(playerEnergy >= possibleFiringTeslaTower.getEnergyPerShot()){
                 currentPlayer.removeEnergy(possibleFiringTeslaTower.getEnergyPerShot());
                 towerDefenseGameMap.fireTeslaTower(possibleFiringTeslaTower);
+                possibleFiringTeslaTower.resetCooldown();
             }
         }
     }

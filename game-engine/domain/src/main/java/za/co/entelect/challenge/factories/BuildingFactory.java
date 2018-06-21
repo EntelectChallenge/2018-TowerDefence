@@ -56,7 +56,6 @@ public class BuildingFactory {
                     BuildingType.ENERGY);
         }
 
-
         if (buildingType == BuildingType.TESLA) {
             building = new Building(x, y, playerType,
                     GameConfig.getTeslaHealth(),
