@@ -149,7 +149,7 @@ public class Building extends Cell {
     }
 
     public boolean isConstructed() {
-        return (getConstructionTimeLeft() == 0);
+        return (getConstructionTimeLeft() <= 0);
     }
 
     public int getHealth() {
@@ -198,5 +198,9 @@ public class Building extends Cell {
 
     public int getMaxRange() {
         return maxRange;
+    }
+
+    public int getEnergyPerShot() {
+        return energyPerShot;
     }
 }

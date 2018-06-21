@@ -159,7 +159,8 @@ public class TowerDefenseGameMap implements GameMap {
             log.error(e);
         }
 
-        for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX() + 1; x++) {
+        //Direction in the left  hand as well.
+        for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
             final int nextTargetpoint = x;
             Building targetToHit;
 

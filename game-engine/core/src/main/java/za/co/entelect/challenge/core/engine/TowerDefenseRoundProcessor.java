@@ -15,8 +15,10 @@ import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandExceptio
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
+import za.co.entelect.challenge.game.contracts.player.Player;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -36,9 +38,13 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
         constructBuildings();
 
-        fireTeslaTower();
+        try {
+            fireTeslaTower();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-       // createMissilesFromGuns();
+        // createMissilesFromGuns();
         calculateMissileMovement();
         removeDeadEntities();
 
@@ -56,6 +62,11 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> !b.isConstructed())
                 .forEach(Building::decreaseConstructionTimeLeft);
+
+        towerDefenseGameMap.getBuildings().stream()
+                .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
+                .filter(b -> b.isConstructed())
+                .forEach(Building::decreaseConstructionTimeLeft);
     }
 
     private void createMissilesFromGuns() {
@@ -64,14 +75,29 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void fireTeslaTower(){
+    private void fireTeslaTower() throws Exception {
 
+        ArrayList<Building> playerTeslaTowers = new ArrayList<>();
 
-//Remove
         towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
                 .filter(Building::isConstructed)
-                .forEach(b -> towerDefenseGameMap.fireTeslaTower(b));
+                .forEach(b -> playerTeslaTowers.add(b));
+
+        //Oldest building first.
+        playerTeslaTowers.sort(Comparator.comparing(Building::getConstructionTimeLeft));
+
+        for(Building possibleFiringTelsaTower : playerTeslaTowers ){
+
+            TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(possibleFiringTelsaTower.getPlayerType());
+
+            int playerEnergy = currentPlayer.getEnergy();
+
+            if(playerEnergy >= possibleFiringTelsaTower.getEnergyPerShot()){
+                currentPlayer.removeEnergy(possibleFiringTelsaTower.getEnergyPerShot());
+                towerDefenseGameMap.fireTeslaTower(possibleFiringTelsaTower);
+            }
+        }
     }
 
     private void processCommands(Hashtable<GamePlayer, RawCommand> commands) {

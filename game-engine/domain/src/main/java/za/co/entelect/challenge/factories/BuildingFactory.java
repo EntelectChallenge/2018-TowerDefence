@@ -70,6 +70,7 @@ public class BuildingFactory {
                     GameConfig.getTeslaConstructionScore(),
                     GameConfig.getTeslaEnergyPerTurn(),
                     GameConfig.getTeslaRange(),
+                    GameConfig.getTeslaWeaponEnergyPerShot(),
                     BuildingType.TESLA);
         }
 
