@@ -43,7 +43,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             e.printStackTrace();
         }
 
-        // createMissilesFromGuns();
+        createMissilesFromGuns();
         calculateMissileMovement();
         removeDeadEntities();
 
