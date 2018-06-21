@@ -57,6 +57,10 @@ public class GameConfig {
         return configuration.getInt("game.config.energy-score-multiplier");
     }
 
+    public static int getMaxDoNothings() {
+        return configuration.getInt("game.config.max-do-nothings");
+    }
+
     public static int getDefenseHealth() {
         return configuration.getInt("game.config.defense.config.health");
     }

@@ -1,2 +1,2 @@
-java -jar tower-defence-runner-1.1.2.jar
+java -jar tower-defence-runner-1.2.0.jar
 pause

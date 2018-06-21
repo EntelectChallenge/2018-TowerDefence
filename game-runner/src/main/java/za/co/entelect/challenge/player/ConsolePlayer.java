@@ -49,24 +49,4 @@ public class ConsolePlayer extends Player {
     public void gameEnded(GameMap gameMap) {
 
     }
-
-    @Override
-    public void playerKilled(GameMap gameMap) {
-        log.info(String.format("Player %s has been killed", getName()));
-    }
-
-    @Override
-    public void playerCommandFailed(GameMap gameMap, String reason) {
-        log.info(String.format("Could not process player command: %s", reason));
-    }
-
-    @Override
-    public void firstRoundFailed(GameMap gameMap, String reason) {
-        log.info(reason);
-        log.info("The first round has failed.");
-        log.info("The round will now restart and both players will have to try again");
-        log.info("Press any key to continue");
-
-        scanner.nextLine();
-    }
 }

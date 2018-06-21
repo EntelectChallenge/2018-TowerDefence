@@ -12,12 +12,15 @@ public class TowerDefensePlayer implements GamePlayer {
     private int hitsTaken;
     private int score;
 
+    private int consecutiveDoNothings;
+
     public TowerDefensePlayer(PlayerType playerType, int energy, int health) {
         this.playerType = playerType;
         this.energy = energy;
         this.health = health;
         this.hitsTaken = 0;
         this.score = 0;
+        this.consecutiveDoNothings = 0;
     }
 
     public PlayerType getPlayerType() {
@@ -69,5 +72,13 @@ public class TowerDefensePlayer implements GamePlayer {
         health = Math.max(0, health);
 
         missileOwner.addScore(damageTaken * GameConfig.getHealthScoreMultiplier());
+    }
+
+    public int getConsecutiveDoNothings() {
+        return consecutiveDoNothings;
+    }
+
+    public void setConsecutiveDoNothings(int consecutiveDoNothings) {
+        this.consecutiveDoNothings = consecutiveDoNothings;
     }
 }

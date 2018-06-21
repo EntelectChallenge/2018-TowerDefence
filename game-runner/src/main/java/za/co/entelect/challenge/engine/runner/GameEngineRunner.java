@@ -3,13 +3,13 @@ package za.co.entelect.challenge.engine.runner;
 import io.reactivex.subjects.BehaviorSubject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.TriConsumer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
-import za.co.entelect.challenge.game.contracts.game.GameEngine;
-import za.co.entelect.challenge.game.contracts.game.GameMapGenerator;
-import za.co.entelect.challenge.game.contracts.game.GamePlayer;
-import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
+import za.co.entelect.challenge.game.contracts.exceptions.MatchFailedException;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
+import za.co.entelect.challenge.game.contracts.game.*;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 
@@ -26,21 +26,20 @@ public class GameEngineRunner {
     public Consumer<GameMap> firstPhaseHandler;
     public Function<GameMap, String> gameStartedHandler;
     public BiConsumer<GameMap, Integer> roundCompleteHandler;
-    public BiFunction<GameMap, Integer, String> roundStartingHandler;
-    public BiConsumer<GameMap, List<Player>> gameCompleteHandler;
     private String consoleOutput = "";
     private BehaviorSubject<String> addToConsoleOutput;
     private BehaviorSubject<Boolean> unsubscribe;
+    public BiFunction<GameMap, Integer, String> roundStartingHandler;
+    public TriConsumer<GameMap, List<Player>, Boolean> gameCompleteHandler;
 
     private GameMap gameMap;
     private List<Player> players;
     private RunnerRoundProcessor roundProcessor;
 
-    private boolean gameComplete;
-
     private GameEngine gameEngine;
     private GameMapGenerator gameMapGenerator;
     private GameRoundProcessor gameRoundProcessor;
+    private GameResult gameResult;
 
     public GameEngineRunner() {
         this.unsubscribe = BehaviorSubject.create();
@@ -84,19 +83,23 @@ public class GameEngineRunner {
             throw new InvalidRunnerState("Game has not yet been prepared");
         }
 
-        gameComplete = false;
+        gameResult = new GameResult();
+        gameResult.isComplete = false;
+        gameResult.verificationRequired = false;
 
         gameStartedHandler.apply(gameMap);
         startNewRound();
 
         runInitialPhase();
-        while (!gameComplete) {
+        while (!gameResult.isComplete) {
             processRound();
         }
     }
 
     private void runInitialPhase() throws Exception {
         boolean successfulRound = false;
+        boolean botExceptionOccurred = false;
+
         while (!successfulRound) {
 
             for (Player player : players) {
@@ -128,8 +131,14 @@ public class GameEngineRunner {
         });
 
         gameMap.setCurrentRound(gameMap.getCurrentRound() + 1);
-        if (gameEngine.isGameComplete(gameMap)) {
-            publishGameComplete();
+
+        try {
+            if (gameEngine.isGameComplete(gameMap)) {
+                publishGameComplete(true);
+                return;
+            }
+        } catch (TimeoutException e) {
+            publishGameComplete(false);
             return;
         }
 
@@ -166,18 +175,40 @@ public class GameEngineRunner {
         return (player, command) -> roundProcessor.addPlayerCommand(player, command);
     }
 
-    private void publishGameComplete() {
-        for (Player player : players) {
-            player.gameEnded(gameMap);
-        }
-
-        gameComplete = true;
+    private void publishGameComplete(boolean matchSuccessful) throws Exception {
         GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
-        gameCompleteHandler.accept(gameMap, players);
+        gameResult.winner = 0;
 
-        if (winningPlayer == null) {
-            // TODO: game ended in a tie, how do we publish this to the tournament?
+        for (Player player : players) {
+            player.gameEnded(gameMap);
+
+            int score = player.getGamePlayer().getScore();
+
+            if (player.getName().equals("A")) {
+                gameResult.playerOnePoints = score;
+
+                if (winningPlayer != null && winningPlayer.getScore() == score) {
+                    gameResult.winner = 1;
+                }
+            } else {
+                gameResult.playerTwoPoints = score;
+
+                if (winningPlayer != null && winningPlayer.getScore() == score) {
+                    gameResult.winner = 2;
+                }
+            }
+        }
+
+        gameResult.roundsPlayed = gameMap.getCurrentRound();
+        gameResult.isComplete = true;
+        gameResult.isSuccessful = matchSuccessful;
+
+        gameCompleteHandler.accept(gameMap, players, matchSuccessful);
+
+        if (!matchSuccessful) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Match Failed");
         }
     }
 
@@ -187,6 +218,17 @@ public class GameEngineRunner {
 
     public GamePlayer getWinningPlayer() {
         return gameMap.getWinningPlayer();
+    }
+
+    public GameResult getGameResult() {
+        return gameResult;
+    }
+
+    public void setMatchSuccess(boolean status) {
+        gameResult.isSuccessful = status;
+
+        if(status)
+            gameResult.verificationRequired = true;
     }
 }
 

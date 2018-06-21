@@ -22,4 +22,9 @@ public class HaskellBotRunner extends BotRunner {
 
         return RunSimpleCommandLineCommand(line, 0);
     }
+
+    @Override
+    public int getDockerPort() {
+        return 9005;
+    }
 }
