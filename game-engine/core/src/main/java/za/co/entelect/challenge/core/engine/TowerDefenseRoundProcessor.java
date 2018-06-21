@@ -32,6 +32,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     public boolean processRound(GameMap gameMap, Hashtable<GamePlayer, RawCommand> commands) {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
+        towerDefenseGameMap.clearTeslaTargetList();
 
         processCommands(commands);
 

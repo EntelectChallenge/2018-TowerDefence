@@ -29,9 +29,9 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
             Gson gson = new Gson();
             TowerDefenseJsonContainer container;
             if (towerDefensePlayer.getPlayerType() == PlayerType.A) {
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerA(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound());
+                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerA(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
             } else {
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound());
+                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
             }
             if (container == null) {
                 log.error("The container cannot be empty.");
