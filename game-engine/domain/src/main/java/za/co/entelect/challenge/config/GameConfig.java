@@ -217,6 +217,11 @@ public class GameConfig {
         return configuration.getInt("game.config.tesla.config.weapon-cooldown-period");
     }
 
+    public static int getTeslaWeaponEnergyPerShot() {
+        return configuration.getInt("game.config.tesla.energy.per.shot");
+    }
+
+
     public static String getTeslaIcon() {
         return configuration.getString("game.config.tesla.config.icon");
     }

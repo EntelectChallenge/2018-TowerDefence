@@ -38,7 +38,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
         fireTeslaTower();
 
-        createMissilesFromGuns();
+       // createMissilesFromGuns();
         calculateMissileMovement();
         removeDeadEntities();
 
@@ -67,7 +67,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private void fireTeslaTower(){
 
 
-
+//Remove
         towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
                 .filter(Building::isConstructed)
