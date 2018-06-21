@@ -150,28 +150,37 @@ public class TowerDefenseGameMap implements GameMap {
             missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(),missileOwner);
         }
 
-        //Direction in the left  hand as well.
-        for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
-            final int nextTargetpoint = x;
-            Building targetToHit;
+        if(direction.equals(Direction.RIGHT)){
+            for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
+                possiblyFireTeslaTower(x,possibleTargets,teslaBuilding,missileOwner);
+            }
+        }else{
+            for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
+                possiblyFireTeslaTower(x,possibleTargets,teslaBuilding,missileOwner);
+            }
+        }
+    }
 
-            ArrayList<Building> targetsInX = new ArrayList<>();
+    private void possiblyFireTeslaTower(int x, ArrayList<Building> possibleTargets, Building teslaBuilding, TowerDefensePlayer missileOwner){
+        final int nextTargetpoint = x;
+        Building targetToHit;
 
-            possibleTargets.stream()
-                    .filter(target -> target.getX() == nextTargetpoint)
-                    .forEach(target -> {
-                        targetsInX.add(target);
-                    });
+        ArrayList<Building> targetsInX = new ArrayList<>();
 
-            targetsInX.sort(Comparator.comparing(Building::getY));
+        possibleTargets.stream()
+                .filter(target -> target.getX() == nextTargetpoint)
+                .forEach(target -> {
+                    targetsInX.add(target);
+                });
 
-            if (targetsInX.size() > 0) {
-                targetToHit = targetsInX.get(0);
+        targetsInX.sort(Comparator.comparing(Building::getY));
 
-                if (targetToHit != null) {
-                    targetToHit.damageSelfDirectly(teslaBuilding.getWeaponDamage(), missileOwner);
-                    possibleTargets.remove(targetToHit);
-                }
+        if (targetsInX.size() > 0) {
+            targetToHit = targetsInX.get(0);
+
+            if (targetToHit != null) {
+                targetToHit.damageSelfDirectly(teslaBuilding.getWeaponDamage(), missileOwner);
+                possibleTargets.remove(targetToHit);
             }
         }
     }
