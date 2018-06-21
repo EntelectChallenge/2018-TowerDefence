@@ -168,6 +168,7 @@ public class TowerDefenseGameMap implements GameMap {
         }
 
         if(targetHitsByTeslaBuilding.size() > 0){
+            targetHitsByTeslaBuilding.add(new  Cell(teslaBuilding.getX(),teslaBuilding.getY(),teslaBuilding.getPlayerType()));
             this.teslaTargetList.add(targetHitsByTeslaBuilding);
         }
 
