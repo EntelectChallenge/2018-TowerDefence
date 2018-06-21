@@ -15,7 +15,6 @@ import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandExceptio
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
-import za.co.entelect.challenge.game.contracts.player.Player;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,7 +38,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         constructBuildings();
 
         try {
-            fireTeslaTower();
+            fireTeslaTowers();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -75,7 +74,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void fireTeslaTower() throws Exception {
+    private void fireTeslaTowers() throws Exception {
 
         ArrayList<Building> playerTeslaTowers = new ArrayList<>();
 
@@ -90,7 +89,6 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         for(Building possibleFiringTelsaTower : playerTeslaTowers ){
 
             TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(possibleFiringTelsaTower.getPlayerType());
-
             int playerEnergy = currentPlayer.getEnergy();
 
             if(playerEnergy >= possibleFiringTelsaTower.getEnergyPerShot()){

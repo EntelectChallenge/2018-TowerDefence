@@ -23,7 +23,7 @@ public class TowerDefenseGameMap implements GameMap {
     private int currentRound;
 
     public TowerDefenseGameMap() {
-        buildings.add(new Building(0, 4, PlayerType.A, 5, 1, 20, 20, 5, 5, "T", 0, 5, 0, 9,100, BuildingType.TESLA));
+        buildings.add(new Building(6, 4, PlayerType.A, 5, 1, 20, 20, 5, 5, "T", 0, 5, 0, 9,100, BuildingType.TESLA));
         buildings.add(new Building(8, 4, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
         buildings.add(new Building(9, 3, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
         buildings.add(new Building(10, 4, PlayerType.B, 5, 1, 20, 0, 5, 5, "D", 0, 5, 0, 0, BuildingType.DEFENSE));
@@ -142,10 +142,9 @@ public class TowerDefenseGameMap implements GameMap {
         buildings.stream()
                 .filter(building -> building.isConstructed()
                         && (
-                        building.getY() >= (teslaBuilding.getY() - 1)
-                                && building.getY() <= (teslaBuilding.getY() + 1)
-
-                )
+                            building.getY() >= (teslaBuilding.getY() - 1)
+                            && building.getY() <= (teslaBuilding.getY() + 1)
+                        )
                         && !building.isPlayers(teslaBuilding.getPlayerType())
                         && building.getHealth() > 0)
                 .forEach(enemyBuilding -> {
@@ -157,6 +156,10 @@ public class TowerDefenseGameMap implements GameMap {
             missileOwner = getPlayer(teslaBuilding.getPlayerType());
         } catch (Exception e) {
             log.error(e);
+        }
+
+        if(teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1 ){
+            missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(),missileOwner);
         }
 
         //Direction in the left  hand as well.
