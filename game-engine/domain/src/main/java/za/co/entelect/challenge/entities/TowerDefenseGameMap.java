@@ -178,7 +178,7 @@ public class TowerDefenseGameMap implements GameMap {
             }
         } else {
 
-            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) + 1) {
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
                 missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
