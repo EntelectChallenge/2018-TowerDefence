@@ -6,27 +6,23 @@ import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.entities.Building;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.entities.TowerDefensePlayer;
-import za.co.entelect.challenge.enums.BuildingType;
-import za.co.entelect.challenge.enums.PlayerType;
-import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 import java.util.Optional;
 
-public class DeconstructBuildingCommand extends RawCommand {
+public class DeconstructBuildingCommand implements Command {
 
     private int positionX;
     private int positionY;
-    private BuildingType buildingType;
 
-    private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
+    private static final Logger log = LogManager.getLogger(DeconstructBuildingCommand.class);
 
-    public DeconstructBuildingCommand(int positionX, int positionY, BuildingType buildingType) {
+    public DeconstructBuildingCommand(int positionX, int positionY) {
         this.positionX = positionX;
         this.positionY = positionY;
-        this.buildingType = buildingType;
     }
 
     @Override
@@ -34,20 +30,17 @@ public class DeconstructBuildingCommand extends RawCommand {
         TowerDefensePlayer currentPlayer = (TowerDefensePlayer) gamePlayer;
         TowerDefenseGameMap currentGameMap = (TowerDefenseGameMap) gameMap;
 
-        int mapWidth = GameConfig.getMapWidth();
-        int mapHeight = GameConfig.getMapHeight();
-
-        if ((positionX >= (mapWidth / 2) || positionX < 0) || (positionY >= (mapHeight) || positionY < 0)) {
+        if (!CommandHelpers.isCommandInBounds(positionX, positionY)) {
             String errorString = String.format("The position is out of bounds x:[%d] y:[%d]", positionX, positionY);
             log.error(errorString);
             throw new InvalidCommandException(errorString);
         }
+        this.positionX = CommandHelpers.mirrorXIndex(currentPlayer.getPlayerType(), positionX);
 
-        mirrorXIndex(currentPlayer.getPlayerType());
-
-        Optional<Building> buildingToDeconstruct = currentGameMap.getBuildings().stream().filter(b ->
-                b.getX() == positionX &&
-                        b.getY() == positionY).findFirst();
+        Optional<Building> buildingToDeconstruct = currentGameMap.getBuildings().stream()
+                .filter(b -> b.getX() == positionX
+                        && b.getY() == positionY)
+                .findFirst();
 
         if (!buildingToDeconstruct.isPresent()) {
             throw new InvalidCommandException(String.format("No building to deconstruct, X:%s, Y:%s",
@@ -59,12 +52,6 @@ public class DeconstructBuildingCommand extends RawCommand {
             currentPlayer.addEnergy(GameConfig.getDeconstructionRefundAmount());
         } catch (Exception e) {
             log.error(e);
-        }
-    }
-
-    private void mirrorXIndex(PlayerType id) {
-        if (id == PlayerType.B) {
-            positionX = GameConfig.getMapWidth() - 1 - positionX;
         }
     }
 }

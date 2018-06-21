@@ -60,7 +60,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     }
 
     private void constructBuildings() {
-        towerDefenseGameMap.getBuildings().stream()
+        towerDefenseGameMap.getBuildings()
                 .forEach(Building::decreaseConstructionTimeLeft);
     }
 
@@ -155,11 +155,9 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     // Converts Raw Commands into Commands the game engine can understand
     private void parseAndExecuteCommand(RawCommand command, GamePlayer player) {
         String commandSting = command.getCommand();
-
         String[] commandLine = commandSting.split(",");
 
         DoNothingCommand doNothingCommand = new DoNothingCommand();
-
         TowerDefensePlayer towerDefensePlayer = (TowerDefensePlayer) player;
 
         if (commandLine.length == 1) {
@@ -171,15 +169,15 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             towerDefenseGameMap.addErrorToErrorList(String.format(
                     "Unable to parse command expected 3 parameters, got %d", commandLine.length), towerDefensePlayer);
         }
+
         try {
             int positionX = Integer.parseInt(commandLine[0]);
             int positionY = Integer.parseInt(commandLine[1]);
             BuildingType buildingType = BuildingType.values()[Integer.parseInt(commandLine[2])];
 
             towerDefensePlayer.setConsecutiveDoNothings(0);
-            
             if (buildingType == BuildingType.DECONSTRUCT) {
-                new DeconstructBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
+                new DeconstructBuildingCommand(positionX, positionY).performCommand(towerDefenseGameMap, player);
             } else {
                 new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
             }
@@ -193,7 +191,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(
-                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Tesla]. Received:%s",
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Tesla], 4[Deconstruct]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
             log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
