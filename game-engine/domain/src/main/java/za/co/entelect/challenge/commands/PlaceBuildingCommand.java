@@ -44,6 +44,13 @@ public class PlaceBuildingCommand extends RawCommand {
 
         mirrorXIndex(currentPlayer.getPlayerType());
 
+        if(buildingType.equals(BuildingType.TESLA)){
+           if(currentGameMap.getBuildings().stream().filter(building -> building.getBuildingType().equals(BuildingType.TESLA)
+                   && building.getPlayerType().equals(currentPlayer.getPlayerType())).count() >= 2){
+               throw new InvalidCommandException("No more than 2 tesla towers allowed per player");
+           }
+        }
+
         Building buildingToAdd = BuildingFactory.createBuilding(positionX, positionY, buildingType, currentPlayer.getPlayerType());
 
         boolean isOccupiedCell = currentGameMap.getBuildings().stream().anyMatch(b ->

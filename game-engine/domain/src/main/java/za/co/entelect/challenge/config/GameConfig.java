@@ -98,9 +98,12 @@ public class GameConfig {
     }
 
     public static int getDefenseEnergyPerTurn() {
-        return configuration.getInt("game.config.defense.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.defense.config.energy-produced-per-turn");
     }
 
+    public static int getDefenseRange() {
+        return configuration.getInt("game.config.defense.config.max-range");
+    }
 
     public static int getEnergyHealth() {
         return configuration.getInt("game.config.energy.config.health");
@@ -139,9 +142,12 @@ public class GameConfig {
     }
 
     public static int getEnergyEnergyPerTurn() {
-        return configuration.getInt("game.config.energy.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.energy.config.energy-produced-per-turn");
     }
 
+    public static int getEnergyRange() {
+        return configuration.getInt("game.config.energy.config.max-range");
+    }
 
     public static int getAttackHealth() {
         return configuration.getInt("game.config.attack.config.health");
@@ -171,7 +177,6 @@ public class GameConfig {
         return configuration.getString("game.config.attack.config.icon");
     }
 
-
     public static int getAttackDestroyMultiplier() {
         return configuration.getInt("game.config.attack.config.destroy-multiplier");
     }
@@ -181,6 +186,59 @@ public class GameConfig {
     }
 
     public static int getAttackEnergyPerTurn() {
-        return configuration.getInt("game.config.attack.config.energy-Produced-per-turn");
+        return configuration.getInt("game.config.attack.config.energy-produced-per-turn");
+    }
+
+    public static int getAttackRange() {
+        return configuration.getInt("game.config.attack.config.max-range");
+    }
+
+    public static int getTeslaHealth() {
+        return configuration.getInt("game.config.tesla.config.health");
+    }
+
+    public static int getTeslaConstructionTimeLeft() {
+        return configuration.getInt("game.config.tesla.config.construction-time-left");
+    }
+
+    public static int getTeslaPrice() {
+        return configuration.getInt("game.config.tesla.config.price");
+    }
+
+    public static int getTeslaWeaponDamage() {
+        return configuration.getInt("game.config.tesla.config.weapon-damage");
+    }
+
+    public static int getTeslaWeaponSpeed() {
+        return configuration.getInt("game.config.tesla.config.weapon-speed");
+    }
+
+    public static int getTeslaWeaponCooldownPeriod() {
+        return configuration.getInt("game.config.tesla.config.weapon-cooldown-period");
+    }
+
+    public static int getTeslaWeaponEnergyPerShot() {
+        return configuration.getInt("game.config.tesla.energy.per.shot");
+    }
+
+
+    public static String getTeslaIcon() {
+        return configuration.getString("game.config.tesla.config.icon");
+    }
+
+    public static int getTeslaDestroyMultiplier() {
+        return configuration.getInt("game.config.tesla.config.destroy-multiplier");
+    }
+
+    public static int getTeslaConstructionScore() {
+        return configuration.getInt("game.config.tesla.config.construction-score");
+    }
+
+    public static int getTeslaEnergyPerTurn() {
+        return configuration.getInt("game.config.tesla.config.energy-produced-per-turn");
+    }
+
+    public static int getTeslaRange() {
+        return configuration.getInt("game.config.tesla.config.max-range");
     }
 }

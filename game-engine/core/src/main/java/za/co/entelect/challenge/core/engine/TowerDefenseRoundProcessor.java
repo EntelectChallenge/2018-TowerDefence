@@ -17,6 +17,7 @@ import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -31,10 +32,17 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     public boolean processRound(GameMap gameMap, Hashtable<GamePlayer, RawCommand> commands) {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
+        towerDefenseGameMap.clearTeslaTargetList();
 
         processCommands(commands);
 
         constructBuildings();
+
+        try {
+            fireTeslaTowers();
+        } catch (Exception e) {
+            log.error(e);
+        }
 
         createMissilesFromGuns();
         calculateMissileMovement();
@@ -52,7 +60,6 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
     private void constructBuildings() {
         towerDefenseGameMap.getBuildings().stream()
-                .filter(b -> !b.isConstructed())
                 .forEach(Building::decreaseConstructionTimeLeft);
     }
 
@@ -60,6 +67,34 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         towerDefenseGameMap.getBuildings().stream()
                 .filter(Building::isConstructed)
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
+    }
+
+    private void fireTeslaTowers() throws Exception {
+        ArrayList<Building> playerTeslaTowers = new ArrayList<>();
+        towerDefenseGameMap.getBuildings().stream()
+                .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
+                .filter(Building::isConstructed)
+                .forEach(b -> playerTeslaTowers.add(b));
+
+        //Oldest building first.
+        playerTeslaTowers.sort(Comparator.comparing(Building::getConstructionTimeLeft));
+
+        for (Building possibleFiringTeslaTower : playerTeslaTowers) {
+
+            TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(possibleFiringTeslaTower.getPlayerType());
+            int playerEnergy = currentPlayer.getEnergy();
+
+            if (playerEnergy >= possibleFiringTeslaTower.getEnergyPerShot() && possibleFiringTeslaTower.getWeaponCooldownTimeLeft() == 0) {
+                currentPlayer.removeEnergy(possibleFiringTeslaTower.getEnergyPerShot());
+                towerDefenseGameMap.fireTeslaTower(possibleFiringTeslaTower);
+                possibleFiringTeslaTower.resetCooldown();
+            } else {
+
+                if (possibleFiringTeslaTower.getWeaponCooldownTimeLeft() > 0) {
+                    possibleFiringTeslaTower.decreaseCooldown();
+                }
+            }
+        }
     }
 
     private void processCommands(Hashtable<GamePlayer, RawCommand> commands) {
@@ -153,7 +188,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(
-                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy]. Received:%s",
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Tesla]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
             log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));

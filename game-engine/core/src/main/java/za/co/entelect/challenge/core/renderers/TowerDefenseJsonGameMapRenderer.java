@@ -22,19 +22,19 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
 
     @Override
     public String render(GameMap gameMap, GamePlayer player) {
-        if(gameMap instanceof TowerDefenseGameMap) {
+        if (gameMap instanceof TowerDefenseGameMap) {
             towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
             TowerDefensePlayer towerDefensePlayer = (TowerDefensePlayer) player;
 
             Gson gson = new Gson();
             TowerDefenseJsonContainer container;
-            if (towerDefensePlayer.getPlayerType() == PlayerType.A){
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerA(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound());
-            }else{
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound());
+            if (towerDefensePlayer.getPlayerType() == PlayerType.A) {
+                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerA(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
+            } else {
+                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
             }
-            if (container == null){
-               log.error("The container cannot be empty.");
+            if (container == null) {
+                log.error("The container cannot be empty.");
                 return "";
             }
             return gson.toJson(container);
@@ -44,11 +44,11 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
         return "";
     }
 
-    private PlayerType invertPlayerType(PlayerType type){
+    private PlayerType invertPlayerType(PlayerType type) {
         return type == PlayerType.A ? PlayerType.B : PlayerType.A;
     }
 
-    public PlayerData[] getPlayerDataForPlayer(GamePlayer player){
+    public PlayerData[] getPlayerDataForPlayer(GamePlayer player) {
         ArrayList<PlayerData> playerDatum = new ArrayList<>();
         for (TowerDefensePlayer tdPlayer : towerDefenseGameMap.getTowerDefensePlayers()) {
             PlayerType playerType = tdPlayer.getPlayerType();

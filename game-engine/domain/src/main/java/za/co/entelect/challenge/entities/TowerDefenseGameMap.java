@@ -22,6 +22,7 @@ public class TowerDefenseGameMap implements GameMap {
     private ArrayList<Building> buildings = new ArrayList<>();
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<String> errorList = new ArrayList<>();
+    private ArrayList<List<Cell>> teslaTargetList = new ArrayList<>();
     private int currentRound;
 
     private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
@@ -40,6 +41,10 @@ public class TowerDefenseGameMap implements GameMap {
 
     public void clearErrorList() {
         this.errorList = new ArrayList<>();
+    }
+
+    public void clearTeslaTargetList() {
+        this.teslaTargetList = new ArrayList<>();
     }
 
     public void addErrorToErrorList(String error, TowerDefensePlayer player) {
@@ -73,7 +78,7 @@ public class TowerDefenseGameMap implements GameMap {
         return potentialPlayer.get();
     }
 
-    public TowerDefensePlayer getPlayerOpponent(PlayerType id) throws Exception {
+    private TowerDefensePlayer getPlayerOpponent(PlayerType id) throws Exception {
         Optional<TowerDefensePlayer> potentialPlayer = towerDefensePlayers.stream()
                 .filter((player -> player.getPlayerType() != id))
                 .findFirst();
@@ -101,14 +106,14 @@ public class TowerDefenseGameMap implements GameMap {
         }
     }
 
-    public void addMissileFromBuilding(Building b) {
+    private Direction checkAndSetupMissiles(Building b) {
         if (b.getWeaponDamage() == 0) {
-            return;
+            return null;
         }
 
         if (b.getWeaponCooldownTimeLeft() > 0) {
             b.decreaseCooldown();
-            return;
+            return null;
         }
 
         Direction direction = null;
@@ -118,6 +123,105 @@ public class TowerDefenseGameMap implements GameMap {
             direction = Direction.LEFT;
         }
 
+        return direction;
+    }
+
+    private Direction checkAndSetupMissilesNoCooldown(Building b) {
+        if (b.getWeaponDamage() == 0) {
+            return null;
+        }
+
+        Direction direction = null;
+        if (b.isPlayers(PlayerType.A)) {
+            direction = Direction.RIGHT;
+        } else if (b.isPlayers(PlayerType.B)) {
+            direction = Direction.LEFT;
+        }
+
+        return direction;
+    }
+
+    public void fireTeslaTower(Building teslaBuilding) {
+        Direction direction = checkAndSetupMissilesNoCooldown(teslaBuilding);
+        if (direction == null)
+            return;
+
+        ArrayList<Building> possibleTargets = new ArrayList<>();
+        buildings.stream()
+                .filter(building -> building.isConstructed()
+                        && (building.getY() >= (teslaBuilding.getY() - 1)
+                        && building.getY() <= (teslaBuilding.getY() + 1))
+                        && !building.isPlayers(teslaBuilding.getPlayerType())
+                        && building.getHealth() > 0)
+                .forEach(enemyBuilding -> possibleTargets.add(enemyBuilding));
+
+        TowerDefensePlayer missileOwner = null;
+        try {
+            missileOwner = getPlayer(teslaBuilding.getPlayerType());
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+        ArrayList<Cell> targetHitsByTeslaBuilding = new ArrayList<>();
+        if (direction.equals(Direction.RIGHT)) {
+
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
+                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+            }
+
+            for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
+                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+            }
+        } else {
+
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) + 1) {
+                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+            }
+
+            for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
+                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+            }
+        }
+
+        if (targetHitsByTeslaBuilding.size() > 0) {
+            targetHitsByTeslaBuilding.add(new Cell(teslaBuilding.getX(), teslaBuilding.getY(), teslaBuilding.getPlayerType()));
+            this.teslaTargetList.add(targetHitsByTeslaBuilding);
+        }
+    }
+
+    private ArrayList<Cell> possiblyFireTeslaTower(int x, ArrayList<Building> possibleTargets, Building teslaBuilding, TowerDefensePlayer missileOwner, ArrayList<Cell> teslaHitBuildings) {
+        final int nextTargetPoint = x;
+        Building targetToHit;
+
+        ArrayList<Building> targetsInX = new ArrayList<>();
+
+        possibleTargets.stream()
+                .filter(target -> target.getX() == nextTargetPoint)
+                .forEach(target -> {
+                    targetsInX.add(target);
+                });
+
+        targetsInX.sort(Comparator.comparing(Building::getY));
+
+        if (targetsInX.size() > 0) {
+            targetToHit = targetsInX.get(0);
+
+            if (targetToHit != null) {
+                targetToHit.damageSelfDirectly(teslaBuilding.getWeaponDamage(), missileOwner);
+                teslaHitBuildings.add(new Cell(targetToHit.getX(), targetToHit.getY(), targetToHit.getPlayerType()));
+                possibleTargets.remove(targetToHit);
+            }
+        }
+
+        return teslaHitBuildings;
+    }
+
+    public void addMissileFromBuilding(Building b) {
+        Direction direction = checkAndSetupMissiles(b);
+
+        if (direction == null)
+            return;
+
         missiles.add(new Missile(b, direction));
         b.resetCooldown();
     }
@@ -125,7 +229,6 @@ public class TowerDefenseGameMap implements GameMap {
     public void removeMissile(Missile missile) {
         this.missiles.remove(missile);
     }
-
 
     private static boolean positionMatch(Cell a, Cell b) {
         return (a.getY() == b.getY()) && (a.getX() == b.getX());
@@ -191,6 +294,10 @@ public class TowerDefenseGameMap implements GameMap {
     @Override
     public void setCurrentRound(int currentRound) {
         this.currentRound = currentRound;
+    }
+
+    public ArrayList<List<Cell>> getTeslaTargetList() {
+        return teslaTargetList;
     }
 
     public List<GamePlayer> getDeadPlayers() {
