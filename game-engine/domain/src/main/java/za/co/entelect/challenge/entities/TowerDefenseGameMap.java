@@ -97,6 +97,10 @@ public class TowerDefenseGameMap implements GameMap {
         }
     }
 
+    public void deconstructBuilding(Building building) {
+        buildings.remove(building);
+    }
+
     public void removeBuilding(Building building) {
         buildings.remove(building);
         try {
@@ -174,7 +178,7 @@ public class TowerDefenseGameMap implements GameMap {
             }
         } else {
 
-            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) + 1) {
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
                 missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 

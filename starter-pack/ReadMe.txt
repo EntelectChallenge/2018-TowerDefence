@@ -12,13 +12,13 @@
 | |____| |  | |/ ____ \| |____| |____| |____| |\  | |__| | |____ 
  \_____|_|  |_/_/    \_\______|______|______|_| \_|\_____|______|
 
- __       __       ___  
-/_ |     /_ |     |__ \ 
- | |      | |        ) |
- | |      | |       / / 
- | |  _   | |  _   / /_ 
- |_| (_)  |_| (_) |____|
-
+ ___         ___         ___  
+|__ \       / _ \       / _ \ 
+   ) |     | | | |     | | | |
+  / /      | | | |     | | | |
+ / /_   _  | |_| |  _  | |_| |
+|____| (_)  \___/  (_)  \___/ 
+                           
 
 Welcome to the starter pack for the 2018 Entelect Challenge!
 Here you will find all that you'll need to run your first bot and compete in this year's challenge.
@@ -88,6 +88,7 @@ Golang          => "golang"
 Haskell         => "haskell"
 PHP             => "php"
 LISP            => "lisp"
+Scala           => "scala"
 
 
 
@@ -164,3 +165,7 @@ PHP bots
 LISP bots
     For more info on the LISP bot, see the readme file or contact the person who submitted the bot, HenryS1 (on GitHub)
     [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/common-lisp]
+
+Scala bots
+    For more info on the Scala bot, see the readme file or contact the person who submitted the bot, niekz (on GitHub)
+    [https://github.com/EntelectChallenge/2018-TowerDefence/tree/master/starter-bots/scala]

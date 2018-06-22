@@ -28,8 +28,12 @@ public class GameDetails {
         this.mapHeight = GameConfig.getMapHeight();
         this.roundIncomeEnergy = GameConfig.getRoundIncomeEnergy();
 
-        Arrays.asList(BuildingType.values()).forEach(bt -> buildingPrices.put(bt, BuildingFactory.createBuildingStats(bt).price));
+        Arrays.stream(BuildingType.values())
+                .filter(bt -> bt != BuildingType.DECONSTRUCT)
+                .forEach(bt -> buildingPrices.put(bt, BuildingFactory.createBuildingStats(bt).price));
 
-        Arrays.stream(BuildingType.values()).forEach(bt -> buildingsStats.put(bt, BuildingFactory.createBuildingStats(bt)));
+        Arrays.stream(BuildingType.values())
+                .filter(bt -> bt != BuildingType.DECONSTRUCT)
+                .forEach(bt -> buildingsStats.put(bt, BuildingFactory.createBuildingStats(bt)));
     }
 }

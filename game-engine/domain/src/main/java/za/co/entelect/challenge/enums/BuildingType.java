@@ -4,5 +4,6 @@ public enum BuildingType {
     DEFENSE,
     ATTACK,
     ENERGY,
+    DECONSTRUCT,
     TESLA
 }
