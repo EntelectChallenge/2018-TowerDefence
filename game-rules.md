@@ -88,15 +88,15 @@ The building will be a lower-case letter if it is still under construction and i
 * Trying to place a building without enough energy for that building will result in a **'Do nothing'** command.
 * Once a building is destroyed, another building can be placed at that location.
 * Only one building can occupy a location on the map.
-* Damaging enemy buildings will award score to you, depending on the building type.
-* Constructing new buildings will award score to you, depending on the building type.
+* Damaging enemy buildings will award a score to you, depending on the building type.
+* Constructing new buildings will award a score to you, depending on the building type.
 
 ### Building Types:
 **The player can build one of 4 different types of buildings**
 
 #### Defence Building:
-A defensive building, tougher than any other building type with no offensive capabilities.
-It is able to take more hits than any other building, these buildings are great for soaking up damage while your offensive buildings fire from the safety behind them.
+A defensive building is tougher than any other building type with no offensive capabilities.
+These buildings are great for soaking up damage while your offensive buildings fire safely from behind them
 
 **Defence building details:**
 * Cost: **30**
@@ -106,7 +106,7 @@ It is able to take more hits than any other building, these buildings are great 
 * Under construction character: **d**
 
 #### Attack Building:
-An offensive building, fires straight line missiles toward the opposing side. This is the primary method of damaging the opposing player's buildings and home base.
+An offensive building fires straight line missiles toward the opposing side. This is the primary method of damaging the opposing player's buildings and home base.
 The attack building has a firing rate, it will fire a missile every **3** turns after it has been successfully built.
 
 **Attack building details:**
