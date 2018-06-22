@@ -162,16 +162,22 @@ public class TowerDefenseGameMap implements GameMap {
             log.error(e);
         }
 
-        if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
-            missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
-        }
-
         ArrayList<Cell> targetHitsByTeslaBuilding = new ArrayList<>();
         if (direction.equals(Direction.RIGHT)) {
+
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
+                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+            }
+
             for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
                 targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
             }
         } else {
+
+            if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) + 1) {
+                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+            }
+
             for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
                 targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
             }

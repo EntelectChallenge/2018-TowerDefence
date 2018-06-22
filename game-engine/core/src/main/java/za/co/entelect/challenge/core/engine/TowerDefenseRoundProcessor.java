@@ -41,7 +41,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         try {
             fireTeslaTowers();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e);
         }
 
         createMissilesFromGuns();
