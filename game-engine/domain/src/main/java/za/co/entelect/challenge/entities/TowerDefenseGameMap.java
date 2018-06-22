@@ -168,20 +168,19 @@ public class TowerDefenseGameMap implements GameMap {
         }
 
         if(targetHitsByTeslaBuilding.size() > 0){
-            targetHitsByTeslaBuilding.add(new  Cell(teslaBuilding.getX(),teslaBuilding.getY(),teslaBuilding.getPlayerType()));
+            targetHitsByTeslaBuilding.add(new Cell(teslaBuilding.getX(),teslaBuilding.getY(),teslaBuilding.getPlayerType()));
             this.teslaTargetList.add(targetHitsByTeslaBuilding);
         }
-
     }
 
     private ArrayList<Cell> possiblyFireTeslaTower(int x, ArrayList<Building> possibleTargets, Building teslaBuilding, TowerDefensePlayer missileOwner,  ArrayList<Cell> teslaHitBuildings){
-        final int nextTargetpoint = x;
+        final int nextTargetPoint = x;
         Building targetToHit;
 
         ArrayList<Building> targetsInX = new ArrayList<>();
 
         possibleTargets.stream()
-                .filter(target -> target.getX() == nextTargetpoint)
+                .filter(target -> target.getX() == nextTargetPoint)
                 .forEach(target -> {
                     targetsInX.add(target);
                 });
