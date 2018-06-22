@@ -1,37 +1,27 @@
 {
   "gameDetails": {
-    "round": 32,
+    "round": 11,
     "maxRounds": 400,
     "mapWidth": 16,
     "mapHeight": 8,
     "roundIncomeEnergy": 5,
     "buildingPrices": {
+      "TESLA": 300,
+      "DEFENSE": 30,
       "ATTACK": 30,
-      "ENERGY": 20,
-      "DEFENSE": 30
+      "ENERGY": 20
     },
     "buildingsStats": {
-      "ATTACK": {
+      "TESLA": {
         "health": 5,
-        "constructionTime": 2,
-        "price": 30,
-        "weaponDamage": 5,
-        "weaponSpeed": 2,
-        "weaponCooldownPeriod": 3,
+        "constructionTime": 11,
+        "price": 300,
+        "weaponDamage": 20,
+        "weaponSpeed": 0,
+        "weaponCooldownPeriod": 10,
         "energyGeneratedPerTurn": 0,
         "destroyMultiplier": 1,
-        "constructionScore": 15
-      },
-      "ENERGY": {
-        "health": 5,
-        "constructionTime": 2,
-        "price": 20,
-        "weaponDamage": 0,
-        "weaponSpeed": 0,
-        "weaponCooldownPeriod": 0,
-        "energyGeneratedPerTurn": 3,
-        "destroyMultiplier": 1,
-        "constructionScore": 3
+        "constructionScore": 1
       },
       "DEFENSE": {
         "health": 20,
@@ -42,7 +32,29 @@
         "weaponCooldownPeriod": 0,
         "energyGeneratedPerTurn": 0,
         "destroyMultiplier": 1,
-        "constructionScore": 10
+        "constructionScore": 1
+      },
+      "ATTACK": {
+        "health": 5,
+        "constructionTime": 2,
+        "price": 30,
+        "weaponDamage": 5,
+        "weaponSpeed": 1,
+        "weaponCooldownPeriod": 3,
+        "energyGeneratedPerTurn": 0,
+        "destroyMultiplier": 1,
+        "constructionScore": 1
+      },
+      "ENERGY": {
+        "health": 5,
+        "constructionTime": 2,
+        "price": 20,
+        "weaponDamage": 0,
+        "weaponSpeed": 0,
+        "weaponCooldownPeriod": 0,
+        "energyGeneratedPerTurn": 3,
+        "destroyMultiplier": 1,
+        "constructionScore": 1
       }
     }
   },
