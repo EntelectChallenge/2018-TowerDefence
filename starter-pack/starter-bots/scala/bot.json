@@ -1,0 +1,8 @@
+{
+  "author": "John Doe",
+  "email": "john.doe@example.com",
+  "nickName": "Odersky",
+  "botLocation": "/target/scala-2.12",
+  "botFileName": "Entelect-Scala-Bot-assembly-0.1.jar",
+  "botLanguage": "scala"
+}
