@@ -76,8 +76,8 @@ The building will be a lower-case letter if it is still under construction and i
     * 0: Build a **Defence Building**
     * 1: Build a **Attack Building**
     * 2: Build a **Energy Building**
-	* 3: Build a **Tesla Tower**
-	* 4: **Deconstruct** a building
+	* 3: **Deconstruct** a building
+	* 4: Build a **Tesla Tower**
 * An example of a valid command will be '**0,0,1**', which will place an attack building at the top left corner of the map.
 
 ## Buildings:
@@ -131,18 +131,20 @@ A utility building that provides **3** extra energy per turn. These buildings ha
 * Under construction character: **e**
 
 #### Tesla Tower:
-An offensive *krrrr**shhhhghhgh*b*booooom!!!*...
-...
+A powerful but fragile attack building that can hit multiple enemy buildings in one hit. It costs **100** energy to fire a single shot, and this will
+automatically hit all enemies in a pre-defined pattern, causing **20** damage per hit. Once it has cooled down, it will wait until it has enough energy
+to fire, and only then reset the cooldown.
 
 **Tesla tower details:**
-* Cost:    **30**
+* Cost:    **300**
 * Health: **5**
-* Firing rate: **3**
-* Missile speed: **2**
-* Damage: **5**
-* Construction time: **1**
-* Constructed character: **A**
-* Under construction character: **a**
+* Damage: **20** per hit
+* Construction time: **10**
+* Constructed character: **T**
+* Energy needed per attack:  **100**
+* Under construction character: **t**
+* Maximum Range: **9**
+* Maximum amount of towers per person: **2**
 
 ## Missiles
 * Attack buildings will create missiles.
@@ -155,6 +157,15 @@ An offensive *krrrr**shhhhghhgh*b*booooom!!!*...
 * Missiles move at the missile speed as defined by the weapon that fired them.
 * Missiles move in a straight line toward the opposing player.
 * Missiles move the moment they are created.
+
+#Lighting Attack
+* Only the tesla tower can generate a lighting attack.
+* The lighting attack is instant - An Attack building destroyed by a lighting attack will not fire a missile that turn.
+* The lighting attack never damages your own buildings, only those of the enemy.
+* The lighting attack will attack enemy buildings in 3 rows, with the middle row being the one the telsa tower is on.
+* The lighting attack will always attack the highest(to the top of the map) enemy building for a column.
+* It will try to strike an enemy building in every column until the maximum range of the tower, starting at the fist column next to the tower. 
+* A lighting attack will not effect any friendly or enemy missiles in flight.
 
 ## Score
 Each player will have a score based on the damage dealt by the player on both the opponent's health and buildings, as
