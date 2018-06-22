@@ -13,6 +13,9 @@ namespace StarterBot.Enums
         Attack = 1,
         [JsonProperty("ENERGY")]
         [EnumMember(Value = "ENERGY")]
-        Energy = 2
+        Energy = 2,
+        [JsonProperty("TESLA")]
+        [EnumMember(Value = "TESLA")]
+        Tesla = 4
     }
 }

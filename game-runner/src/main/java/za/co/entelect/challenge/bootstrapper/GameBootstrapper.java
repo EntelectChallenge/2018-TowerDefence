@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.util.TriConsumer;
 import za.co.entelect.challenge.botrunners.BotRunner;
 import za.co.entelect.challenge.botrunners.BotRunnerFactory;
 import za.co.entelect.challenge.core.engine.TowerDefenseGameEngine;
@@ -14,10 +15,12 @@ import za.co.entelect.challenge.core.engine.TowerDefenseRoundProcessor;
 import za.co.entelect.challenge.engine.runner.GameEngineRunner;
 import za.co.entelect.challenge.entities.BotMetaData;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
+import za.co.entelect.challenge.game.contracts.game.GameResult;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.player.Player;
 import za.co.entelect.challenge.player.BotPlayer;
 import za.co.entelect.challenge.player.ConsolePlayer;
+import za.co.entelect.challenge.player.TournamentPlayer;
 import za.co.entelect.challenge.utils.FileUtils;
 
 import java.io.*;
@@ -26,7 +29,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class GameBootstrapper {
 
@@ -36,31 +41,45 @@ public class GameBootstrapper {
     private static String gameName;
 
     public static void main(String[] args) {
-
-        GameBootstrapper gameBootstrapper = new GameBootstrapper();
-
-        try {
-            Config config = gameBootstrapper.loadConfig();
-
-            gameBootstrapper.prepareEngineRunner(config);
-            gameBootstrapper.prepareHandlers();
-            gameBootstrapper.prepareGame(config);
-
-            gameBootstrapper.startGame();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        new GameBootstrapper().run(args);
     }
 
-    private Config loadConfig() throws Exception {
-        try (FileReader fileReader = new FileReader("./config.json")) {
+    public GameResult run(String[] args) {
+
+        Config config = null;
+        try {
+            config = loadConfig(args);
+
+            prepareEngineRunner(config);
+            prepareHandlers();
+            prepareGame(config);
+
+            startGame();
+
+        } catch (Exception e) {
+            log.error(e);
+            gameEngineRunner.setMatchSuccess(false);
+        }
+
+        return gameEngineRunner.getGameResult();
+    }
+
+    private Config loadConfig(String[] args) throws Exception {
+        try (FileReader fileReader = new FileReader("./game-runner-config.json")) {
             Gson gson = new GsonBuilder().create();
             Config config = gson.fromJson(fileReader, Config.class);
 
             if (config == null)
                 throw new Exception("Failed to load config");
+
+            if (config.isTournamentMode) {
+
+                if (args.length != 2)
+                    throw new Exception("No bot locations specified for tournament");
+
+                config.playerAConfig = args[0];
+                config.playerBConfig = args[1];
+            }
 
             return config;
         }
@@ -88,8 +107,8 @@ public class GameBootstrapper {
 
         List<Player> players = new ArrayList<>();
 
-        parsePlayer(config.playerAConfig, players, "A", config.maximumBotRuntimeMilliSeconds);
-        parsePlayer(config.playerBConfig, players, "B", config.maximumBotRuntimeMilliSeconds);
+        players.add(parsePlayer(config.playerAConfig, "A", config));
+        players.add(parsePlayer(config.playerBConfig, "B", config));
 
         gameEngineRunner.preparePlayers(players);
         gameEngineRunner.prepareGameMap();
@@ -101,19 +120,22 @@ public class GameBootstrapper {
         }
     }
 
-    private void parsePlayer(String playerConfig, List<Player> players, String playerNumber, int maximumBotRuntimeMilliSeconds) throws Exception {
+    private Player parsePlayer(String playerConfig, String playerNumber, Config config) throws Exception {
         if (playerConfig.equals("console")) {
-            players.add(new ConsolePlayer(String.format("Player %s", playerNumber)));
+            return new ConsolePlayer(String.format("Player %s", playerNumber));
         } else {
             BotMetaData botConfig = getBotMetaData(playerConfig);
-            BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, maximumBotRuntimeMilliSeconds);
+            BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, config.maximumBotRuntimeMilliSeconds);
 
             File botFile = new File(botConfig.getBotDirectory());
             if (!botFile.exists()) {
                 throw new FileNotFoundException(String.format("Could not find %s bot file for %s(%s)", botConfig.getBotLanguage(), botConfig.getAuthor(), botConfig.getNickName()));
             }
-            BotPlayer player = new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
-            players.add(player);
+
+            if(config.isTournamentMode)
+                return new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage(), gameName);
+            else
+                return new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
         }
     }
 
@@ -150,8 +172,8 @@ public class GameBootstrapper {
         };
     }
 
-    private BiConsumer<GameMap, List<Player>> getGameCompleteHandler() {
-        return (gameMap, players) -> {
+    private TriConsumer<GameMap, List<Player>, Boolean> getGameCompleteHandler() {
+        return (gameMap, players, matchSuccessful) -> {
             GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
             Player winner = players.stream()
@@ -183,6 +205,10 @@ public class GameBootstrapper {
                     winnerStringBuilder.insert(0, "The winner is: " + winner.getName() + "\n\n");
                 }
 
+                if (!matchSuccessful) {
+                    winnerStringBuilder.insert(0, "Bot did nothing too many consecutive rounds" + "\n\n");
+                }
+
                 bufferedWriter.write(winnerStringBuilder.toString());
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -192,19 +218,23 @@ public class GameBootstrapper {
         };
     }
 
-    private BiConsumer<GameMap, Integer> getRoundStartingHandler() {
+    private BiFunction<GameMap, Integer, String> getRoundStartingHandler() {
         return (gameMap, round) -> {
-            log.info("=======================================");
-            log.info("Starting round " + round);
-            log.info("=======================================");
+            StringBuilder s = new StringBuilder();
+            s.append("=======================================" + "\n");
+            s.append("Starting round " + round + "\n");
+            s.append("=======================================" + "\n");
+            return s.toString();
         };
     }
 
-    private Consumer<GameMap> getGameStartedHandler() {
+    private Function<GameMap, String> getGameStartedHandler() {
         return gameMap -> {
-            log.info("=======================================");
-            log.info("Starting game");
-            log.info("=======================================");
+            StringBuilder s = new StringBuilder();
+            s.append("=======================================" + "\n");
+            s.append("Starting game" + "\n");
+            s.append("=======================================" + "\n");
+            return s.toString();
         };
     }
 }

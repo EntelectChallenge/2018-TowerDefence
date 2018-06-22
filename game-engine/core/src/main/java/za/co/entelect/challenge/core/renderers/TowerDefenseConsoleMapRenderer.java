@@ -66,7 +66,7 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
     public String commandPrompt(GamePlayer gamePlayer) {
         TowerDefensePlayer towerDefensePlayer = (TowerDefensePlayer) gamePlayer;
         String color = (towerDefensePlayer.getPlayerType() == PlayerType.A) ? ANSI_BLUE_BRIGHT : ANSI_RED_BRIGHT;
-        return color + "TowerDefensePlayer " + towerDefensePlayer.getPlayerType() + ": Enter command x <coord>,y <coord>,building type <0:Defense , 1:Attack or 2:Energy>" + ANSI_RESET;
+        return color + "TowerDefensePlayer " + towerDefensePlayer.getPlayerType() + ": Enter command x <coord>,y <coord>,building type <0:Defense , 1:Attack, 2:Energy  or 3: Tesla>" + ANSI_RESET;
     }
 
     public String renderMap(TowerDefenseGameMap towerDefenseGameMap) {

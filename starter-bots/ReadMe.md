@@ -2,7 +2,7 @@
 
 Entelect will provide Starter Bots for C#, Python, Javascript and Java. Starter bots are basic started projects that can read game files and make random moves. Reference bots that are capable of playing a game from start to finish are also included for contestants wishing to have something more to work from.
 
-For any additional languages we will be relying on the community contributing a starter bot for the language of their choice. If you would like your language to be supported you will have to submit a starter bot. Starter bot submissions will close at Midnight on the 27th of May, after this no additional starter bots will be accepted.
+For any additional languages we will be relying on the community contributing a starter bot for the language of their choice. If you would like your language to be supported you will have to submit a starter bot. Starter bot submissions will close at Midnight on the 27th of May 2018, after this no additional starter bots will be accepted.
 
 Calibration bots will be included into the game engine before the first battle (after starter bot submission have closed) and will be based on the starter bot for each language.
 

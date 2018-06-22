@@ -2,6 +2,7 @@ package za.co.entelect.challenge.game.contracts.player;
 
 import za.co.entelect.challenge.game.contracts.command.Command;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
@@ -33,6 +34,8 @@ import java.util.function.BiConsumer;
  * will then pass game logs on to you player.
  */
 public abstract class Player {
+
+    private int number;
 
     private String name;
 
@@ -66,11 +69,13 @@ public abstract class Player {
 
     public abstract void gameEnded(GameMap gameMap);
 
-    public abstract void playerKilled(GameMap gameMap);
+    public int getNumber() {
+        return number;
+    }
 
-    public abstract void playerCommandFailed(GameMap gameMap, String reason);
-
-    public abstract void firstRoundFailed(GameMap gameMap, String reason);
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
     public String getName() {
         return name;

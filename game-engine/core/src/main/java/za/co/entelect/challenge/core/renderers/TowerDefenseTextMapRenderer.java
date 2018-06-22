@@ -39,6 +39,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("ATTACK;").append(BuildingFactory.createBuildingStats(BuildingType.ATTACK)).append("\n");
         stringBuilder.append("DEFENSE;").append(BuildingFactory.createBuildingStats(BuildingType.DEFENSE)).append("\n");
         stringBuilder.append("ENERGY;").append(BuildingFactory.createBuildingStats(BuildingType.ENERGY)).append("\n");
+        stringBuilder.append("TESLA;").append(BuildingFactory.createBuildingStats(BuildingType.TESLA)).append("\n");
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 

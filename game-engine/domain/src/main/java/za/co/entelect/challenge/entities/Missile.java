@@ -4,12 +4,21 @@ import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.enums.Direction;
 import za.co.entelect.challenge.enums.PlayerType;
 
+import java.util.UUID;
+
 public class Missile extends Cell {
 
     private int damage;
     private int speed;
+    private String id;
     private transient Direction direction;
     private transient String icon;
+    private transient int unprocessedMovement;
+
+    private void setDefaults() {
+        this.id = UUID.randomUUID().toString();
+        this.unprocessedMovement = this.speed;
+    }
 
     public Missile(int x, int y, int damage, int speed, Direction direction, PlayerType playerType) {
         this.x = x;
@@ -19,6 +28,7 @@ public class Missile extends Cell {
         this.direction = direction;
         this.playerType = playerType;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
+        setDefaults();
     }
 
     public Missile getInvertedXInstance(){
@@ -36,7 +46,8 @@ public class Missile extends Cell {
                 this.direction,
                 type);
 
-        newMissile.direction = (newMissile.direction == Direction.LEFT) ? Direction.RIGHT : Direction.LEFT;
+        newMissile.id = this.id;
+        newMissile.direction = (this.direction == Direction.LEFT) ? Direction.RIGHT : Direction.LEFT;
         newMissile.icon = (newMissile.direction == Direction.LEFT) ? "<" : ">";
 
         return newMissile;
@@ -49,6 +60,7 @@ public class Missile extends Cell {
         this.speed = b.getWeaponSpeed();
         this.direction = direction;
         this.icon = (direction == Direction.LEFT) ? "<" : ">";
+        setDefaults();
     }
 
     public int getSpeed() {
@@ -67,12 +79,23 @@ public class Missile extends Cell {
         return icon;
     }
 
-
     public void setSpeed(int newSpeed) {
         speed = newSpeed;
     }
 
     public void moveX(int numberOfCellsToMove) {
         x += numberOfCellsToMove;
+    }
+
+    public int getUnprocessedMovement() {
+        return unprocessedMovement;
+    }
+
+    public void reduceUnprocessedMovement() {
+        this.unprocessedMovement--;
+    }
+
+    public void resetUnprocessedMovement() {
+        this.unprocessedMovement = this.speed;
     }
 }

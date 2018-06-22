@@ -1,37 +1,27 @@
 {
   "gameDetails": {
-    "round": 32,
+    "round": 11,
     "maxRounds": 400,
     "mapWidth": 16,
     "mapHeight": 8,
     "roundIncomeEnergy": 5,
     "buildingPrices": {
+      "TESLA": 300,
+      "DEFENSE": 30,
       "ATTACK": 30,
-      "ENERGY": 20,
-      "DEFENSE": 30
+      "ENERGY": 20
     },
     "buildingsStats": {
-      "ATTACK": {
+      "TESLA": {
         "health": 5,
-        "constructionTime": 2,
-        "price": 30,
-        "weaponDamage": 5,
-        "weaponSpeed": 2,
-        "weaponCooldownPeriod": 3,
+        "constructionTime": 11,
+        "price": 300,
+        "weaponDamage": 20,
+        "weaponSpeed": 0,
+        "weaponCooldownPeriod": 10,
         "energyGeneratedPerTurn": 0,
         "destroyMultiplier": 1,
-        "constructionScore": 15
-      },
-      "ENERGY": {
-        "health": 5,
-        "constructionTime": 2,
-        "price": 20,
-        "weaponDamage": 0,
-        "weaponSpeed": 0,
-        "weaponCooldownPeriod": 0,
-        "energyGeneratedPerTurn": 3,
-        "destroyMultiplier": 1,
-        "constructionScore": 3
+        "constructionScore": 1
       },
       "DEFENSE": {
         "health": 20,
@@ -42,7 +32,29 @@
         "weaponCooldownPeriod": 0,
         "energyGeneratedPerTurn": 0,
         "destroyMultiplier": 1,
-        "constructionScore": 10
+        "constructionScore": 1
+      },
+      "ATTACK": {
+        "health": 5,
+        "constructionTime": 2,
+        "price": 30,
+        "weaponDamage": 5,
+        "weaponSpeed": 1,
+        "weaponCooldownPeriod": 3,
+        "energyGeneratedPerTurn": 0,
+        "destroyMultiplier": 1,
+        "constructionScore": 1
+      },
+      "ENERGY": {
+        "health": 5,
+        "constructionTime": 2,
+        "price": 20,
+        "weaponDamage": 0,
+        "weaponSpeed": 0,
+        "weaponCooldownPeriod": 0,
+        "energyGeneratedPerTurn": 3,
+        "destroyMultiplier": 1,
+        "constructionScore": 1
       }
     }
   },
@@ -754,14 +766,52 @@
       {
         "x": 7,
         "y": 3,
-        "buildings": [],
+        "buildings": [
+          {
+            "health": 5,
+            "constructionTimeLeft": 0,
+            "price": 300,
+            "weaponDamage": 20,
+            "weaponSpeed": 0,
+            "weaponCooldownTimeLeft": 0,
+            "weaponCooldownPeriod": 10,
+            "destroyMultiplier": 1,
+            "constructionScore": 1,
+            "energyGeneratedPerTurn": 0,
+            "maxRange": 9,
+            "buildingType": "TESLA",
+            "energyPerShot": 100,
+            "x": 7,
+            "y": 3,
+            "playerType": "A"
+          }
+        ],
         "missiles": [],
         "cellOwner": "A"
       },
       {
         "x": 8,
         "y": 3,
-        "buildings": [],
+        "buildings": [
+          {
+            "health": 5,
+            "constructionTimeLeft": 1,
+            "price": 300,
+            "weaponDamage": 20,
+            "weaponSpeed": 0,
+            "weaponCooldownTimeLeft": 0,
+            "weaponCooldownPeriod": 10,
+            "destroyMultiplier": 1,
+            "constructionScore": 1,
+            "energyGeneratedPerTurn": 0,
+            "maxRange": 9,
+            "buildingType": "TESLA",
+            "energyPerShot": 100,
+            "x": 8,
+            "y": 3,
+            "playerType": "B"
+          }
+        ],
         "missiles": [],
         "cellOwner": "B"
       },
@@ -1669,6 +1719,87 @@
         ],
         "missiles": [],
         "cellOwner": "B"
+      }
+    ]
+  ],
+  "teslaHitList": [
+    [
+      {
+        "x": 7,
+        "y": 2,
+        "playerType": "A"
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "playerType": "A"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "playerType": "A"
+      },
+      {
+        "x": 3,
+        "y": 2,
+        "playerType": "A"
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "playerType": "A"
+      },
+      {
+        "x": 8,
+        "y": 3,
+        "playerType": "B"
+      }
+    ],
+    [
+      {
+        "x": 8,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 9,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 10,
+        "y": 3,
+        "playerType": "B"
+      },
+      {
+        "x": 11,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 12,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 13,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 14,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 15,
+        "y": 2,
+        "playerType": "B"
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "playerType": "A"
       }
     ]
   ]

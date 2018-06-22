@@ -17,7 +17,9 @@ public class Building extends Cell {
     private int destroyMultiplier;
     private int constructionScore;
     private int energyGeneratedPerTurn;
+    private int maxRange;
     private BuildingType buildingType;
+    private int energyPerShot;
 
     public Building(int x,
                     int y,
@@ -32,6 +34,7 @@ public class Building extends Cell {
                     int destroyMultiplier,
                     int constructionScore,
                     int energyGeneratedPerTurn,
+                    int maxRange,
                     BuildingType buildingType) {
         super(x, y, playerType);
         this.health = health;
@@ -45,6 +48,40 @@ public class Building extends Cell {
         this.weaponCooldownPeriod = weaponCooldownPeriod;
         this.icon = icon;
         this.energyGeneratedPerTurn = energyGeneratedPerTurn;
+        this.maxRange = maxRange;
+        this.buildingType = buildingType;
+    }
+
+    public Building(int x,
+                    int y,
+                    PlayerType playerType,
+                    int health,
+                    int constructionTimeLeft,
+                    int price,
+                    int weaponDamage,
+                    int weaponSpeed,
+                    int weaponCooldownPeriod,
+                    String icon,
+                    int destroyMultiplier,
+                    int constructionScore,
+                    int energyGeneratedPerTurn,
+                    int maxRange,
+                    int energyPerShot,
+                    BuildingType buildingType) {
+        super(x, y, playerType);
+        this.health = health;
+        this.constructionTimeLeft = constructionTimeLeft;
+        this.price = price;
+        this.weaponDamage = weaponDamage;
+        this.weaponSpeed = weaponSpeed;
+        this.destroyMultiplier = destroyMultiplier;
+        this.constructionScore = constructionScore;
+        this.weaponCooldownTimeLeft = 0;
+        this.weaponCooldownPeriod = weaponCooldownPeriod;
+        this.icon = icon;
+        this.energyGeneratedPerTurn = energyGeneratedPerTurn;
+        this.maxRange = maxRange;
+        this.energyPerShot = energyPerShot;
         this.buildingType = buildingType;
     }
 
@@ -69,6 +106,7 @@ public class Building extends Cell {
                 this.destroyMultiplier,
                 this.constructionScore,
                 this.energyGeneratedPerTurn,
+                this.maxRange,
                 this.buildingType);
 
         newBuilding.weaponCooldownTimeLeft = this.weaponCooldownTimeLeft;
@@ -79,14 +117,19 @@ public class Building extends Cell {
     public void damageSelf(Missile m, TowerDefensePlayer missileOwner) {
         int damageTaken = Math.min(health, m.getDamage());
 
+        setHealthAndAddScore(damageTaken,missileOwner);
+    }
+
+    public void damageSelfDirectly(int damageTaken, TowerDefensePlayer missileOwner) {
+        setHealthAndAddScore(damageTaken,missileOwner);
+    }
+
+    private void setHealthAndAddScore(int damageTaken,TowerDefensePlayer missileOwner){
+
         health -= damageTaken;
         health = Math.max(0, health);
 
         missileOwner.addScore(damageTaken * destroyMultiplier);
-
-        if (damageTaken > 0) {
-            m.setSpeed(0);
-        }
     }
 
     public void decreaseCooldown() {
@@ -106,7 +149,7 @@ public class Building extends Cell {
     }
 
     public boolean isConstructed() {
-        return (getConstructionTimeLeft() == 0);
+        return (getConstructionTimeLeft() <= 0);
     }
 
     public int getHealth() {
@@ -151,5 +194,13 @@ public class Building extends Cell {
 
     public int getConstructionScore() {
         return constructionScore;
+    }
+
+    public int getMaxRange() {
+        return maxRange;
+    }
+
+    public int getEnergyPerShot() {
+        return energyPerShot;
     }
 }

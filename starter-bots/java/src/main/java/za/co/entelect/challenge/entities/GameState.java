@@ -8,6 +8,7 @@ public class GameState {
     protected Player[] players;
     protected CellStateContainer[][] gameMap;
     protected GameDetails gameDetails;
+    protected Cell[] teslaHitList;
 
     public List<Player> getPlayers() {
         return new ArrayList<>(Arrays.asList(players));

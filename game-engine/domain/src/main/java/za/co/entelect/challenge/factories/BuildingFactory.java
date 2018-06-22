@@ -21,6 +21,7 @@ public class BuildingFactory {
                 GameConfig.getDefenseDestroyMultiplier(),
                 GameConfig.getDefenseConstructionScore(),
                 GameConfig.getDefenseEnergyPerTurn(),
+                GameConfig.getDefenseRange(),
                 BuildingType.DEFENSE);
 
         if (buildingType == BuildingType.ATTACK) {
@@ -35,6 +36,7 @@ public class BuildingFactory {
                     GameConfig.getAttackDestroyMultiplier(),
                     GameConfig.getAttackConstructionScore(),
                     GameConfig.getAttackEnergyPerTurn(),
+                    GameConfig.getAttackRange(),
                     BuildingType.ATTACK);
         }
 
@@ -50,7 +52,25 @@ public class BuildingFactory {
                     GameConfig.getEnergyDestroyMultiplier(),
                     GameConfig.getEnergyConstructionScore(),
                     GameConfig.getEnergyEnergyPerTurn(),
+                    GameConfig.getEnergyRange(),
                     BuildingType.ENERGY);
+        }
+
+        if (buildingType == BuildingType.TESLA) {
+            building = new Building(x, y, playerType,
+                    GameConfig.getTeslaHealth(),
+                    GameConfig.getTeslaConstructionTimeLeft(),
+                    GameConfig.getTeslaPrice(),
+                    GameConfig.getTeslaWeaponDamage(),
+                    GameConfig.getTeslaWeaponSpeed(),
+                    GameConfig.getTeslaWeaponCooldownPeriod(),
+                    GameConfig.getTeslaIcon(),
+                    GameConfig.getTeslaDestroyMultiplier(),
+                    GameConfig.getTeslaConstructionScore(),
+                    GameConfig.getTeslaEnergyPerTurn(),
+                    GameConfig.getTeslaRange(),
+                    GameConfig.getTeslaWeaponEnergyPerShot(),
+                    BuildingType.TESLA);
         }
 
         return building;

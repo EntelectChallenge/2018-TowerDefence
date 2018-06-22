@@ -1,18 +1,16 @@
 package za.co.entelect.challenge.commands;
 
-import za.co.entelect.challenge.config.GameConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.entities.Building;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.entities.TowerDefensePlayer;
 import za.co.entelect.challenge.enums.BuildingType;
-import za.co.entelect.challenge.enums.PlayerType;
 import za.co.entelect.challenge.factories.BuildingFactory;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.InvalidCommandException;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PlaceBuildingCommand extends RawCommand {
 
@@ -33,22 +31,26 @@ public class PlaceBuildingCommand extends RawCommand {
         TowerDefensePlayer currentPlayer = (TowerDefensePlayer) gamePlayer;
         TowerDefenseGameMap currentGameMap = (TowerDefenseGameMap) gameMap;
 
-        int mapWidth = GameConfig.getMapWidth();
-        int mapHeight = GameConfig.getMapHeight();
-
-        if ((positionX >= (mapWidth / 2) || positionX < 0) || (positionY >= (mapHeight) || positionY < 0)) {
+        if (!CommandHelpers.isCommandInBounds(positionX, positionY)) {
             String errorString = String.format("The position is out of bounds x:[%d] y:[%d]", positionX, positionY);
             log.error(errorString);
             throw new InvalidCommandException(errorString);
         }
+        this.positionX = CommandHelpers.mirrorXIndex(currentPlayer.getPlayerType(), positionX);
 
-        mirrorXIndex(currentPlayer.getPlayerType());
+        if (buildingType.equals(BuildingType.TESLA)) {
+            if (currentGameMap.getBuildings().stream()
+                    .filter(building -> building.getBuildingType().equals(BuildingType.TESLA)
+                            && building.getPlayerType().equals(currentPlayer.getPlayerType()))
+                    .count() >= 2) {
+                throw new InvalidCommandException("No more than 2 tesla towers allowed per player");
+            }
+        }
 
         Building buildingToAdd = BuildingFactory.createBuilding(positionX, positionY, buildingType, currentPlayer.getPlayerType());
 
-        boolean isOccupiedCell = currentGameMap.getBuildings().stream().anyMatch(b ->
-                b.getX() == positionX && b.getY() == positionY
-        );
+        boolean isOccupiedCell = currentGameMap.getBuildings().stream()
+                .anyMatch(b -> b.getX() == positionX && b.getY() == positionY);
 
         if (isOccupiedCell) {
             throw new InvalidCommandException(String.format("Cannot build a building on a cell occupied by another building, X:%s, Y:%s",
@@ -65,12 +67,6 @@ public class PlaceBuildingCommand extends RawCommand {
         } else {
             throw new InvalidCommandException(String.format("You don't have enough energy to build this building. Required:[%d], Current:[%d]",
                     buildingToAdd.getPrice(), currentPlayer.getEnergy()));
-        }
-    }
-
-    private void mirrorXIndex(PlayerType id) {
-        if (id == PlayerType.B) {
-            positionX = GameConfig.getMapWidth() - 1 - positionX;
         }
     }
 }

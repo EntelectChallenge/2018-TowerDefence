@@ -14,4 +14,9 @@ public class JavaBotRunner extends BotRunner {
         String line = "java -jar \"" + this.getBotFileName() + "\"";
         return RunSimpleCommandLineCommand(line, 0);
     }
+
+    @Override
+    public int getDockerPort() {
+        return 9002;
+    }
 }
