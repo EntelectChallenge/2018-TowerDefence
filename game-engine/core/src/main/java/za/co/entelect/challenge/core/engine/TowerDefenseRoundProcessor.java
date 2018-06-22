@@ -191,7 +191,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(
-                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Tesla], 4[Deconstruct]. Received:%s",
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Deconstruct], 4[Tesla]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
             log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));
