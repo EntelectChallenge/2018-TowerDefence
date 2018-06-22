@@ -105,8 +105,8 @@ public class GameBootstrapper {
 
         List<Player> players = new ArrayList<>();
 
-        players.add(parsePlayer(config.playerAConfig, "A", config));
-        players.add(parsePlayer(config.playerBConfig, "B", config));
+        players.add(parsePlayer(config.playerAConfig, "A", config, 1));
+        players.add(parsePlayer(config.playerBConfig, "B", config, 2));
 
         gameEngineRunner.preparePlayers(players);
         gameEngineRunner.prepareGameMap();
@@ -118,9 +118,11 @@ public class GameBootstrapper {
         }
     }
 
-    private Player parsePlayer(String playerConfig, String playerNumber, Config config) throws Exception {
+    private Player parsePlayer(String playerConfig, String playerNumber, Config config, int playerPosition) throws Exception {
         if (playerConfig.equals("console")) {
-            return new ConsolePlayer(String.format("Player %s", playerNumber));
+            Player player = new ConsolePlayer(String.format("Player %s", playerNumber));
+            player.setNumber(playerPosition);
+            return player;
         } else {
             BotMetaData botConfig = getBotMetaData(playerConfig);
             BotRunner botRunner = BotRunnerFactory.createBotRunner(botConfig, config.maximumBotRuntimeMilliSeconds);
@@ -130,10 +132,15 @@ public class GameBootstrapper {
                 throw new FileNotFoundException(String.format("Could not find %s bot file for %s(%s)", botConfig.getBotLanguage(), botConfig.getAuthor(), botConfig.getNickName()));
             }
 
-            if(config.isTournamentMode)
-                return new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage(), gameName);
-            else
-                return new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
+            if (config.isTournamentMode) {
+                Player player = new TournamentPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, botConfig.getBotLanguage(), gameName);
+                player.setNumber(playerPosition);
+                return player;
+            } else {
+                Player player = new BotPlayer(String.format("%s - %s", playerNumber, botConfig.getNickName()), botRunner, gameName);
+                player.setNumber(playerPosition);
+                return player;
+            }
         }
     }
 

@@ -167,7 +167,7 @@ public class GameEngineRunner {
 
             int score = player.getGamePlayer().getScore();
 
-            if (player.getName().equals("A")) {
+            if (player.getNumber() == 1) {
                 gameResult.playerOnePoints = score;
 
                 if (winningPlayer != null && winningPlayer.getScore() == score) {
