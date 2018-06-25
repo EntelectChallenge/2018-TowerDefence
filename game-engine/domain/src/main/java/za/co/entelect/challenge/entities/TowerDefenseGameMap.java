@@ -159,9 +159,13 @@ public class TowerDefenseGameMap implements GameMap {
                         && building.getHealth() > 0)
                 .forEach(enemyBuilding -> possibleTargets.add(enemyBuilding));
 
-        TowerDefensePlayer missileOwner = null;
+        TowerDefensePlayer opponentPlayer = null;
         try {
-            missileOwner = getPlayer(teslaBuilding.getPlayerType());
+            if(possibleTargets.size() >  0){
+                opponentPlayer = getPlayer(possibleTargets.get(0).getPlayerType());
+            }else{
+                return;
+            }
         } catch (Exception e) {
             log.error(e);
         }
@@ -170,20 +174,20 @@ public class TowerDefenseGameMap implements GameMap {
         if (direction.equals(Direction.RIGHT)) {
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
-                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+                opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), opponentPlayer);
             }
 
             for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
-                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, opponentPlayer, targetHitsByTeslaBuilding);
             }
         } else {
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
-                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+                opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), opponentPlayer);
             }
 
             for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
-                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, opponentPlayer, targetHitsByTeslaBuilding);
             }
         }
 
