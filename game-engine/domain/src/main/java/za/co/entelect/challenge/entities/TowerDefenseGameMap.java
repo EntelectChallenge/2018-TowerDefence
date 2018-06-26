@@ -161,9 +161,9 @@ public class TowerDefenseGameMap implements GameMap {
 
         TowerDefensePlayer opponentPlayer = null;
         try {
-            if(possibleTargets.size() >  0){
+            if (possibleTargets.size() > 0) {
                 opponentPlayer = getPlayer(possibleTargets.get(0).getPlayerType());
-            }else{
+            } else {
                 return;
             }
         } catch (Exception e) {
