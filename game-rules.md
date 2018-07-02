@@ -158,7 +158,7 @@ to fire, and only then reset the cooldown.
 * Missiles move in a straight line toward the opposing player.
 * Missiles move the moment they are created.
 
-#Lighting Attack
+## Lighting Attack
 * Only the tesla tower can generate a lighting attack.
 * The lighting attack is instant - An Attack building destroyed by a lighting attack will not fire a missile that turn.
 * The lighting attack never damages your own buildings, only those of the enemy.

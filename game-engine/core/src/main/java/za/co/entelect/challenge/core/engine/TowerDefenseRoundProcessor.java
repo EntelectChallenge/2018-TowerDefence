@@ -17,10 +17,8 @@ import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.game.GameRoundProcessor;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TowerDefenseRoundProcessor implements GameRoundProcessor {
@@ -45,7 +43,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             log.error(e);
         }
 
-        createMissilesFromGuns();
+        createMissilesFromAttackBuildings();
         calculateMissileMovement();
         removeDeadEntities();
 
@@ -61,38 +59,34 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
     private void constructBuildings() {
         towerDefenseGameMap.getBuildings()
-                .forEach(Building::decreaseConstructionTimeLeft);
+                .forEach(b -> b.decreaseConstructionTimeLeft());
     }
 
-    private void createMissilesFromGuns() {
+    private void createMissilesFromAttackBuildings() {
         towerDefenseGameMap.getBuildings().stream()
-                .filter(Building::isConstructed)
+                .filter(b -> b.isConstructed() && b.getBuildingType() == BuildingType.ATTACK)
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
     private void fireTeslaTowers() throws Exception {
-        ArrayList<Building> playerTeslaTowers = new ArrayList<>();
-        towerDefenseGameMap.getBuildings().stream()
-                .filter(b -> b.getBuildingType().equals(BuildingType.TESLA))
-                .filter(Building::isConstructed)
-                .forEach(b -> playerTeslaTowers.add(b));
+        List<Building> playerTeslaTowers = towerDefenseGameMap.getBuildings().stream()
+                .filter(b -> b.isConstructed() && b.getBuildingType() == BuildingType.TESLA)
+                .sorted(Comparator.comparing(b -> b.getConstructionTimeLeft()))
+                .collect(Collectors.toList());
 
-        //Oldest building first.
-        playerTeslaTowers.sort(Comparator.comparing(Building::getConstructionTimeLeft));
+        for (Building teslaTower : playerTeslaTowers) {
 
-        for (Building possibleFiringTeslaTower : playerTeslaTowers) {
-
-            TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(possibleFiringTeslaTower.getPlayerType());
+            TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(teslaTower.getPlayerType());
             int playerEnergy = currentPlayer.getEnergy();
 
-            if (playerEnergy >= possibleFiringTeslaTower.getEnergyPerShot() && possibleFiringTeslaTower.getWeaponCooldownTimeLeft() == 0) {
-                currentPlayer.removeEnergy(possibleFiringTeslaTower.getEnergyPerShot());
-                towerDefenseGameMap.fireTeslaTower(possibleFiringTeslaTower);
-                possibleFiringTeslaTower.resetCooldown();
+            if (playerEnergy >= teslaTower.getEnergyPerShot() && teslaTower.getWeaponCooldownTimeLeft() == 0) {
+                currentPlayer.removeEnergy(teslaTower.getEnergyPerShot());
+                towerDefenseGameMap.fireTeslaTower(teslaTower);
+                teslaTower.resetCooldown();
             } else {
 
-                if (possibleFiringTeslaTower.getWeaponCooldownTimeLeft() > 0) {
-                    possibleFiringTeslaTower.decreaseCooldown();
+                if (teslaTower.getWeaponCooldownTimeLeft() > 0) {
+                    teslaTower.decreaseCooldown();
                 }
             }
         }
@@ -109,7 +103,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
     private int getBuildingGeneratedEnergyForPlayer(PlayerType player) {
         return towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.getPlayerType() == player && b.isConstructed())
-                .mapToInt(Building::getEnergyGeneratedPerTurn)
+                .mapToInt(b -> b.getEnergyGeneratedPerTurn())
                 .sum();
     }
 

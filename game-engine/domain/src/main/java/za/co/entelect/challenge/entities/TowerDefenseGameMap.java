@@ -147,65 +147,66 @@ public class TowerDefenseGameMap implements GameMap {
 
     public void fireTeslaTower(Building teslaBuilding) {
         Direction direction = checkAndSetupMissilesNoCooldown(teslaBuilding);
-        if (direction == null)
+        if (direction == null) {
             return;
+        }
 
-        ArrayList<Building> possibleTargets = new ArrayList<>();
-        buildings.stream()
-                .filter(building -> building.isConstructed()
-                        && (building.getY() >= (teslaBuilding.getY() - 1)
-                        && building.getY() <= (teslaBuilding.getY() + 1))
-                        && !building.isPlayers(teslaBuilding.getPlayerType())
-                        && building.getHealth() > 0)
-                .forEach(enemyBuilding -> possibleTargets.add(enemyBuilding));
+        List<Building> allTargets = buildings.stream()
+                .filter(b -> b.isConstructed()
+                        && (b.getY() >= (teslaBuilding.getY() - 1)
+                        && b.getY() <= (teslaBuilding.getY() + 1))
+                        && !b.isPlayers(teslaBuilding.getPlayerType())
+                        && b.getHealth() > 0)
+                .collect(Collectors.toList());
 
+        TowerDefensePlayer opponentPlayer = null;
         TowerDefensePlayer missileOwner = null;
         try {
             missileOwner = getPlayer(teslaBuilding.getPlayerType());
+            opponentPlayer = getPlayerOpponent(teslaBuilding.getPlayerType());
         } catch (Exception e) {
             log.error(e);
         }
 
-        ArrayList<Cell> targetHitsByTeslaBuilding = new ArrayList<>();
+        ArrayList<Cell> targetHits = new ArrayList<>();
         if (direction.equals(Direction.RIGHT)) {
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
-                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+                opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
-            for (int x = teslaBuilding.getX() + 1; x <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); x++) {
-                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+            for (int columnToFireAt = teslaBuilding.getX() + 1; columnToFireAt <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); columnToFireAt++) {
+                targetHits = possiblyFireTeslaTower(columnToFireAt, allTargets, teslaBuilding, missileOwner, targetHits);
             }
         } else {
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
-                missileOwner.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
+                opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
             for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
-                targetHitsByTeslaBuilding = possiblyFireTeslaTower(x, possibleTargets, teslaBuilding, missileOwner, targetHitsByTeslaBuilding);
+                targetHits = possiblyFireTeslaTower(x, allTargets, teslaBuilding, missileOwner, targetHits);
             }
         }
 
-        if (targetHitsByTeslaBuilding.size() > 0) {
-            targetHitsByTeslaBuilding.add(new Cell(teslaBuilding.getX(), teslaBuilding.getY(), teslaBuilding.getPlayerType()));
-            this.teslaTargetList.add(targetHitsByTeslaBuilding);
+        if (targetHits.size() > 0) {
+            targetHits.add(new Cell(teslaBuilding.getX(), teslaBuilding.getY(), teslaBuilding.getPlayerType()));
+            this.teslaTargetList.add(targetHits);
         }
     }
 
-    private ArrayList<Cell> possiblyFireTeslaTower(int x, ArrayList<Building> possibleTargets, Building teslaBuilding, TowerDefensePlayer missileOwner, ArrayList<Cell> teslaHitBuildings) {
-        final int nextTargetPoint = x;
+    private ArrayList<Cell> possiblyFireTeslaTower(int columnToFireAt,
+                                                   List<Building> possibleTargets,
+                                                   Building teslaBuilding,
+                                                   TowerDefensePlayer missileOwner,
+                                                   ArrayList<Cell> teslaHitBuildings) {
+        final int nextTargetPoint = columnToFireAt;
         Building targetToHit;
 
-        ArrayList<Building> targetsInX = new ArrayList<>();
-
-        possibleTargets.stream()
+        List<Building> targetsInX = possibleTargets.stream()
                 .filter(target -> target.getX() == nextTargetPoint)
-                .forEach(target -> {
-                    targetsInX.add(target);
-                });
-
-        targetsInX.sort(Comparator.comparing(Building::getY));
+                .sorted(Comparator.comparing(b -> b.getY()))
+                .collect(Collectors.toList());
 
         if (targetsInX.size() > 0) {
             targetToHit = targetsInX.get(0);
@@ -223,8 +224,9 @@ public class TowerDefenseGameMap implements GameMap {
     public void addMissileFromBuilding(Building b) {
         Direction direction = checkAndSetupMissiles(b);
 
-        if (direction == null)
+        if (direction == null) {
             return;
+        }
 
         missiles.add(new Missile(b, direction));
         b.resetCooldown();
