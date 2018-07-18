@@ -33,10 +33,7 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
             } else {
                 container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
             }
-            if (container == null) {
-                log.error("The container cannot be empty.");
-                return "";
-            }
+
             return gson.toJson(container);
         }
 
