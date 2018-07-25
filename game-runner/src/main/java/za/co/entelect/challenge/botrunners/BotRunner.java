@@ -50,10 +50,15 @@ public abstract class BotRunner {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
         executor.setStreamHandler(streamHandler);
-        executor.execute(cmdLine);
 
-        if (executor.isFailure(expectedExitValue)) {
-            throw new TimeoutException("Bot process timed out after " + this.timeoutInMilliseconds + "ms of inactivity");
+        try {
+            executor.execute(cmdLine);
+        } catch (IOException e) {
+            if (watchdog.killedProcess()) {
+                throw new TimeoutException("Bot process timed out after " + this.timeoutInMilliseconds + "ms of inactivity");
+            } else {
+                throw e;
+            }
         }
 
         return outputStream.toString();
