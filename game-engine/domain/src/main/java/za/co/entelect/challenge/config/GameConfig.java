@@ -245,4 +245,20 @@ public class GameConfig {
     public static int getTeslaRange() {
         return configuration.getInt("game.config.tesla.config.max-range");
     }
+
+    public static int getIroncurtainActiveRounds() {
+        return configuration.getInt("game.config.ironcurtain.config.active-rounds");
+    }
+
+    public static int getIroncurtainPrice() {
+        return configuration.getInt("game.config.ironcurtain.config.price");
+    }
+
+    public static int getIroncurtainConstructionScore() {
+        return configuration.getInt("game.config.ironcurtain.config.construction-score");
+    }
+
+    public static int getIroncurtainResetPeriod() {
+        return configuration.getInt("game.config.ironcurtain.config.reset-period");
+    }
 }

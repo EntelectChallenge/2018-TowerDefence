@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.commands.DeconstructBuildingCommand;
 import za.co.entelect.challenge.commands.DoNothingCommand;
+import za.co.entelect.challenge.commands.IronCurtainCommand;
 import za.co.entelect.challenge.commands.PlaceBuildingCommand;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.entities.Building;
@@ -32,21 +33,19 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         towerDefenseGameMap = (TowerDefenseGameMap) gameMap;
         towerDefenseGameMap.clearErrorList();
         towerDefenseGameMap.clearTeslaTargetList();
+        towerDefenseGameMap.clearIroncurtainHitList();
 
         processCommands(commands);
 
         constructBuildings();
 
-        try {
-            fireTeslaTowers();
-        } catch (Exception e) {
-            log.error(e);
-        }
+        updateIronCurtains();
+        fireTeslaTowers();
 
         createMissilesFromAttackBuildings();
-        calculateMissileMovement();
-        removeDeadEntities();
+        moveMissiles();
 
+        removeDeadEntities();
         addResources();
 
         return true;
@@ -62,13 +61,18 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(b -> b.decreaseConstructionTimeLeft());
     }
 
+    private void updateIronCurtains() {
+        towerDefenseGameMap.getTowerDefensePlayers()
+                .forEach(p -> p.updateIronCurtain(towerDefenseGameMap.getCurrentRound()));
+    }
+
     private void createMissilesFromAttackBuildings() {
         towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.isConstructed() && b.getBuildingType() == BuildingType.ATTACK)
                 .forEach(b -> towerDefenseGameMap.addMissileFromBuilding(b));
     }
 
-    private void fireTeslaTowers() throws Exception {
+    private void fireTeslaTowers() {
         List<Building> playerTeslaTowers = towerDefenseGameMap.getBuildings().stream()
                 .filter(b -> b.isConstructed() && b.getBuildingType() == BuildingType.TESLA)
                 .sorted(Comparator.comparing(b -> b.getConstructionTimeLeft()))
@@ -76,11 +80,22 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
 
         for (Building teslaTower : playerTeslaTowers) {
 
-            TowerDefensePlayer currentPlayer = towerDefenseGameMap.getPlayer(teslaTower.getPlayerType());
+            TowerDefensePlayer currentPlayer = null;
+            try {
+                currentPlayer = towerDefenseGameMap.getPlayer(teslaTower.getPlayerType());
+            } catch (Exception e) {
+                log.error(e);
+            }
+
             int playerEnergy = currentPlayer.getEnergy();
 
             if (playerEnergy >= teslaTower.getEnergyPerShot() && teslaTower.getWeaponCooldownTimeLeft() == 0) {
-                currentPlayer.removeEnergy(teslaTower.getEnergyPerShot());
+                try {
+                    currentPlayer.removeEnergy(teslaTower.getEnergyPerShot());
+                } catch (Exception e) {
+                    log.error(e);
+                }
+
                 towerDefenseGameMap.fireTeslaTower(teslaTower);
                 teslaTower.resetCooldown();
             } else {
@@ -131,7 +146,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
                 .forEach(p -> towerDefenseGameMap.removeMissile(p));
     }
 
-    private void calculateMissileMovement() {
+    private void moveMissiles() {
         int maxMissileSpeed = towerDefenseGameMap.getMissiles().stream()
                 .mapToInt(m -> m.getSpeed())
                 .max().orElse(0);
@@ -172,6 +187,8 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
             towerDefensePlayer.setConsecutiveDoNothings(0);
             if (buildingType == BuildingType.DECONSTRUCT) {
                 new DeconstructBuildingCommand(positionX, positionY).performCommand(towerDefenseGameMap, player);
+            } else if (buildingType == BuildingType.IRONCURTAIN) {
+                new IronCurtainCommand().performCommand(towerDefenseGameMap, player);
             } else {
                 new PlaceBuildingCommand(positionX, positionY, buildingType).performCommand(towerDefenseGameMap, player);
             }
@@ -185,7 +202,7 @@ public class TowerDefenseRoundProcessor implements GameRoundProcessor {
         } catch (IllegalArgumentException e) {
             doNothingCommand.performCommand(towerDefenseGameMap, player, true);
             towerDefenseGameMap.addErrorToErrorList(String.format(
-                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Deconstruct], 4[Tesla]. Received:%s",
+                    "Unable to parse building type: Expected 0[Defense], 1[Attack], 2[Energy], 3[Deconstruct], 4[Tesla], 5[Iron Curtain]. Received:%s",
                     commandLine[2]), towerDefensePlayer);
 
             log.error(towerDefenseGameMap.getErrorList().get(towerDefenseGameMap.getErrorList().size() - 1));

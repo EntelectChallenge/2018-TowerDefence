@@ -11,8 +11,9 @@ public class TowerDefensePlayer implements GamePlayer {
     private int health;
     private int hitsTaken;
     private int score;
-
     private int consecutiveDoNothings;
+    private boolean canPlaceIronCurtain;
+    private int activeIronCurtainTimeLeft;
 
     public TowerDefensePlayer(PlayerType playerType, int energy, int health) {
         this.playerType = playerType;
@@ -21,6 +22,8 @@ public class TowerDefensePlayer implements GamePlayer {
         this.hitsTaken = 0;
         this.score = 0;
         this.consecutiveDoNothings = 0;
+        this.canPlaceIronCurtain = false;
+        this.activeIronCurtainTimeLeft = 0;
     }
 
     public PlayerType getPlayerType() {
@@ -64,7 +67,7 @@ public class TowerDefensePlayer implements GamePlayer {
         this.energy -= energyToRemove;
     }
 
-    private int damagePlayerHealth(int damageTaken){
+    private int damagePlayerHealth(int damageTaken) {
         this.hitsTaken++;
         health -= damageTaken;
         health = Math.max(0, health);
@@ -92,5 +95,30 @@ public class TowerDefensePlayer implements GamePlayer {
 
     public void setConsecutiveDoNothings(int consecutiveDoNothings) {
         this.consecutiveDoNothings = consecutiveDoNothings;
+    }
+
+    public boolean canPlaceIronCurtain() {
+        return canPlaceIronCurtain;
+    }
+
+    public int getActiveIronCurtainTimeLeft() {
+        return activeIronCurtainTimeLeft;
+    }
+
+    public void activateIronCurtain() {
+        this.activeIronCurtainTimeLeft = GameConfig.getIroncurtainActiveRounds();
+        this.canPlaceIronCurtain = false;
+    }
+
+    public void updateIronCurtain(int currentRound) {
+        if (currentRound != 0 && currentRound % GameConfig.getIroncurtainResetPeriod() == 0) {
+            this.canPlaceIronCurtain = true;
+            this.activeIronCurtainTimeLeft = Math.max(0, activeIronCurtainTimeLeft);
+        }
+        this.activeIronCurtainTimeLeft--;
+    }
+
+    public boolean isIroncurtainActive() {
+        return getActiveIronCurtainTimeLeft() >= 0;
     }
 }

@@ -23,14 +23,6 @@ public class ThreeEntityCell {
         this.right = TowerDefenseConsoleMapRenderer.ANSI_GRAY + y.toString() + TowerDefenseConsoleMapRenderer.ANSI_RESET;
     }
 
-    public void setRight(String right) {
-        if (StringUtils.isNumeric(removeColour(this.right))) {
-            this.right = right;
-        } else {
-            this.right = this.right + right;
-        }
-    }
-
     @Override
     public String toString() {
         return "[" + left + middle + right + "]";
@@ -46,6 +38,22 @@ public class ThreeEntityCell {
 
     public void setMiddle(String middle) {
         this.middle = middle;
+    }
+
+    public void setRight(String right) {
+        if (StringUtils.isNumeric(removeColour(this.right))) {
+            this.right = right;
+        } else {
+            this.right = this.right + right;
+        }
+    }
+
+    public void setForcedLeft(String text) {
+        this.left = text;
+    }
+
+    public void setForcedRight(String text) {
+        this.right = text;
     }
 
     public String getLeft() {
