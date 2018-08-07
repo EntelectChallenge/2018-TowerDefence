@@ -43,7 +43,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 
-        stringBuilder.append("****** IRON CURTAIN STATS ******\n");
+        stringBuilder.append("***** IRON CURTAIN STATS ****\n");
         stringBuilder.append("price;activeRounds;resetPeriod;constructionScore").append("\n");
         stringBuilder
                 .append(GameConfig.getIroncurtainPrice()).append(";")
@@ -54,7 +54,21 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 
-        tdMap.getTowerDefensePlayers().forEach(p -> appendPlayerDetails(stringBuilder, p));
+        TowerDefensePlayer playerA = null;
+        TowerDefensePlayer playerB = null;
+        try {
+            if (playerType == PlayerType.A) {
+                playerA = tdMap.getPlayer(PlayerType.A);
+                playerB = tdMap.getPlayer(PlayerType.B);
+            } else {
+                playerA = tdMap.getPlayer(PlayerType.B);
+                playerB = tdMap.getPlayer(PlayerType.A);
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+        appendPlayerDetails(stringBuilder, playerA, "A");
+        appendPlayerDetails(stringBuilder, playerB, "B");
 
         stringBuilder.append("############# MAP #############\n");
         CellStateContainer[][] cellStateMap;
@@ -114,8 +128,8 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         return stringBuilder.toString();
     }
 
-    private void appendPlayerDetails(StringBuilder stringBuilder, TowerDefensePlayer player) {
-        stringBuilder.append("---------- PLAYER ").append(player.getPlayerType().toString()).append(" ----------\n");
+    private void appendPlayerDetails(StringBuilder stringBuilder, TowerDefensePlayer player, String intededPlayerId) {
+        stringBuilder.append("---------- PLAYER ").append(intededPlayerId).append(" ----------\n");
         stringBuilder.append("Energy : ").append(player.getEnergy()).append("\n");
         stringBuilder.append("Health : ").append(player.getHealth()).append("\n");
         stringBuilder.append("HitsTaken : ").append(player.getHitsTaken()).append("\n");

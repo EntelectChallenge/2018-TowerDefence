@@ -149,14 +149,14 @@ to fire, and only then reset the cooldown.
 
 #### Iron Curtain:
 An impenetrable shield that protects your entire base from enemy Tesla Tower attacks, and will stop any enemy missiles hitting it...your own 
-Tesla Tower attacks and missiles can pass through unobstructed. This shield costs **150** energy to activate, and is always placed on 
+Tesla Tower attacks and missiles can pass through unobstructed. This shield costs **100** energy to activate, and is always placed on 
 your most forward column, even if you have buildings on that column. The shield stays active for **6(Active rounds)** rounds, and can only 
-be activated when available to the player. This availability will be reset on every game round that is a factor of **50(Reset period)**.
+be activated when available to the player. This availability will be reset on every game round that is a factor of **30(Reset period)**.
 
 **Iron curtain details:**
-* Cost:    **150**
+* Cost:    **100**
 * Active rounds: **6**
-* Reset period: **50**
+* Reset period: **30**
 
 ## Missiles
 * Attack buildings will create missiles.
