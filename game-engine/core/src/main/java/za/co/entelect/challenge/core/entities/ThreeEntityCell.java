@@ -11,20 +11,27 @@ public class ThreeEntityCell {
     private String middle;
     private String right;
 
+    private boolean ironCurtainCell;
+
     public ThreeEntityCell() {
         this.left = " ";
         this.middle = " ";
         this.right = " ";
+        this.ironCurtainCell = false;
     }
 
     public ThreeEntityCell(Integer y, Integer x) {
         this.left = TowerDefenseConsoleMapRenderer.ANSI_GRAY + x.toString() + TowerDefenseConsoleMapRenderer.ANSI_RESET;
         this.middle = " ";
         this.right = TowerDefenseConsoleMapRenderer.ANSI_GRAY + y.toString() + TowerDefenseConsoleMapRenderer.ANSI_RESET;
+        this.ironCurtainCell = false;
     }
 
     @Override
     public String toString() {
+        if (ironCurtainCell) {
+            return " " + left + middle + right + " ";
+        }
         return "[" + left + middle + right + "]";
     }
 
@@ -48,12 +55,18 @@ public class ThreeEntityCell {
         }
     }
 
-    public void setForcedLeft(String text) {
+    public void setShieldLeft(String text) {
         this.left = text;
+        setAsIronCurtainCell();
     }
 
-    public void setForcedRight(String text) {
+    public void setShieldRight(String text) {
         this.right = text;
+        setAsIronCurtainCell();
+    }
+
+    public void setAsIronCurtainCell() {
+        this.ironCurtainCell = true;
     }
 
     public String getLeft() {

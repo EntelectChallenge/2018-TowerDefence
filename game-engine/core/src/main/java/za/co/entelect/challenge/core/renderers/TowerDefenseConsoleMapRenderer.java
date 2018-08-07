@@ -152,9 +152,9 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
                 .forEach(p -> {
                     if (p.isIroncurtainActive()) {
                         if (p.getPlayerType() == PlayerType.A) {
-                            shieldedCell.setForcedLeft("→");
+                            shieldedCell.setShieldLeft("\\");
                         } else if (p.getPlayerType() == PlayerType.B) {
-                            shieldedCell.setForcedRight("←");
+                            shieldedCell.setShieldRight("/");
                         }
                     }
                 });
@@ -206,7 +206,7 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
     }
 
     public static String booleanToString(boolean b) {
-        return b ? "✓" : "✘";
+        return b ? "Yes" : "No";
     }
 
     public static String removeColour(String input) {
