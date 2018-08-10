@@ -23,6 +23,7 @@ public class TowerDefenseGameMap implements GameMap {
     private ArrayList<Missile> missiles = new ArrayList<>();
     private ArrayList<String> errorList = new ArrayList<>();
     private ArrayList<List<Cell>> teslaTargetList = new ArrayList<>();
+    private List<Cell> ironcurtainHitList = new ArrayList<>();
     private int currentRound;
 
     private static final Logger log = LogManager.getLogger(PlaceBuildingCommand.class);
@@ -45,6 +46,10 @@ public class TowerDefenseGameMap implements GameMap {
 
     public void clearTeslaTargetList() {
         this.teslaTargetList = new ArrayList<>();
+    }
+
+    public void clearIroncurtainHitList() {
+        this.ironcurtainHitList = new ArrayList<>();
     }
 
     public void addErrorToErrorList(String error, TowerDefensePlayer player) {
@@ -110,7 +115,7 @@ public class TowerDefenseGameMap implements GameMap {
         }
     }
 
-    private Direction checkAndSetupMissiles(Building b) {
+    private Direction getDirectionAndUpdateBuilding(Building b) {
         if (b.getWeaponDamage() == 0) {
             return null;
         }
@@ -130,7 +135,7 @@ public class TowerDefenseGameMap implements GameMap {
         return direction;
     }
 
-    private Direction checkAndSetupMissilesNoCooldown(Building b) {
+    private Direction getDirectionToFireAt(Building b) {
         if (b.getWeaponDamage() == 0) {
             return null;
         }
@@ -146,7 +151,7 @@ public class TowerDefenseGameMap implements GameMap {
     }
 
     public void fireTeslaTower(Building teslaBuilding) {
-        Direction direction = checkAndSetupMissilesNoCooldown(teslaBuilding);
+        Direction direction = getDirectionToFireAt(teslaBuilding);
         if (direction == null) {
             return;
         }
@@ -168,24 +173,36 @@ public class TowerDefenseGameMap implements GameMap {
             log.error(e);
         }
 
-        ArrayList<Cell> targetHits = new ArrayList<>();
+        List<Cell> targetHits = new ArrayList<>();
         if (direction.equals(Direction.RIGHT)) {
+
+            if (opponentPlayer.isIroncurtainActive()) {
+                addTeslaHitListMarkers(teslaBuilding, targetHits, GameConfig.getMapWidth() / 2);
+                return; // Tesla tower cannot affect anything if the Iron Curtain is active
+            }
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
                 opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
-            for (int columnToFireAt = teslaBuilding.getX() + 1; columnToFireAt <= teslaBuilding.getMaxRange() + teslaBuilding.getX(); columnToFireAt++) {
-                targetHits = possiblyFireTeslaTower(columnToFireAt, allTargets, teslaBuilding, missileOwner, targetHits);
+            for (int columnToFireAt = teslaBuilding.getX() + 1;
+                 columnToFireAt <= teslaBuilding.getMaxRange() + teslaBuilding.getX();
+                 columnToFireAt++) {
+                targetHits.addAll(teslaFireAtBuildingInColumn(columnToFireAt, allTargets, teslaBuilding, missileOwner));
             }
-        } else {
+        } else if (direction.equals(Direction.LEFT)) {
+
+            if (opponentPlayer.isIroncurtainActive()) {
+                addTeslaHitListMarkers(teslaBuilding, targetHits, (GameConfig.getMapWidth() / 2) - 1);
+                return; // Tesla tower cannot affect anything if the Iron Curtain is active
+            }
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
                 opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
             for (int x = teslaBuilding.getX() - 1; x >= teslaBuilding.getX() - teslaBuilding.getMaxRange(); x--) {
-                targetHits = possiblyFireTeslaTower(x, allTargets, teslaBuilding, missileOwner, targetHits);
+                targetHits.addAll(teslaFireAtBuildingInColumn(x, allTargets, teslaBuilding, missileOwner));
             }
         }
 
@@ -195,34 +212,76 @@ public class TowerDefenseGameMap implements GameMap {
         }
     }
 
-    private ArrayList<Cell> possiblyFireTeslaTower(int columnToFireAt,
+    private void addTeslaHitListMarkers(Building teslaBuilding, List<Cell> targetHits, int shieldX) {
+        this.ironcurtainHitList.add(new Cell(shieldX, teslaBuilding.getY(), teslaBuilding.getPlayerType()));
+        targetHits.add(new Cell(teslaBuilding.getX(), teslaBuilding.getY(), teslaBuilding.getPlayerType()));
+        targetHits.add(new Cell(shieldX, teslaBuilding.getY(), teslaBuilding.getPlayerType()));
+        this.teslaTargetList.add(targetHits);
+    }
+
+    private List<Cell> teslaFireAtBuildingInColumn(int columnToFireAt,
                                                    List<Building> possibleTargets,
                                                    Building teslaBuilding,
-                                                   TowerDefensePlayer missileOwner,
-                                                   ArrayList<Cell> teslaHitBuildings) {
+                                                   TowerDefensePlayer missileOwner) {
+        List<Cell> teslaHitBuildings = new ArrayList<>();
         final int nextTargetPoint = columnToFireAt;
-        Building targetToHit;
-
         List<Building> targetsInX = possibleTargets.stream()
                 .filter(target -> target.getX() == nextTargetPoint)
                 .sorted(Comparator.comparing(b -> b.getY()))
                 .collect(Collectors.toList());
 
         if (targetsInX.size() > 0) {
-            targetToHit = targetsInX.get(0);
+            Building targetToHit = targetsInX.get(0);
 
             if (targetToHit != null) {
                 targetToHit.damageSelfDirectly(teslaBuilding.getWeaponDamage(), missileOwner);
                 teslaHitBuildings.add(new Cell(targetToHit.getX(), targetToHit.getY(), targetToHit.getPlayerType()));
-                possibleTargets.remove(targetToHit);
             }
         }
 
         return teslaHitBuildings;
     }
 
+    private boolean columnIsIroncurtained(int columnToCheck, PlayerType missileOwnerId, boolean singleColumn) {
+        boolean opponentCurtainIsActive = false;
+        try {
+            opponentCurtainIsActive = getPlayerOpponent(missileOwnerId).isIroncurtainActive();
+        } catch (Exception e) {
+            log.error(e);
+        }
+
+        if (!opponentCurtainIsActive) {
+            return false;
+        }
+
+        int halfMapWidth = GameConfig.getMapWidth() / 2;
+        if (missileOwnerId == PlayerType.A) {
+            int ironcurtainColumn = halfMapWidth; // Player B is shielded
+            if (columnToCheck == ironcurtainColumn) {
+                return true;
+            } else if (!singleColumn && columnToCheck >= ironcurtainColumn) {
+                return true;
+            }
+
+        } else if (missileOwnerId == PlayerType.B) {
+            int ironcurtainColumn = halfMapWidth - 1; // Player A is shielded
+            if (columnToCheck == ironcurtainColumn) {
+                return true;
+            } else if (!singleColumn && columnToCheck <= ironcurtainColumn) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean shieldExists() {
+        return getTowerDefensePlayers().stream()
+                .anyMatch(p -> p.isIroncurtainActive());
+    }
+
     public void addMissileFromBuilding(Building b) {
-        Direction direction = checkAndSetupMissiles(b);
+        Direction direction = getDirectionAndUpdateBuilding(b);
 
         if (direction == null) {
             return;
@@ -244,6 +303,13 @@ public class TowerDefenseGameMap implements GameMap {
         int offsetToMove = p.getDirection().getMultiplier();
         p.moveX(offsetToMove);
         p.reduceUnprocessedMovement();
+
+        // Missiles already past the shield column are NOT stopped
+        if (columnIsIroncurtained(p.getX(), p.playerType, true)) {
+            removeMissile(p);
+            this.ironcurtainHitList.add(new Cell(p.getX(), p.getY(), p.getPlayerType()));
+            return;
+        }
 
         checkHomeBaseHit(p);
         checkBuildingsHit(p);
@@ -336,5 +402,13 @@ public class TowerDefenseGameMap implements GameMap {
         }
 
         return winner; // If winner is null, game ended in a tie
+    }
+
+    public void activateIronCurtain(TowerDefensePlayer player) {
+        player.activateIronCurtain();
+    }
+
+    public List<Cell> getIroncurtainHitList() {
+        return ironcurtainHitList;
     }
 }

@@ -107,6 +107,7 @@ public class Building extends Cell {
                 this.constructionScore,
                 this.energyGeneratedPerTurn,
                 this.maxRange,
+                this.energyPerShot,
                 this.buildingType);
 
         newBuilding.weaponCooldownTimeLeft = this.weaponCooldownTimeLeft;
@@ -141,7 +142,7 @@ public class Building extends Cell {
     }
 
     public int getConstructionTimeLeft() {
-        return constructionTimeLeft + 1; // construction happens on same round as placement
+        return constructionTimeLeft; // construction happens on same round as placement
     }
 
     public void decreaseConstructionTimeLeft() {
@@ -149,7 +150,7 @@ public class Building extends Cell {
     }
 
     public boolean isConstructed() {
-        return (getConstructionTimeLeft() <= 0);
+        return (getConstructionTimeLeft() <= -1);
     }
 
     public int getHealth() {

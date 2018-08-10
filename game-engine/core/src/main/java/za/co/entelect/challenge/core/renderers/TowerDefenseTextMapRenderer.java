@@ -43,6 +43,17 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append("*****************************\n");
         stringBuilder.append("\n");
 
+        stringBuilder.append("***** IRON CURTAIN STATS ****\n");
+        stringBuilder.append("price;activeRounds;resetPeriod;constructionScore").append("\n");
+        stringBuilder
+                .append(GameConfig.getIroncurtainPrice()).append(";")
+                .append(GameConfig.getIroncurtainActiveRounds()).append(";")
+                .append(GameConfig.getIroncurtainResetPeriod()).append(";")
+                .append(GameConfig.getIroncurtainConstructionScore()).append(";")
+                .append("\n");
+        stringBuilder.append("*****************************\n");
+        stringBuilder.append("\n");
+
         TowerDefensePlayer playerA = null;
         TowerDefensePlayer playerB = null;
         try {
@@ -56,26 +67,11 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         } catch (Exception e) {
             log.error(e);
         }
-
-        stringBuilder.append("---------- PLAYER A ----------\n");
-        stringBuilder.append("Energy : ").append(playerA.getEnergy()).append("\n");
-        stringBuilder.append("Health : ").append(playerA.getHealth()).append("\n");
-        stringBuilder.append("HitsTaken : ").append(playerA.getHitsTaken()).append("\n");
-        stringBuilder.append("Score : ").append(playerA.getScore()).append("\n");
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("\n");
-
-        stringBuilder.append("---------- PLAYER B ----------\n");
-        stringBuilder.append("Energy : ").append(playerB.getEnergy()).append("\n");
-        stringBuilder.append("Health : ").append(playerB.getHealth()).append("\n");
-        stringBuilder.append("HitsTaken : ").append(playerB.getHitsTaken()).append("\n");
-        stringBuilder.append("Score : ").append(playerB.getScore()).append("\n");
-        stringBuilder.append("------------------------------\n");
-        stringBuilder.append("\n");
-
+        appendPlayerDetails(stringBuilder, playerA, "A");
+        appendPlayerDetails(stringBuilder, playerB, "B");
 
         stringBuilder.append("############# MAP #############\n");
-        CellStateContainer[][] cellStateMap = null;
+        CellStateContainer[][] cellStateMap;
         if (playerType == PlayerType.A) {
             cellStateMap = RendererHelper.renderPlayerA(tdMap);
         } else {
@@ -92,11 +88,9 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         stringBuilder.append('\n');
 
         stringBuilder.append("######## BUILDING DATA #########\n");
-
         stringBuilder.append("FORMAT : [x,y] Owner|BuildingType|ConstructionTimeLeft|Health|WeaponCooldownTimeLeft|WeaponDamage|EnergyGeneratedPerTurn \n\n");
 
-        for (Building building :
-                tdMap.getBuildings()) {
+        for (Building building : tdMap.getBuildings()) {
             Building presentedBuilding = building;
             if (playerType == PlayerType.B) {
                 presentedBuilding = presentedBuilding.getInvertedXInstance();
@@ -118,9 +112,7 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
         stringBuilder.append("FORMAT : [x,y] Owner|Damage|Speed \n\n");
 
-        for (Missile missile :
-                tdMap.getMissiles()) {
-
+        for (Missile missile : tdMap.getMissiles()) {
             Missile presentedMissile = missile;
             if (playerType == PlayerType.B) {
                 presentedMissile = presentedMissile.getInvertedXInstance();
@@ -136,6 +128,22 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
         return stringBuilder.toString();
     }
 
+    private void appendPlayerDetails(StringBuilder stringBuilder, TowerDefensePlayer player, String intededPlayerId) {
+        stringBuilder.append("---------- PLAYER ").append(intededPlayerId).append(" ----------\n");
+        stringBuilder.append("Energy : ").append(player.getEnergy()).append("\n");
+        stringBuilder.append("Health : ").append(player.getHealth()).append("\n");
+        stringBuilder.append("HitsTaken : ").append(player.getHitsTaken()).append("\n");
+        stringBuilder.append("Score : ").append(player.getScore()).append("\n");
+        stringBuilder.append("IronCurtainAvailable : ").append(booleanToString(player.canPlaceIronCurtain())).append("\n");
+        stringBuilder.append("ActiveIronCurtainLifetime : ").append(player.getActiveIronCurtainTimeLeft()).append("\n");
+        stringBuilder.append("------------------------------\n");
+        stringBuilder.append("\n");
+    }
+
+    private static String booleanToString(boolean b) {
+        return b ? "1" : "0";
+    }
+
     private String getRowStringForPlayer(CellStateContainer[] row, int y) {
         StringBuilder stringBuilderRow = new StringBuilder();
 
@@ -145,11 +153,9 @@ public class TowerDefenseTextMapRenderer implements GameMapRenderer {
 
             if (row[x].buildings.size() > 0) {
                 Building building = row[x].buildings.get(0);
-                if (building.isConstructed()) {
-                    stringBuilderRow.append(building.getIcon().toUpperCase());
-                } else {
-                    stringBuilderRow.append(building.getIcon().toLowerCase());
-                }
+                stringBuilderRow.append(building.isConstructed()
+                        ? building.getIcon().toUpperCase()
+                        : building.getIcon().toLowerCase());
             } else {
                 stringBuilderRow.append("N");
             }

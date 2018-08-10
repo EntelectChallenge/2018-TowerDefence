@@ -2,12 +2,9 @@ package za.co.entelect.challenge.core.renderers;
 
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.entities.CellStateContainer;
-import za.co.entelect.challenge.entities.Cell;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
 import za.co.entelect.challenge.enums.PlayerType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 
 public class RendererHelper {
@@ -39,20 +36,20 @@ public class RendererHelper {
 
         towerDefenseGameMap.getMissiles()
                 .forEach(p -> {
-                    outputMap[p.getY()][GameConfig.getMapWidth() - p.getX() - 1 ].missiles.add(p.getInvertedXInstance());
+                    outputMap[p.getY()][GameConfig.getMapWidth() - p.getX() - 1].missiles.add(p.getInvertedXInstance());
                 });
 
         return outputMap;
     }
 
-    private static CellStateContainer[][] generateEmptyBoard(){
+    private static CellStateContainer[][] generateEmptyBoard() {
         CellStateContainer[][] outputMap = new CellStateContainer[GameConfig.getMapHeight()][GameConfig.getMapWidth()];
 
         IntStream.range(0, GameConfig.getMapHeight())
                 .forEach(y -> {
                             IntStream.range(0, GameConfig.getMapWidth())
                                     .forEach(x -> {
-                                        PlayerType renderedPlayerType = (x >= GameConfig.getMapWidth()/2 ? PlayerType.B : PlayerType.A);
+                                        PlayerType renderedPlayerType = (x >= GameConfig.getMapWidth() / 2 ? PlayerType.B : PlayerType.A);
 
                                         outputMap[y][x] = new CellStateContainer(x, y, renderedPlayerType);
                                     });

@@ -3,6 +3,7 @@ package za.co.entelect.challenge.core.renderers;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import za.co.entelect.challenge.core.entities.CellStateContainer;
 import za.co.entelect.challenge.core.entities.PlayerData;
 import za.co.entelect.challenge.core.entities.TowerDefenseJsonContainer;
 import za.co.entelect.challenge.entities.TowerDefenseGameMap;
@@ -12,7 +13,8 @@ import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
 
@@ -27,16 +29,10 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
             TowerDefensePlayer towerDefensePlayer = (TowerDefensePlayer) player;
 
             Gson gson = new Gson();
-            TowerDefenseJsonContainer container;
-            if (towerDefensePlayer.getPlayerType() == PlayerType.A) {
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerA(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
-            } else {
-                container = new TowerDefenseJsonContainer(RendererHelper.renderPlayerB(towerDefenseGameMap), getPlayerDataForPlayer(player), towerDefenseGameMap.getCurrentRound(), towerDefenseGameMap.getTeslaTargetList());
-            }
-            if (container == null) {
-                log.error("The container cannot be empty.");
-                return "";
-            }
+            TowerDefenseJsonContainer container = towerDefensePlayer.getPlayerType() == PlayerType.A
+                    ? createTowerDefenseJsonContainer(towerDefensePlayer, RendererHelper.renderPlayerA(towerDefenseGameMap))
+                    : createTowerDefenseJsonContainer(towerDefensePlayer, RendererHelper.renderPlayerB(towerDefenseGameMap));
+
             return gson.toJson(container);
         }
 
@@ -44,23 +40,40 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
         return "";
     }
 
+    private TowerDefenseJsonContainer createTowerDefenseJsonContainer(TowerDefensePlayer towerDefensePlayer, CellStateContainer[][] cellStateContainers) {
+        return new TowerDefenseJsonContainer(
+                cellStateContainers,
+                getPlayersDataForPlayer(towerDefensePlayer),
+                towerDefenseGameMap.getCurrentRound(),
+                towerDefenseGameMap.getTeslaTargetList(),
+                towerDefenseGameMap.getIroncurtainHitList()
+        );
+    }
+
     private PlayerType invertPlayerType(PlayerType type) {
         return type == PlayerType.A ? PlayerType.B : PlayerType.A;
     }
 
-    public PlayerData[] getPlayerDataForPlayer(GamePlayer player) {
-        ArrayList<PlayerData> playerDatum = new ArrayList<>();
-        for (TowerDefensePlayer tdPlayer : towerDefenseGameMap.getTowerDefensePlayers()) {
-            PlayerType playerType = tdPlayer.getPlayerType();
-            //if you are getting data for player B, then invert the player type for rendering.
-            if (((TowerDefensePlayer) player).getPlayerType() == PlayerType.B) {
-                playerType = invertPlayerType(tdPlayer.getPlayerType());
-            }
+    public List<PlayerData> getPlayersDataForPlayer(TowerDefensePlayer towerDefensePlayer) {
+        return towerDefenseGameMap.getTowerDefensePlayers().stream()
+                .map(p -> {
+                    PlayerType playerType = p.getPlayerType();
+                    //if you are getting data for player B, then invert the player type for rendering.
+                    if (towerDefensePlayer.getPlayerType() == PlayerType.B) {
+                        playerType = invertPlayerType(p.getPlayerType());
+                    }
 
-            PlayerData playerData = new PlayerData(playerType, tdPlayer.getEnergy(), tdPlayer.getHealth(), tdPlayer.getHitsTaken(), tdPlayer.getScore());
-            playerDatum.add(playerData);
-        }
-        return playerDatum.toArray(new PlayerData[0]);
+                    return new PlayerData(
+                            playerType,
+                            p.getEnergy(),
+                            p.getHealth(),
+                            p.getHitsTaken(),
+                            p.getScore(),
+                            p.canPlaceIronCurtain(),
+                            p.getActiveIronCurtainTimeLeft()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
