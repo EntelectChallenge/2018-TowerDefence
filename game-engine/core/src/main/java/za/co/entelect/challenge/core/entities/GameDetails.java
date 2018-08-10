@@ -5,8 +5,10 @@ import za.co.entelect.challenge.entities.BuildingStats;
 import za.co.entelect.challenge.enums.BuildingType;
 import za.co.entelect.challenge.factories.BuildingFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class GameDetails {
 
@@ -20,6 +22,7 @@ public class GameDetails {
     private HashMap<BuildingType, Integer> buildingPrices = new HashMap<>();
 
     private HashMap<BuildingType, BuildingStats> buildingsStats = new HashMap<>();
+    private HashMap<String, Integer> ironCurtainStats = new HashMap<>();
 
     public GameDetails(int round) {
         this.round = round;
@@ -28,12 +31,21 @@ public class GameDetails {
         this.mapHeight = GameConfig.getMapHeight();
         this.roundIncomeEnergy = GameConfig.getRoundIncomeEnergy();
 
+        final List<BuildingType> buildingTypesWithoutStats = new ArrayList<BuildingType>() {{
+            add(BuildingType.DECONSTRUCT);
+            add(BuildingType.IRONCURTAIN);
+        }};
         Arrays.stream(BuildingType.values())
-                .filter(bt -> bt != BuildingType.DECONSTRUCT)
+                .filter(bt -> !buildingTypesWithoutStats.contains(bt))
                 .forEach(bt -> buildingPrices.put(bt, BuildingFactory.createBuildingStats(bt).price));
 
         Arrays.stream(BuildingType.values())
-                .filter(bt -> bt != BuildingType.DECONSTRUCT)
+                .filter(bt -> !buildingTypesWithoutStats.contains(bt))
                 .forEach(bt -> buildingsStats.put(bt, BuildingFactory.createBuildingStats(bt)));
+
+        ironCurtainStats.put("price", 150);
+        ironCurtainStats.put("activeRounds", 6);
+        ironCurtainStats.put("resetPeriod", 50);
+        ironCurtainStats.put("constructionScore", 20);
     }
 }

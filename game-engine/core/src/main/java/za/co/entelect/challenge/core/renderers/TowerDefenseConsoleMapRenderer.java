@@ -1,6 +1,8 @@
 package za.co.entelect.challenge.core.renderers;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.entities.ThreeEntityCell;
 import za.co.entelect.challenge.entities.Building;
@@ -11,8 +13,6 @@ import za.co.entelect.challenge.enums.PlayerType;
 import za.co.entelect.challenge.game.contracts.game.GamePlayer;
 import za.co.entelect.challenge.game.contracts.map.GameMap;
 import za.co.entelect.challenge.game.contracts.renderer.GameMapRenderer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,11 +123,8 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
             log.error(e);
         }
 
-        outputString.append(ANSI_BLUE_BRIGHT + "Player ").append(towerDefensePlayerA.getPlayerType()).append(" Health=").append(towerDefensePlayerA.getHealth()).append(", Energy=").append(towerDefensePlayerA.getEnergy()).append(", Score=").append(towerDefensePlayerA.getScore()).append(ANSI_RESET);
-        outputString.append("\n");
-        outputString.append(ANSI_RED_BRIGHT + "Player ").append(towerDefensePlayerB.getPlayerType()).append(" Health=").append(towerDefensePlayerB.getHealth()).append(", Energy=").append(towerDefensePlayerB.getEnergy()).append(", Score=").append(towerDefensePlayerB.getScore()).append(ANSI_RESET);
-
-        outputString.append("\n");
+        appendPlayerDetails(outputString, towerDefensePlayerA, ANSI_BLUE_BRIGHT);
+        appendPlayerDetails(outputString, towerDefensePlayerB, ANSI_RED_BRIGHT);
 
         int[] maxLeftRightLength = new int[2];
 
@@ -149,19 +146,67 @@ public class TowerDefenseConsoleMapRenderer implements GameMapRenderer {
                     });
                 });
 
+        ThreeEntityCell shieldedCell = new ThreeEntityCell();
+        boolean shieldExists = towerDefenseGameMap.shieldExists();
+        towerDefenseGameMap.getTowerDefensePlayers()
+                .forEach(p -> {
+                    if (p.isIroncurtainActive()) {
+                        if (p.getPlayerType() == PlayerType.A) {
+                            shieldedCell.setShieldLeft("\\");
+                        } else if (p.getPlayerType() == PlayerType.B) {
+                            shieldedCell.setShieldRight("/");
+                        }
+                    }
+                });
+
         Arrays.stream(outputMap)
-                .forEach(row -> {
+                .map(row -> {
+                    List<ThreeEntityCell> listRow = new ArrayList<>(Arrays.asList(row));
+                    if (shieldExists) {
+                        listRow.add(row.length / 2, shieldedCell);
+                    }
+                    return listRow;
+                })
+                .forEach(listRow -> {
                     StringBuilder rowString = new StringBuilder();
-                    Arrays.stream(row).forEach(cell -> {
+                    listRow.forEach(cell -> {
                         cell.padLeft(maxLeftRightLength[0]);
                         cell.padRight(maxLeftRightLength[1]);
 
                         rowString.append(cell);
                     });
+
                     outputString.append(rowString).append("\n");
                 });
 
         return outputString.toString();
+    }
+
+    private void appendPlayerDetails(StringBuilder outputString, TowerDefensePlayer player, String ansiColour) {
+        outputString.append(ansiColour)
+                .append("Player ").append(player.getPlayerType())
+                .append(", Health=").append(padLeftInt(player.getHealth(), 3))
+                .append(", Energy=").append(padLeftInt(player.getEnergy(), 6))
+                .append(", Score=").append(padLeftInt(player.getScore(), 6))
+                .append(", IronCurtainAvailable= ").append(booleanToString(player.canPlaceIronCurtain()))
+                .append(ANSI_RESET);
+        outputString.append("\n");
+    }
+
+    public static String padRight(String s, int n) {
+        return String.format("%1$-" + n + "s", s);
+    }
+
+    public static String padLeft(String s, int n) {
+        return String.format("%1$" + n + "s", s);
+    }
+
+    public static String padLeftInt(int i, int n) {
+        return padLeft(Integer.toString(i), n);
+    }
+
+    public static String booleanToString(boolean b) {
+        return b ? "Yes" : "No";
     }
 
     public static String removeColour(String input) {
