@@ -5,6 +5,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import za.co.entelect.challenge.entities.BotMetaData;
+import za.co.entelect.challenge.entities.BotArguments;
 import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 
 import java.io.ByteArrayOutputStream;
@@ -36,6 +37,8 @@ public abstract class BotRunner {
     public String getBotFileName() {
         return botMetaData.getBotFileName();
     }
+
+    public BotArguments getArguments() { return botMetaData.getArguments(); }
 
     protected String RunSimpleCommandLineCommand(String line, int expectedExitValue) throws IOException, TimeoutException {
         CommandLine cmdLine = CommandLine.parse(line);
