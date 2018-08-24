@@ -108,6 +108,7 @@ public class TowerDefensePlayer implements GamePlayer {
     public void activateIronCurtain() {
         this.activeIronCurtainTimeLeft = GameConfig.getIroncurtainActiveRounds();
         this.canPlaceIronCurtain = false;
+        addScore(GameConfig.getIroncurtainConstructionScore());
     }
 
     public void updateIronCurtain(int currentRound) {

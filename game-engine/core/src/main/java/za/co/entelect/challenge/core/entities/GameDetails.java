@@ -43,9 +43,9 @@ public class GameDetails {
                 .filter(bt -> !buildingTypesWithoutStats.contains(bt))
                 .forEach(bt -> buildingsStats.put(bt, BuildingFactory.createBuildingStats(bt)));
 
-        ironCurtainStats.put("price", 150);
-        ironCurtainStats.put("activeRounds", 6);
-        ironCurtainStats.put("resetPeriod", 50);
-        ironCurtainStats.put("constructionScore", 20);
+        ironCurtainStats.put("price", GameConfig.getIroncurtainPrice());
+        ironCurtainStats.put("activeRounds", GameConfig.getIroncurtainActiveRounds());
+        ironCurtainStats.put("resetPeriod", GameConfig.getIroncurtainResetPeriod());
+        ironCurtainStats.put("constructionScore", GameConfig.getIroncurtainConstructionScore());
     }
 }
