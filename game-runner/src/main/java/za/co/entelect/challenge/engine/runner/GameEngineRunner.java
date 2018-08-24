@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.TriConsumer;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
+import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.MatchFailedException;
