@@ -113,7 +113,17 @@ public class TournamentPlayer extends Player {
 
     @Override
     public void gameEnded(GameMap gameMap) {
+        String playerSpecificJsonState = jsonRenderer.render(gameMap, getGamePlayer());
+        String playerSpecificTextState = textRenderer.render(gameMap, getGamePlayer());
+        String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
 
+        try {
+            writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
+                    playerSpecificConsoleState, "", gameMap.getCurrentRound(),
+                    "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeStateFiles(String state, String textState) throws IOException {

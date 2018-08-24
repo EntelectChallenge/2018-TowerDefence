@@ -11,8 +11,9 @@ public class PlayerData {
     protected int score;
     protected boolean ironCurtainAvailable;
     protected int activeIronCurtainLifetime;
+    protected boolean isIronCurtainActive;
 
-    public PlayerData(PlayerType playerType, int energy, int health, int hitsTaken, int score, boolean ironCurtainAvailable, int activeIronCurtainLifetime) {
+    public PlayerData(PlayerType playerType, int energy, int health, int hitsTaken, int score, boolean ironCurtainAvailable, int activeIronCurtainLifetime, boolean isIronCurtainActive) {
         this.playerType = playerType;
         this.energy = energy;
         this.health = health;
@@ -20,6 +21,7 @@ public class PlayerData {
         this.score = score;
         this.ironCurtainAvailable = ironCurtainAvailable;
         this.activeIronCurtainLifetime = activeIronCurtainLifetime;
+        this.isIronCurtainActive = isIronCurtainActive;
     }
 
 }

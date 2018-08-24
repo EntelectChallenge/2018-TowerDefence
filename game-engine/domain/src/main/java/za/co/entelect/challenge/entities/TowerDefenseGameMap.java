@@ -182,6 +182,7 @@ public class TowerDefenseGameMap implements GameMap {
             }
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2) - 1) {
+                targetHits.add(new Cell(opponentPlayer.getPlayerType()));
                 opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
@@ -198,6 +199,7 @@ public class TowerDefenseGameMap implements GameMap {
             }
 
             if (teslaBuilding.getX() == (GameConfig.getMapWidth() / 2)) {
+                targetHits.add(new Cell(opponentPlayer.getPlayerType()));
                 opponentPlayer.takesHitByPlayer(teslaBuilding.getWeaponDamage(), missileOwner);
             }
 
