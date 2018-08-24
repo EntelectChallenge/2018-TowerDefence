@@ -5,40 +5,39 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import za.co.entelect.challenge.entities.BotMetaData;
-import za.co.entelect.challenge.utils.FileUtils;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public abstract class BotRunner {
 
     protected BotMetaData botMetaData;
     protected int timeoutInMilliseconds;
 
-    protected BotRunner(BotMetaData botMetaData, int timeoutInMilliseconds){
+    protected BotRunner(BotMetaData botMetaData, int timeoutInMilliseconds) {
         this.botMetaData = botMetaData;
         this.timeoutInMilliseconds = timeoutInMilliseconds;
     }
 
-    public String run() throws IOException{
+    public String run() throws IOException, TimeoutException {
         return this.runBot();
     }
 
-    protected abstract String runBot() throws IOException;
+    protected abstract String runBot() throws IOException, TimeoutException;
 
     public abstract int getDockerPort();
 
-    public String getBotDirectory(){
+    public String getBotDirectory() {
         return botMetaData.getBotDirectory();
     }
 
-    public String getBotFileName(){ return botMetaData.getBotFileName(); }
+    public String getBotFileName() {
+        return botMetaData.getBotFileName();
+    }
 
-    protected String RunSimpleCommandLineCommand(String line, int expectedExitValue) throws IOException {
+    protected String RunSimpleCommandLineCommand(String line, int expectedExitValue) throws IOException, TimeoutException {
         CommandLine cmdLine = CommandLine.parse(line);
         DefaultExecutor executor = new DefaultExecutor();
         File bot = new File(this.getBotDirectory());
@@ -51,7 +50,17 @@ public abstract class BotRunner {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
         executor.setStreamHandler(streamHandler);
-        executor.execute(cmdLine);
+
+        try {
+            executor.execute(cmdLine);
+        } catch (IOException e) {
+            if (watchdog.killedProcess()) {
+                throw new TimeoutException("Bot process timed out after " + this.timeoutInMilliseconds + "ms of inactivity");
+            } else {
+                throw e;
+            }
+        }
+
         return outputStream.toString();
     }
 }
