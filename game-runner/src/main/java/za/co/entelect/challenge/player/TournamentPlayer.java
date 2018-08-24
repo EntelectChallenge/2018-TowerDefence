@@ -123,9 +123,16 @@ public class TournamentPlayer extends Player {
         String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
 
         try {
-            writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
-                    playerSpecificConsoleState, "", gameMap.getCurrentRound(),
-                    "");
+            BotPlayer.writeRoundStateData(
+                    playerSpecificJsonState,
+                    playerSpecificTextState,
+                    playerSpecificConsoleState,
+                    "",
+                    gameMap.getCurrentRound(),
+                    "",
+                    getName(),
+                    saveStateLocation);
+            writeStateFiles(playerSpecificJsonState, playerSpecificTextState);
         } catch (IOException e) {
             e.printStackTrace();
         }

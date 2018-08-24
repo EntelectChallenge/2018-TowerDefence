@@ -72,7 +72,8 @@
       "hitsTaken": 0,
       "score": 7247,
       "ironCurtainAvailable": false,
-      "activeIronCurtainLifetime": 3
+      "activeIronCurtainLifetime": 3,
+      "isIronCurtainActive": true
     },
     {
       "playerType": "B",
@@ -81,7 +82,8 @@
       "hitsTaken": 0,
       "score": 760,
       "ironCurtainAvailable": true,
-      "activeIronCurtainLifetime": -50
+      "activeIronCurtainLifetime": -50,
+      "isIronCurtainActive": false
     }
   ],
   "gameMap": [
@@ -1996,5 +1998,5 @@
     ]
   ],
   "teslaHitList": [],
-  "ironcurtainHitList": []
+  "ironCurtainHitList": []
 }

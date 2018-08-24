@@ -149,9 +149,14 @@ public class BotPlayer extends Player {
         String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
 
         try {
-            writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
-                    playerSpecificConsoleState, "", gameMap.getCurrentRound(),
-                    "");
+            writeRoundStateData(playerSpecificJsonState,
+                    playerSpecificTextState,
+                    playerSpecificConsoleState,
+                    "",
+                    gameMap.getCurrentRound(),
+                    "",
+                    getName(),
+                    saveStateLocation);
         } catch (IOException e) {
             e.printStackTrace();
         }
