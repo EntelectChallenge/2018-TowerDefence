@@ -18,6 +18,10 @@ public class Cell {
         this.playerType = playerType;
     }
 
+    public Cell(PlayerType playerType) {
+        this.playerType = playerType;
+    }
+
     public int getX() {
         return x;
     }

@@ -4,7 +4,9 @@ import io.reactivex.subjects.BehaviorSubject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.TriConsumer;
+import za.co.entelect.challenge.config.GameConfig;
 import za.co.entelect.challenge.core.renderers.TowerDefenseConsoleMapRenderer;
+import za.co.entelect.challenge.core.renderers.TowerDefenseJsonGameMapRenderer;
 import za.co.entelect.challenge.engine.exceptions.InvalidRunnerState;
 import za.co.entelect.challenge.game.contracts.command.RawCommand;
 import za.co.entelect.challenge.game.contracts.exceptions.MatchFailedException;
@@ -98,7 +100,6 @@ public class GameEngineRunner {
 
     private void runInitialPhase() throws Exception {
         boolean successfulRound = false;
-        boolean botExceptionOccurred = false;
 
         while (!successfulRound) {
 
@@ -175,7 +176,7 @@ public class GameEngineRunner {
         return (player, command) -> roundProcessor.addPlayerCommand(player, command);
     }
 
-    private void publishGameComplete(boolean matchSuccessful) throws Exception {
+    private void publishGameComplete(boolean matchDidNotTimeout) throws Exception {
         GamePlayer winningPlayer = gameMap.getWinningPlayer();
 
         gameResult.winner = 0;
@@ -185,7 +186,7 @@ public class GameEngineRunner {
 
             int score = player.getGamePlayer().getScore();
 
-            if (player.getName().equals("A")) {
+            if (player.getName().substring(0, 1).equals("A")) {
                 gameResult.playerOnePoints = score;
 
                 if (winningPlayer != null && winningPlayer.getScore() == score) {
@@ -202,14 +203,46 @@ public class GameEngineRunner {
 
         gameResult.roundsPlayed = gameMap.getCurrentRound();
         gameResult.isComplete = true;
-        gameResult.isSuccessful = matchSuccessful;
+        gameResult.isSuccessful = matchDidNotTimeout;
 
-        gameCompleteHandler.accept(gameMap, players, matchSuccessful);
+        gameCompleteHandler.accept(gameMap, players, matchDidNotTimeout);
 
-        if (!matchSuccessful) {
+        if (!matchDidNotTimeout) {
             gameResult.verificationRequired = true;
-            throw new MatchFailedException("Match Failed");
+            throw new MatchFailedException("Match timed out");
         }
+
+        int minExpectRounds = 36;
+        if (gameResult.roundsPlayed < minExpectRounds) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Match duration was " + gameResult.roundsPlayed +
+                    " rounds, still less than the expected " + minExpectRounds + " rounds");
+        }
+
+        int minExpectScore = gameResult.roundsPlayed * GameConfig.getRoundIncomeEnergy() * GameConfig.getEnergyScoreMultiplier();
+        if (gameResult.playerOnePoints <= minExpectScore) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Player One scored only" + gameResult.playerOnePoints +
+                    " points, not even the expected " + minExpectScore + " points");
+        }
+        if (gameResult.playerTwoPoints <= minExpectScore) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Player Two scored only" + gameResult.playerTwoPoints +
+                    " points, not even the expected " + minExpectScore + " points");
+        }
+
+        int minExpectTimeouts = 0;
+        int playerOneTimeOuts = players.get(0).getTimeoutCounts();
+        if (playerOneTimeOuts > minExpectTimeouts) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Player One timed out " + playerOneTimeOuts + " times");
+        }
+        int playerTwoTimeOuts = players.get(1).getTimeoutCounts();
+        if (playerTwoTimeOuts > minExpectTimeouts) {
+            gameResult.verificationRequired = true;
+            throw new MatchFailedException("Player Two timed out " + playerTwoTimeOuts + " times");
+        }
+
     }
 
     private void publishFirstPhaseFailed() {
@@ -227,8 +260,9 @@ public class GameEngineRunner {
     public void setMatchSuccess(boolean status) {
         gameResult.isSuccessful = status;
 
-        if(status)
+        if (status) {
             gameResult.verificationRequired = true;
+        }
     }
 }
 

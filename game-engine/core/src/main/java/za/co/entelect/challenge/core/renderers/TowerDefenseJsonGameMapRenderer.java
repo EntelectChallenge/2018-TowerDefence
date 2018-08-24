@@ -70,7 +70,8 @@ public class TowerDefenseJsonGameMapRenderer implements GameMapRenderer {
                             p.getHitsTaken(),
                             p.getScore(),
                             p.canPlaceIronCurtain(),
-                            p.getActiveIronCurtainTimeLeft()
+                            p.getActiveIronCurtainTimeLeft(),
+                            p.isIroncurtainActive()
                     );
                 })
                 .collect(Collectors.toList());

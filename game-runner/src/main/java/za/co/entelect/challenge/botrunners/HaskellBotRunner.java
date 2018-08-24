@@ -1,6 +1,7 @@
 package za.co.entelect.challenge.botrunners;
 
 import za.co.entelect.challenge.entities.BotMetaData;
+import za.co.entelect.challenge.game.contracts.exceptions.TimeoutException;
 
 import java.io.IOException;
 
@@ -11,7 +12,7 @@ public class HaskellBotRunner extends BotRunner {
     }
 
     @Override
-    protected String runBot() throws IOException {
+    protected String runBot() throws IOException, TimeoutException {
         String line;
 
         if(System.getProperty("os.name").contains("Windows")) {

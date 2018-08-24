@@ -196,7 +196,7 @@ public class GameBootstrapper {
             log.info("=======================================");
 
             try {
-                String roundLocation = String.format("%s/%s/endGameState.txt", gameName, FileUtils.getRoundDirectory(gameMap.getCurrentRound() - 1));
+                String roundLocation = String.format("%s/%s/endGameState.txt", gameName, FileUtils.getRoundDirectory(gameMap.getCurrentRound()));
                 BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(new File(roundLocation)));
 
                 if (winner == null) {

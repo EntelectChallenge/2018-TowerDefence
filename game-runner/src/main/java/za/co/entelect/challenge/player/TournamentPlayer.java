@@ -97,9 +97,14 @@ public class TournamentPlayer extends Player {
                 botInput = "Exception";
             }
 
-            writeRoundStateData(playerSpecificJsonState, playerSpecificTextState,
-                    playerSpecificConsoleState, botInput, gameMap.getCurrentRound(),
-                    consoleOutput);
+            BotPlayer.writeRoundStateData(playerSpecificJsonState,
+                    playerSpecificTextState,
+                    playerSpecificConsoleState,
+                    botInput,
+                    gameMap.getCurrentRound(),
+                    consoleOutput,
+                    getName(),
+                    saveStateLocation);
 
         } catch (RuntimeException | IOException e) {
             log.warn(e);
@@ -113,43 +118,35 @@ public class TournamentPlayer extends Player {
 
     @Override
     public void gameEnded(GameMap gameMap) {
+        String playerSpecificJsonState = jsonRenderer.render(gameMap, getGamePlayer());
+        String playerSpecificTextState = textRenderer.render(gameMap, getGamePlayer());
+        String playerSpecificConsoleState = consoleRenderer.render(gameMap, getGamePlayer());
 
+        try {
+            BotPlayer.writeRoundStateData(
+                    playerSpecificJsonState,
+                    playerSpecificTextState,
+                    playerSpecificConsoleState,
+                    "",
+                    gameMap.getCurrentRound(),
+                    "",
+                    getName(),
+                    saveStateLocation);
+            writeStateFiles(playerSpecificJsonState, playerSpecificTextState);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void writeStateFiles(String state, String textState) throws IOException {
-        File existingCommandFile = new File(String.format("%s/%s",  botRunner.getBotDirectory(), BOT_COMMAND));
+        File existingCommandFile = new File(String.format("%s/%s", botRunner.getBotDirectory(), BOT_COMMAND));
 
-        if (existingCommandFile.exists()){
+        if (existingCommandFile.exists()) {
             existingCommandFile.delete();
         }
 
-        FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(),  BOT_STATE), state);
+        FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(), BOT_STATE), state);
         FileUtils.writeToFile(String.format("%s/%s", botRunner.getBotDirectory(), TEXT_MAP), textState);
     }
 
-    private void writeRoundStateData(String playerSpecificJsonState, String playerSpecificTextState,
-                                     String playerSpecificConsoleState, String command, int round,
-                                     String botConsoleOutput) throws IOException {
-        String mainDirectory = String.format("%s/%s", saveStateLocation, FileUtils.getRoundDirectory(round));
-        File fMain = new File(mainDirectory);
-        if (!fMain.exists()) {
-            fMain.mkdirs();
-        }
-
-        File f = new File(String.format("%s/%s", mainDirectory, getName()));
-        if (!f.exists()) {
-            f.mkdirs();
-        }
-
-        File fConsole = new File(String.format("%s/%s/%s", mainDirectory, getName(), "Console"));
-        if (!fConsole.exists()) {
-            fConsole.mkdirs();
-        }
-
-        FileUtils.writeToFile(String.format("%s/%s/%s", mainDirectory, getName(), "JsonMap.json"), playerSpecificJsonState);
-        FileUtils.writeToFile(String.format("%s/%s/%s", mainDirectory, getName(), "TextMap.txt"), playerSpecificTextState);
-        FileUtils.writeToFile(String.format("%s/%s/%s", mainDirectory, getName(), "PlayerCommand.txt"), command);
-        FileUtils.writeToFile(String.format("%s/%s/%s/%s", mainDirectory, getName(), "Console", "Console.txt"), playerSpecificConsoleState);
-        FileUtils.writeToFile(String.format("%s/%s/%s/%s", mainDirectory, getName(), "Console", "BotOutput.txt"), botConsoleOutput);
-    }
 }
