@@ -126,11 +126,11 @@ public class Building extends Cell {
     }
 
     private void setHealthAndAddScore(int damageTaken, TowerDefensePlayer missileOwner) {
-
+        int previousHealth = health;
         health -= damageTaken;
         health = Math.max(0, health);
 
-        missileOwner.addScore(damageTaken * destroyMultiplier);
+        missileOwner.addScore((previousHealth - health) * destroyMultiplier);
     }
 
     public void decreaseCooldown() {
