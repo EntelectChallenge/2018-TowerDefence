@@ -4,5 +4,8 @@
 	"nickName": "Bill",
 	"botLocation": "/bin",
 	"botFileName": "EntelectChallenge2018-exe",
-	"botLanguage": "haskell"
+	"botLanguage": "haskell",
+    	"arguments": {
+        	"coreCount": 2
+    	}
 }

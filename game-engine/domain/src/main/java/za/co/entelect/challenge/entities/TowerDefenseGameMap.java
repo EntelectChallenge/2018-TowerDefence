@@ -108,11 +108,6 @@ public class TowerDefenseGameMap implements GameMap {
 
     public void removeBuilding(Building building) {
         buildings.remove(building);
-        try {
-            getPlayerOpponent(building.getPlayerType()).addScore(building.getDestroyMultiplier());
-        } catch (Exception e) {
-            log.error(e);
-        }
     }
 
     private Direction getDirectionAndUpdateBuilding(Building b) {
