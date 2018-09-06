@@ -2,6 +2,7 @@ package za.co.entelect.challenge.entities;
 
 import com.google.gson.annotations.SerializedName;
 import za.co.entelect.challenge.enums.BotLanguage;
+import za.co.entelect.challenge.entities.BotArguments;
 
 import java.nio.file.Paths;
 
@@ -19,6 +20,8 @@ public class BotMetaData {
     private String botLocation;
     @SerializedName("botFileName")
     private String botFileName;
+    @SerializedName("arguments")
+    private BotArguments arguments;
 
     public BotMetaData(BotLanguage language, String botLocation, String botFileName){
         this.botLanguage = language;
@@ -56,5 +59,9 @@ public class BotMetaData {
 
     public String getBotDirectory() {
         return Paths.get(getBotLocation()).toAbsolutePath().normalize().toString();
+    }
+
+    public BotArguments getArguments() {
+        return this.arguments;
     }
 }
