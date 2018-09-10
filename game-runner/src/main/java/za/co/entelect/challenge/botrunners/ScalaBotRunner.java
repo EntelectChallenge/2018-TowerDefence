@@ -19,7 +19,7 @@ public class ScalaBotRunner extends BotRunner {
 
     @Override
     public int getDockerPort() {
-        return -1;
+        return 9013;
     }
 
 }
